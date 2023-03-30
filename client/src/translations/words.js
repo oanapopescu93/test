@@ -7,6 +7,8 @@ var word_bank = {
         page_chosen: "Page chosen",
         error: "Error",
         all_rights_reserved: "All rights reserved",
+        sign_in: "Sign in",
+        sign_up: "Sign up"
     },
     "RO":{
         title: "Tutorial",
@@ -16,6 +18,8 @@ var word_bank = {
         page_chosen: "Pagina aleasa",
         error: "Eroare",
         all_rights_reserved: "Toate drepturile rezervate",
+        sign_in: "Logare",
+        sign_up: "Registrare"
     }
 }
 

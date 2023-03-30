@@ -7,7 +7,7 @@ import "./css/style.css"
 
 import Loader from "./components/partials/loader"
 import { bringPayload } from "./reducers/home"
-import Home from "./components/pages/home"
+import Page from "./components/pages/page"
 
 const socket = io()
 
@@ -55,7 +55,7 @@ function App() {
   }, 15000)
 
   return <div className="App">    
-      {home.loaded ? <Home home={home} socket={socket} lang={lang}></Home> : <Loader></Loader>}
+      {home.loaded ? <Page home={home} socket={socket} lang={lang}></Page> : <Loader></Loader>}
   </div>
 }
 

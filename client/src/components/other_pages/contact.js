@@ -1,6 +1,6 @@
 import React from 'react'
 function Contact(props){
-    return <div className="other_pages_container">
+    return <div className="page_container">
         <p>Contact</p>
     </div>
 }

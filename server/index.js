@@ -8,12 +8,36 @@ var io = require('socket.io')(http)
 var routes = require("./routes")
 app.use(routes) 
 
+const path = require("path");
+const fs = require('fs')
+let users = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
+
 io.on('connection', function(socket) {
-  socket.on('message_send', (data) => {
+  socket.on('signin_send', (data) => {
+    let exists = false
+    let obj = {}
+    for(let i in users){
+      if(users[i].user === data.user){
+        exists = true
+        if(users[i].pass === data.pass){
+          obj = {user: users[i].user}
+        }
+        break
+      }
+    }
+
     try{
-      io.emit('message_read', data)
+      io.to(socket.id).emit('signin_read', {exists, obj})
     }catch(e){
-        console.log('[error]','message_read :', e)
+      console.log('[error]','signin_read2--> ', e)
+    }
+  })
+
+  socket.on('signup_send', (data) => {
+    try{
+      io.emit('signup_read', data)
+    }catch(e){
+        console.log('[error]','signup_read :', e)
     }
   })  
 

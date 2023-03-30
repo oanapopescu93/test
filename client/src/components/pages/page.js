@@ -1,11 +1,13 @@
 import React from 'react'
 import {useSelector} from 'react-redux'
-import Products from './products'
-import Language from './language'
+import Products from '../partials/products'
+import Language from '../partials/language'
 import Sapou from '../partials/sapou'
 import Footer from '../partials/footer'
 import About from '../other_pages/about'
+import Chat from '../other_pages/chat'
 import Contact from '../other_pages/contact'
+import Home from './home'
 
 function Page(props) {
     let page = useSelector(state => state.page.page)
@@ -20,13 +22,9 @@ function Page(props) {
                     return <Contact lang={props.lang} socket={props.socket}></Contact>
                 case "Home":
                 default:
-                    return <>
-                        <Sapou lang={props.lang}></Sapou>        
-                        <Products products={props.home.products}></Products>
-                    </>
+                    return <Home {...props}></Home>
             }
-        })()}        
-        <Footer></Footer>
+        })()}
     </>
 }
 
