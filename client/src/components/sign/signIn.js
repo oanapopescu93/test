@@ -1,18 +1,22 @@
 import React, {useState, useEffect} from 'react'
 import { translate } from '../../translations/translate'
+import { useDispatch } from 'react-redux';
+import { changePopup } from '../../reducers/popup'
+import { changeUser } from '../../reducers/auth'
 
 function SignIn(props) {  
     const {lang, socket} = props  
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [user, setUser] = useState('')
+    const [pass, setPass] = useState('')
+    let dispatch = useDispatch()
 
     function handleChange(type, e){
         switch(type) {
             case "user":
-                setUsername(e.target.value)
+                setUser(e.target.value)
                 break
             case "pass":
-                setPassword(e.target.value)
+                setPass(e.target.value)
                 break
             default:              
           }
@@ -21,29 +25,39 @@ function SignIn(props) {
     function handleSubmit(e){
         e.preventDefault()
         if(socket){
-            socket.emit('signin_send', {username, password})
+            socket.emit('signin_send', {user, pass})
         }
     }
 
     useEffect(() => {
         socket.on('signin_read', function(data){	
-            if(!data.exists){
-                console.log('no user ', data)
-            } else {
-                if(Object.keys(data.obj).length === 0){
-                    console.log('password was wrong ', data)
+            if(data){
+                console.log('signin_read ', data)
+                if(!data.exists){
+                    let payload = {
+                        open: true,
+                        template: "signin",
+                        title: translate({lang: lang, info: "error"}),
+                        data: translate({lang: lang, info: "signin_error"})
+                    }
+                    dispatch(changePopup(payload))
+                } else {
+                    if(data.obj && Object.keys(data.obj).length>0){
+                        dispatch(changeUser(data.obj))
+                    }
                 }
             }
         })
-    }, [])    
+    }, [lang])    
 
     return <div className="sign_in_container">
+        <h3>{translate({lang: props.lang, info: "sign_in"})}</h3>
         <form>
-            <p>User</p>
-            <input type="text" value={username} onChange={(e)=>{handleChange('user', e)}}/>
-            <p>Password</p>
-            <input type="password" value={password} onChange={(e)=>{handleChange('pass', e)}}/>
-            <button onClick={(e)=>handleSubmit(e)}className="button_type_01">{translate({lang: lang, info: "sign_in"})}</button>
+            <div className="label">{translate({lang: props.lang, info: "user"})}</div>
+            <input type="text" value={user} onChange={(e)=>{handleChange('user', e)}}/>
+            <div className="label">{translate({lang: props.lang, info: "password"})}</div>
+            <input type="password" value={pass} onChange={(e)=>{handleChange('pass', e)}}/>
+            <button onClick={(e)=>handleSubmit(e)} className="mybutton button_fullcolor">{translate({lang: lang, info: "sign_in"})}</button>
         </form>
     </div>
 }

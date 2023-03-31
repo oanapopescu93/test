@@ -1,11 +1,16 @@
 import React, {useState, useEffect} from 'react'
 import { translate } from '../../translations/translate'
+import { useDispatch } from 'react-redux'
+import { changePopup } from '../../reducers/popup';
+import { changeUser } from '../../reducers/auth';
+import { isEmpty, setCookie } from '../../utils';
 
 function SignUp(props) {  
     const {lang, socket} = props  
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('')
+    const [user, setUser] = useState('')
+    const [pass, setPass] = useState('')
+    let dispatch = useDispatch()
 
     function handleChange(type, e){
         switch(type) {
@@ -13,10 +18,10 @@ function SignUp(props) {
                 setEmail(e.target.value)
                 break
             case "user":
-                setUsername(e.target.value)
+                setUser(e.target.value)
                 break
             case "pass":
-                setPassword(e.target.value)
+                setPass(e.target.value)
                 break
             default:              
           }
@@ -25,25 +30,44 @@ function SignUp(props) {
     function handleSubmit(e){
         e.preventDefault()
         if(socket){
-            socket.emit('signup_send', {email, username, password})
+            socket.emit('signup_send', {email, user, pass})
         }
     }
 
     useEffect(() => {
         socket.on('signup_read', function(data){	
-            console.log('signup_read ', data)
+            if(data){
+                if(data.exists){
+                    let payload = {
+                        open: true,
+                        template: "signup",
+                        title: translate({lang: lang, info: "error"}),
+                        data: translate({lang: lang, info: "signup_error"})
+                    }
+                    dispatch(changePopup(payload))
+                } else {
+                    console.log('signup_read ', data)
+                    if(data.obj && Object.keys(data.obj).length>0){
+                        dispatch(changeUser(data.obj))
+                        if(!isEmpty(data.obj.uuid)){
+                            setCookie("website_uuid", data.obj.uuid)
+                        }
+                    }
+                }
+            }
         })
-    }, []) 
+    }, [lang]) 
 
     return <div className="sign_up_container">
+        <h3>{translate({lang: props.lang, info: "sign_up"})}</h3>
         <form>
-            <p>Email</p>
+            <div className="label">{translate({lang: props.lang, info: "email"})}</div>
             <input type="text" value={email} onChange={(e)=>{handleChange('email', e)}}/>
-            <p>User</p>
-            <input type="text" value={username} onChange={(e)=>{handleChange('user', e)}}/>
-            <p>Password</p>
-            <input type="password" value={password} onChange={(e)=>{handleChange('pass', e)}}/>
-            <button onClick={(e)=>handleSubmit(e)}className="button_type_01">{translate({lang: lang, info: "sign_up"})}</button>
+            <div className="label">{translate({lang: props.lang, info: "user"})}</div>
+            <input type="text" value={user} onChange={(e)=>{handleChange('user', e)}}/>
+            <div className="label">{translate({lang: props.lang, info: "password"})}</div>
+            <input type="password" value={pass} onChange={(e)=>{handleChange('pass', e)}}/>
+            <button onClick={(e)=>handleSubmit(e)} className="mybutton button_fullcolor">{translate({lang: lang, info: "sign_up"})}</button>
         </form>
     </div>
 }

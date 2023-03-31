@@ -7,7 +7,7 @@
     "start": "nodemon server/index.js",
     "server": "nodemon server/index.js",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client",
+    "dev": "cls && concurrently \"npm run server\" \"npm run client",
     "build": "npm install && cd client && npm install && npm run build"
   },
   "repository": {
@@ -22,10 +22,14 @@
   },
   "homepage": "https://github.com/oanapopescu93/test#readme",
   "dependencies": {
+    "axios": "^1.3.4",
     "concurrently": "^8.0.1",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.0",
+    "nodemailer": "^6.9.1",
     "nodemon": "^2.0.22",
     "path": "^0.12.7",
     "socket.io": "^2.5.0"

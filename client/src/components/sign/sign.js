@@ -12,8 +12,8 @@ function Sign(props) {
 
     return <div className="sign_container">
         <ul>
-            <li onClick={()=>{handleClick('signIn')}}><span>{translate({lang: props.lang, info: "sign_in"})}</span></li>
-            <li onClick={()=>{handleClick('signUp')}}><span>{translate({lang: props.lang, info: "sign_up"})}</span></li>
+            <li id="signin_tab" onClick={()=>{handleClick('signIn')}}><span>{translate({lang: props.lang, info: "sign_in"})}</span></li>
+            <li id="signup_tab" onClick={()=>{handleClick('signUp')}}><span>{translate({lang: props.lang, info: "sign_up"})}</span></li>
         </ul>
         {visible === "signIn" ? <SignIn lang={props.lang} socket={props.socket}></SignIn> : <SignUp lang={props.lang} socket={props.socket}></SignUp>}
     </div>

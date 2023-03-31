@@ -1,7 +1,156 @@
-.App {
-  text-align: center;
+body{
+	background:white;
+	color:black;
+	font-family: Garamond, serif;
 }
 
+* {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, p, address {
+    margin: 0px;
+}
+
+h1 {
+	font-size: 30px;
+	line-height: 30px;
+	font-family: Helvetica, sans-serif;
+}
+
+h2 {
+	font-size: 24px;
+	line-height: 24px;
+}
+
+h3 {
+	font-size: 20px;
+	line-height: 20px;
+}
+
+h6 {
+    font-size: 12px;
+    line-height: 12px;
+}
+
+ul{
+	margin:0px;
+	padding:0px;
+}
+ul li{
+	list-style: none;
+}
+ul.list_circle li{
+	list-style-type: circle;
+}
+
+/* FORMS, BUTTONS, INPUTS, TEXTAREA */
+.sign_container{
+  display: inline-block;
+  width: 100%;
+  max-width: 300px;
+  margin-left: 50%;
+  transform: translate(-50%, 0px);
+  background-color: white;
+  color: black;
+  padding: 10px;
+  border: solid 1px black;
+  border-radius: 10px;
+  text-align: center;
+}
+.sign_container ul{
+  margin-bottom: 10px;
+}
+.sign_container ul li{
+  padding: 5px;
+  border: solid 1px black;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 14px;
+  line-height: 14px;
+  width: 100px;
+  cursor: pointer;
+}
+.sign_container ul li:hover{
+  background-color: black;
+  color: white;
+}
+.sign_container #signin_tab{
+  border-radius: 10px 0px 0px 10px;
+}
+.sign_container #signup_tab{
+  border-radius: 0px 10px 10px 0px;
+}
+.sign_container button{
+  margin-top: 5px;
+}
+
+.mybutton{
+  text-align: center;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  height: 25px;
+  width: 100%;
+  cursor: pointer;
+}
+.round{
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  border: solid 1px black;
+  color: black;
+  cursor: pointer;
+}
+.round:hover, .round:active, .round:focus{
+  background-color: black;
+  color: white;
+}
+.button_transparent{
+  background-color: transparent;
+  border: solid 1px black;
+  color: black;
+}
+.button_transparent:hover, .button_transparent:active, .button_transparent:focus{
+  background-color: black;
+  color: white;
+}
+.button_fullcolor{
+  background-color: black;
+  border: solid 1px black;
+  color: white;
+}
+.button_fullcolor:hover, .button_fullcolor:active, .button_fullcolor:focus{
+  background-color: white;
+  color: black;
+}
+
+textarea {
+	resize: none;
+}
+input{
+  border: solid 1px black;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 12px;
+  line-height: 12px;
+  height: 25px;
+  width: 100%;
+}
+
+/* SAPOU */
+.sapou{
+  text-align: center;
+}
+/* PRODUCTS */
 .product_image, .product_info{
   display: inline-block;
   vertical-align: top;
@@ -33,4 +182,129 @@
 .cropped .cropped_image_3 {
   margin-top: 0px;
   margin-left: -300px;
+}
+
+/* POPUP */
+.popup_container{
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 500ms;
+  visibility: hidden;
+  opacity: 0;
+  padding: 20px;
+}
+.popup_container.show{
+  visibility: visible;
+  opacity: 1;
+}
+.popup{
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px;
+  background: #fff;
+  border: solid 1px black;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 300px;
+  position: absolute;
+  transition: all 5s ease-in-out;
+  text-align: center;
+}
+.popup.sm{
+  max-width: 300px;
+}
+.popup.md{
+  max-width: 600px;
+}
+.popup.lg{
+  max-width: 900px;
+}
+.popup_container.show .popup {
+  animation: popup 0.7s;
+}
+.popup h2{
+  font-size: 18px;
+  line-height: 18px;
+}
+.popup .close {
+  position: absolute;
+  z-index: 1;
+  top: -15px;
+  right: -15px;
+  transition: all 200ms;
+  background-color: white;
+  border: solid 1px black;
+  border-radius: 100%;
+  height: 30px;
+  width: 30px;    
+  color: #333;
+  text-align: center;
+  cursor: pointer;
+}
+.popup .close:hover {
+  background-color: black;
+  color: white;
+}
+.popup .close span{
+  font-size: 30px;
+  line-height: 25px;
+}
+.popup_header.line{
+  border-bottom: solid 1px black;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+/* COOKIES */
+.cookies_msg_container {
+  position: absolute;
+  bottom: 50px;	
+  padding: 20px;
+  max-width: 780px;
+  width: 100%;	
+  z-index: 9999;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.cookies_msg{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;	
+  background: white;	
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid black;
+}
+.cookies_text {
+  width: 75%;
+  display: block;
+  color: black;
+  font-size: 14px;
+}
+.confirm_cookies {
+  width: 20%;
+  display: block;
+  position: relative;
+}
+.confirm_cookies button {
+  width: 100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background:black;
+  color:white;
+  border-radius:20px;
+  border:solid 1px black;
+}
+.confirm_cookies button:hover {
+  background:white;
+  color:black;
+  border:solid 1px black;
 }

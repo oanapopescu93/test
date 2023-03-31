@@ -33,30 +33,30 @@ function App() {
 		return me
 	}()
 
-  useEffect(() => {
+  	useEffect(() => {
 		//my_console.disable()
 	}, [])
 
-  let dispatch = useDispatch()
+  	let dispatch = useDispatch()
 	let home = useSelector(state => state.home)
-  let lang = useSelector(state => state.settings.lang)
+  	let lang = useSelector(state => state.settings.lang)
 
-  useEffect(() => {
-    socket.connect()
-    dispatch(bringPayload())		
+  	useEffect(() => {
+		socket.connect()
+		dispatch(bringPayload())		
 
-    return () => {
-      socket.disconnect()
-    }    
+		return () => {
+		socket.disconnect()
+		}    
 	}, [])
 
-  setInterval(function () {		  
-    socket.emit('heartbeat', { data: "ping" })
-  }, 15000)
+  	setInterval(function () {		  
+    	socket.emit('heartbeat', { data: "ping" })
+  	}, 15000)
 
-  return <div className="App">    
-      {home.loaded ? <Page home={home} socket={socket} lang={lang}></Page> : <Loader></Loader>}
-  </div>
+  	return <div className="App">    
+      	{home.loaded ? <Page home={home} socket={socket} lang={lang}></Page> : <Loader></Loader>}
+  	</div>
 }
 
 export default App
