@@ -7,9 +7,9 @@ function Language(props) {
     function handleClick(choice){
 		dispatch(changeLanguage(choice))
     }
-    return <ul>
+    return <ul className="language">
         <li onClick={()=>{handleClick('ENG')}}><span>ENG</span></li>
-		<li onClick={()=>{handleClick('RO')}}><span>RO</span></li>
+		    <li onClick={()=>{handleClick('RO')}}><span>RO</span></li>
     </ul>
 }
 

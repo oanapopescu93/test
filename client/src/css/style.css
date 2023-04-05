@@ -1,6 +1,24 @@
+:root {
+	--bg: black;
+  --bg-text:white;  
+  --box: white;
+  --box-text: black;
+  --button_bg: white;
+  --button_text: black;
+  --red: red;
+  --green: green;
+
+  --padding: 10px;
+  --padding_small: 5px;
+  --radius:10px;
+  --radius_small:5px;
+
+  --transparent01: rgba(0,0,0,0.5)
+}
+
 body{
-	background:white;
-	color:black;
+	background:var(--bg);
+	color:var(--bg-text);
 	font-family: Garamond, serif;
 }
 
@@ -51,19 +69,30 @@ ul.list_circle li{
 	list-style-type: circle;
 }
 
+.text_red{
+  color: var(--red);
+}
+.text_green{
+  color: var(--green);
+}
+
 /* FORMS, BUTTONS, INPUTS, TEXTAREA */
 .sign_container{
   display: inline-block;
   width: 100%;
   max-width: 300px;
   margin-left: 50%;
-  transform: translate(-50%, 0px);
+  transform: translate(-50%, 0px);   
+}
+.sign_container_box{
   background-color: white;
   color: black;
-  padding: 10px;
+  padding: var(--padding);
   border: solid 1px black;
   border-radius: 10px;
   text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 .sign_container ul{
   margin-bottom: 10px;
@@ -91,6 +120,15 @@ ul.list_circle li{
 .sign_container button{
   margin-top: 5px;
 }
+.sign_container form{
+  margin-top: var(--padding);
+}
+.sign_container .label_container{
+  text-align: right;
+}
+.sign_container_error{
+  padding: var(--padding);
+}
 
 .mybutton{
   text-align: center;
@@ -105,32 +143,32 @@ ul.list_circle li{
 .round{
   width: 100px;
   height: 100px;
-  background-color: white;
-  border: solid 1px black;
-  color: black;
+  background-color: var(--button_bg);
+  border: solid 1px var(--button_bg);
+  color: var(--button_text);
   cursor: pointer;
 }
 .round:hover, .round:active, .round:focus{
-  background-color: black;
-  color: white;
+  background-color: var(--button_text);
+  color: var(--button_bg);
 }
 .button_transparent{
   background-color: transparent;
-  border: solid 1px black;
-  color: black;
+  border: solid 1px var(--button_bg);
+  color: var(--button_bg);
 }
 .button_transparent:hover, .button_transparent:active, .button_transparent:focus{
-  background-color: black;
-  color: white;
+  background-color: var(--button_bg);
+  color: var(--button_text);
 }
 .button_fullcolor{
-  background-color: black;
-  border: solid 1px black;
-  color: white;
+  background-color: var(--button_text);
+  border: solid 1px var(--button_text);
+  color: var(--button_bg);
 }
 .button_fullcolor:hover, .button_fullcolor:active, .button_fullcolor:focus{
-  background-color: white;
-  color: black;
+  background-color: var(--button_bg);
+  color: var(--button_text);
 }
 
 textarea {
@@ -140,10 +178,38 @@ input{
   border: solid 1px black;
   border-radius: 10px;
   padding: 5px 10px;
-  font-size: 12px;
-  line-height: 12px;
+  font-size: 14px;
+  line-height: 14px;
   height: 25px;
   width: 100%;
+}
+
+.alert {
+  width: 100%;
+  padding: var(--padding);
+  border-radius: var(--radius);
+  font-size: 12px;
+  line-height: 12px;
+  margin: 0px;
+}
+.alert.alert-success {
+  background-color: rgba(0, 128, 0, 0.3);
+  border: solid 1px var(--green);
+  color: var(--green);
+}
+.alert.alert-danger {
+  background-color: rgba(255, 0, 0, 0.3);
+  border: solid 1px var(--red);
+  color: var(--red);
+}
+
+.page_exit{
+  text-align: center;
+  padding: var(--padding);
+}
+#exit{
+  display: inline-block;
+  max-width: 100px;
 }
 
 /* SAPOU */
@@ -154,7 +220,7 @@ input{
 .product_image, .product_info{
   display: inline-block;
   vertical-align: top;
-  padding: 10px;
+  padding: var(--padding);
 }
 .cropped {
   width: 100px; 
@@ -185,80 +251,42 @@ input{
 }
 
 /* POPUP */
-.popup_container{
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  transition: opacity 500ms;
-  visibility: hidden;
-  opacity: 0;
-  padding: 20px;
+#mymodal{
+  background-color: var(--box);
+  color: var(--box-text);
 }
-.popup_container.show{
-  visibility: visible;
-  opacity: 1;
-}
-.popup{
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 10px;
-  background: #fff;
-  border: solid 1px black;
-  border-radius: 5px;
-  width: 100%;
-  max-width: 300px;
-  position: absolute;
-  transition: all 5s ease-in-out;
-  text-align: center;
-}
-.popup.sm{
-  max-width: 300px;
-}
-.popup.md{
-  max-width: 600px;
-}
-.popup.lg{
-  max-width: 900px;
-}
-.popup_container.show .popup {
-  animation: popup 0.7s;
-}
-.popup h2{
-  font-size: 18px;
-  line-height: 18px;
-}
-.popup .close {
-  position: absolute;
-  z-index: 1;
-  top: -15px;
-  right: -15px;
-  transition: all 200ms;
-  background-color: white;
-  border: solid 1px black;
-  border-radius: 100%;
-  height: 30px;
-  width: 30px;    
-  color: #333;
-  text-align: center;
-  cursor: pointer;
-}
-.popup .close:hover {
-  background-color: black;
+.modal-header{
+  padding: var(--padding);
+  background: black;
   color: white;
 }
-.popup .close span{
-  font-size: 30px;
-  line-height: 25px;
+.closeButton{
+  background: black;
+  border: solid 1px black;  
+  color: white;
+  border-radius: 100%;
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  position: absolute;
+  z-index: 1;
+  top: -10px;
+  right: -10px;
+  cursor: pointer;
 }
-.popup_header.line{
-  border-bottom: solid 1px black;
-  padding: 5px;
-  margin-bottom: 5px;
+.closeButton span{
+  font-size: 14px;
+  line-height: 25px;
+  font-weight: bold;
+}
+.closeButton:hover{
+  background: white;
+  color: black;
+}
+.popup_body{
+  color: var(--box-text);
 }
 
 /* COOKIES */
@@ -307,4 +335,77 @@ input{
   background:white;
   color:black;
   border:solid 1px black;
+}
+
+/* LANGUAGE */
+.language{
+  position: absolute;
+  z-index: 1;
+  top:10px;
+  left: 10px;
+  padding: var(--padding_small);
+  font-size: 12px;
+  line-height: 12px;
+}
+.language li{
+  display: inline-block;
+  vertical-align: middle;
+  padding: 0px var(--padding_small);
+  border-right: solid 1px var(--bg-text);
+  width: 45px;
+  font-size: 12px;
+  line-height: 12px;
+  text-align: center;
+  cursor: pointer;
+}
+.language li:last-child{
+  border: solid 0px transparent;
+}
+
+/* FOOTER */
+#page-container {
+  position: relative;
+  min-height: 100vh;
+}
+.footer_container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.footer_button_container{
+  text-align: right;
+  padding: var(--padding);
+  padding-bottom: 0px;
+  font-size: 12px;
+  line-height: 12px;
+  cursor: pointer;
+}
+.footer_button{
+  background-color: var(--box);
+  color: var(--box-text);
+  padding: var(--padding);
+  padding-bottom: 0px;
+  border-radius: var(--radius_small) var(--radius_small) 0px 0px;
+  display: inline-block;  
+}
+.footer_body{
+  background-color: var(--box);
+  color: var(--box-text);
+  text-align: center;
+  font-size: 12px;
+  line-height: 12px;
+  height: 0px;
+  overflow: hidden;
+  transition: height 0.15s ease-out;
+}
+.footer_container.up .footer_body{
+  height: 45px;
+}
+.footer_list, footer{
+  padding: var(--padding_small) var(--padding);
+}
+.footer_list li{
+  display: inline-block;
+  padding: 0px var(--padding_small);
+  border-right: solid 1px var(--box-text);
 }

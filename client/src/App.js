@@ -3,7 +3,10 @@ import {useDispatch, useSelector} from 'react-redux'
 
 import * as io from 'socket.io-client'
 
+import 'bootstrap/dist/css/bootstrap.min.css'
 import "./css/style.css"
+import 'owl.carousel/dist/assets/owl.carousel.css'
+import 'owl.carousel/dist/assets/owl.theme.default.css'
 
 import Loader from "./components/partials/loader"
 import { bringPayload } from "./reducers/home"
@@ -46,7 +49,7 @@ function App() {
 		dispatch(bringPayload())		
 
 		return () => {
-		socket.disconnect()
+			socket.disconnect()
 		}    
 	}, [])
 
@@ -54,9 +57,9 @@ function App() {
     	socket.emit('heartbeat', { data: "ping" })
   	}, 15000)
 
-  	return <div className="App">    
-      	{home.loaded ? <Page home={home} socket={socket} lang={lang}></Page> : <Loader></Loader>}
-  	</div>
+	return <>
+		{home.loaded ? <Page home={home} socket={socket} lang={lang}></Page> : <Loader></Loader>}		
+	</>
 }
 
 export default App

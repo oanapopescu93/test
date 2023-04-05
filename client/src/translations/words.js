@@ -15,6 +15,11 @@ var word_bank = {
         cookies_modal_title: "Cookies Notification",
         cookies_modal_text: "In order to offer you the most relevant information and for optimal system performance, we use cookies that collect information from your game activity.",
         exit: "Exit",
+        sign_in_email_empty: "Email is empty",
+        sign_in_user_empty: "User is empty",
+        sign_in_pass_empty: "Password is empty",
+        sign_in_email_error: "Email is incorrect",
+        sign_in_pass_error: "Password is incorrect",
     },
     "RO":{
         title: "Tutorial",
@@ -32,6 +37,11 @@ var word_bank = {
         cookies_modal_title: "Notificari de cookies",
         cookies_modal_text: "Pentru a va oferi cele mai relevante informatii si pentru o performanta optima a sistemul, noi folosim cookies pentru a colecta informatii din activitatea dumneavoatra.",
         exit: "Iesi",
+        sign_in_email_empty: "Email-ul este gol",
+        sign_in_user_empty: "Nume utilizator este gol",
+        sign_in_pass_empty: "Parola este goala",
+        sign_in_email_error: "Email-ul este incorect",
+        sign_in_pass_error: "Parola este incorecta",
     }
 }
 

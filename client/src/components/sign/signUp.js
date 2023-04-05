@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { changePopup } from '../../reducers/popup';
 import { changeUser } from '../../reducers/auth';
 import { isEmpty, setCookie } from '../../utils';
+import { Form, Button, Col, Row } from 'react-bootstrap';
 
 function SignUp(props) {  
     const {lang, socket} = props  
@@ -29,11 +30,9 @@ function SignUp(props) {
 
     function handleSubmit(e){
         e.preventDefault()
-        if(socket){
-            socket.emit('signup_send', {email, user, pass})
-        }
+        props.signSubmit({emit: 'signup_send', payload: {email, user, pass}})
     }
-
+    
     useEffect(() => {
         socket.on('signup_read', function(data){	
             if(data){
@@ -60,15 +59,39 @@ function SignUp(props) {
 
     return <div className="sign_up_container">
         <h3>{translate({lang: props.lang, info: "sign_up"})}</h3>
-        <form>
-            <div className="label">{translate({lang: props.lang, info: "email"})}</div>
-            <input type="text" value={email} onChange={(e)=>{handleChange('email', e)}}/>
-            <div className="label">{translate({lang: props.lang, info: "user"})}</div>
-            <input type="text" value={user} onChange={(e)=>{handleChange('user', e)}}/>
-            <div className="label">{translate({lang: props.lang, info: "password"})}</div>
-            <input type="password" value={pass} onChange={(e)=>{handleChange('pass', e)}}/>
-            <button onClick={(e)=>handleSubmit(e)} className="mybutton button_fullcolor">{translate({lang: lang, info: "sign_up"})}</button>
-        </form>
+        <Form>
+            <Row>
+                <Col sm={4} className="label_container">
+                    <div className="label">{translate({lang: props.lang, info: "email"})}</div>
+                </Col>
+                <Col sm={8}>
+                    <input type="text" value={email} onChange={(e)=>{handleChange('email', e)}}/>
+                </Col>
+            </Row>
+            <Row>
+                <Col sm={4} className="label_container">
+                    <div className="label">{translate({lang: props.lang, info: "user"})}</div>
+                </Col>
+                <Col sm={8}>
+                    <input type="text" value={user} onChange={(e)=>{handleChange('user', e)}}/>
+                </Col>
+            </Row>
+            <Row>
+                <Col sm={4} className="label_container">
+                    <div className="label">{translate({lang: props.lang, info: "password"})}</div>
+                </Col>
+                <Col sm={8}>
+                    <input type="password" value={pass} onChange={(e)=>{handleChange('pass', e)}}/>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Button type="button" onClick={(e)=>handleSubmit(e)} className="mybutton button_fullcolor">
+                        {translate({lang: lang, info: "sign_up"})}
+                    </Button>
+                </Col>
+            </Row>
+        </Form>
     </div>
 }
 

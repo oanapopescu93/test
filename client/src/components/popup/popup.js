@@ -1,52 +1,42 @@
-import React, {useEffect} from "react"
+import React from "react"
 import { useSelector, useDispatch } from 'react-redux'
+import { Modal} from "react-bootstrap"
 import { changePopup } from "../../reducers/popup"
-
 import DefaultPopup from "./defaultPopup"
+import { translate } from '../../translations/translate'
 
 function Popup(props){
-    let popup = useSelector(state => state.popup)
-    let open = popup.open ? 'show' : ''
-    let title = popup.title ? popup.title : ""
-    let template = popup.template ? popup.template : ""
-    let data = popup.data ? popup.data : null
-    let size = popup.size ? popup.size : "sm"  
-    let line = title !== "" ? "line" : ""  
+    let open = useSelector(state => state.popup.open)
+    let title = useSelector(state => state.popup.title)
+    let template = useSelector(state => state.popup.template)
+    let data = useSelector(state => state.popup.data)
+    let size = useSelector(state => state.popup.size)
     let dispatch = useDispatch()
 
-    useEffect(() => {
-		open = popup.open ? 'show' : ''
-        title = popup.title ? popup.title : ""
-        template = popup.template ? popup.template : ""
-        data = popup.data ? popup.data : null
-        size = popup.size ? popup.size : "sm"
-        line = title !== "" ? "line" : ""
-	}, [popup])    
-
-  	function handleClose(e){
-        e.stopPropagation()
-        if(e.target.id === "custom_popup" || e.target.id === "popup_close"){
-            dispatch(changePopup({open: false}))
-        }
+  	function closeModal(){
+		dispatch(changePopup(false))
 	}
    
-    return <>
-        {popup.open ? <div id="custom_popup" className={"popup_container " + open} onClick={(e)=>handleClose(e)}>
-        <div className="popup">
-            <div className={"popup_header " + line}>
-                <h2>{title}</h2>
-                <div className="close" onClick={(e)=>handleClose(e)}>
-                    <span id="popup_close">x</span>
+    return <Modal id="myModal" className="mymodal text-center" show={open} onHide={closeModal} size={size}>
+            {title !== "" ? <Modal.Header>
+                <div className="closeButton closeButtonHeader" onClick={closeModal}>
+                    <span>X</span>
                 </div>
-            </div>
-            {(() => {
-            switch (template) {
-                default:
-                    return <DefaultPopup lang={props.lang} text={data}></DefaultPopup>
-            }
-        })()}
-        </div>
-    </div> : null}
-    </>
+                <Modal.Title>{title}</Modal.Title>
+            </Modal.Header> : null}  
+            <Modal.Body>
+                {title === "" ? <div className="closeButton" onClick={closeModal}>
+                    <span>X</span>
+                </div> : null}
+                {(() => {					
+                    switch (template) {
+                        case "error":
+                            return <DefaultPopup lang={props.lang} text={data}></DefaultPopup>
+                        default:
+                            return <p>{translate({lang: props.lang, info: "error"})}</p>
+                    }
+                })()}
+            </Modal.Body>
+        </Modal>
 }
 export default Popup

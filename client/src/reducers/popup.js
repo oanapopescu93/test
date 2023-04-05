@@ -13,9 +13,7 @@ const popupsSlice = createSlice({
     initialState,
     reducers: {
         changePopup: (state, { payload }) => {
-            if(typeof payload.open == "boolean"){
-                state.open = payload.open
-            }
+            state.open = payload.open
             if(payload.title){
                 state.title = payload.title
             }

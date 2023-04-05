@@ -1,12 +1,22 @@
 import React from 'react'
-import { getCookie, isEmpty } from '../../utils'
-import Sign from '../sign/sign'
-import HomePage from './homePage'
+import { Button } from 'react-bootstrap'
+import { translate } from '../../translations/translate'
+import { setCookie } from '../../utils'
+import Carousel from '../carousel/carousel'
+import Sapou from '../partials/sapou'
 
 function Home(props) {
-    let uuid = getCookie("website_uuid")
+    const {lang, home} = props  
+    function handleExit(){
+        setCookie('website_uuid', '')
+        window.location.reload(false)
+    }
     return <div className="page_container">
-        {isEmpty(uuid) ? <Sign lang={props.lang} socket={props.socket}></Sign> : <HomePage {...props}></HomePage>}
+        <Sapou lang={lang}></Sapou>
+        <Carousel lang={lang} items={home.products}></Carousel>
+        <div className="page_exit">
+            <Button id="exit" type="button" onClick={()=>handleExit()} className="mybutton button_transparent">{translate({lang: lang, info: "exit"})}</Button>
+        </div>
     </div>
 }
 
