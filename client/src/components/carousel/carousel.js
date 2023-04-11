@@ -1,9 +1,9 @@
 import React from 'react'
 import OwlCarousel from 'react-owl-carousel';
+import { translate } from '../../translations/translate';
 import Cell from './cell';
 
 function Carousel(props) {
-    let id = props.id
     let items = props.items ? props.items : []
     let options = props.options ? props.options : {
         loop: true,
@@ -24,9 +24,17 @@ function Carousel(props) {
     }
 
 	return <OwlCarousel id="mycarousel" className='owl-theme' {...options}>
-        {items.map(function(item, i){
-            return <Cell lang={props.lang} index={i} data={item} template={"products"}></Cell>
-        })}
+        {(() => {
+            if(items.length>0){
+                return <>
+                    {items.map(function(item, i){
+                        return <Cell lang={props.lang} index={i} data={item} template={props.template}></Cell>
+                    })}
+                </>
+            } else {
+                return <p>{translate({lang: props.lang, info: "error"})}</p>
+            }
+        })()}
     </OwlCarousel>
 }
 

@@ -12,8 +12,10 @@
   --padding_small: 5px;
   --radius:10px;
   --radius_small:5px;
+  --radius_big:25px;
 
-  --transparent01: rgba(0,0,0,0.5)
+  --transparent01: rgba(0, 0, 0, 0.5);
+  --transparent02: rgba(255, 255, 255,0.2);
 }
 
 body{
@@ -75,6 +77,12 @@ ul.list_circle li{
 .text_green{
   color: var(--green);
 }
+.capitalize{
+  text-transform: capitalize;
+}
+.text_center{
+  text-align: center;
+}
 
 /* FORMS, BUTTONS, INPUTS, TEXTAREA */
 .sign_container{
@@ -82,7 +90,8 @@ ul.list_circle li{
   width: 100%;
   max-width: 300px;
   margin-left: 50%;
-  transform: translate(-50%, 0px);   
+  margin-top: 50%;
+  transform: translate(-50%, -50%)
 }
 .sign_container_box{
   background-color: white;
@@ -91,8 +100,10 @@ ul.list_circle li{
   border: solid 1px black;
   border-radius: 10px;
   text-align: center;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  height: 212px;
+}
+.sign_container input{
+    margin-bottom: 5px;
 }
 .sign_container ul{
   margin-bottom: 10px;
@@ -107,7 +118,7 @@ ul.list_circle li{
   width: 100px;
   cursor: pointer;
 }
-.sign_container ul li:hover{
+.sign_container ul li.active, .sign_container ul li:hover, .sign_container ul li:focus, .sign_container ul li:active{
   background-color: black;
   color: white;
 }
@@ -129,7 +140,83 @@ ul.list_circle li{
 .sign_container_error{
   padding: var(--padding);
 }
+.sign_extra_info{
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 12px;
+  padding: var(--padding_small);
+}
+.sign_extra_info span{
+  text-decoration: underline;
+  cursor: pointer;
+}
 
+/* checkbox and radio buttons */
+.checkbox_radio_container input[type="radio"], .checkbox_radio_container input[type="checkbox"] {
+	/* Add if not using autoprefixer */
+	-webkit-appearance: none;
+	appearance: none;
+	/* For iOS < 15 to remove gradient background */
+	background-color: #fff;
+	/* Not removed via appearance */
+	appearance: none;
+  margin: 0px 5px 0px 0px;
+  padding: 0px !important;
+  width: 20px;
+  height: 20px;
+	border-radius: 100%!important;
+	transform: translateY(3px);
+	display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+.checkbox_radio_container input[type="radio"]{
+	border-radius: 100%!important;
+}
+.checkbox_radio_container input[type="checkbox"] {
+	border-radius: var(--border_radius_5)!important;
+}
+
+.checkbox_radio_container input[type="radio"]::before{
+	content: "";
+	width: 10px;
+	height: 10px;
+	border-radius: 100%;
+	transform: scale(0);
+	transition: 120ms transform ease-in-out;
+	box-shadow: inset 1em 1em var(--color);
+	background-color: CanvasText;
+}
+.checkbox_radio_container input[type="checkbox"]::before {
+	content: "";
+	width: 10px;
+	height: 10px;
+	border-radius: 100%;
+	transform: scale(0);
+	transition: 120ms transform ease-in-out;
+	box-shadow: inset 1em 1em var(--color);
+	background-color: CanvasText;
+	transform-origin: bottom left;
+  	clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+.checkbox_radio_container input[type="radio"]:checked::before, .checkbox_radio_container input[type="checkbox"]:checked::before {
+	transform: scale(1);
+}
+.checkbox_radio_container input[type="radio"]:focus, .checkbox_radio_container input[type="checkbox"]:focus {
+	outline: max(2px, 0.15em) solid currentColor;
+}
+.checkbox_radio_container label{
+	display: inline-flex;
+  grid-template-columns: 20px auto;
+  gap: 10px;
+	margin:5px!important;
+}
+.checkbox_radio_container label p{
+  text-align: left;
+}
+
+/* BUTTONS */
 .mybutton{
   text-align: center;
   font-size: 12px;
@@ -141,34 +228,33 @@ ul.list_circle li{
   cursor: pointer;
 }
 .round{
-  width: 100px;
-  height: 100px;
-  background-color: var(--button_bg);
-  border: solid 1px var(--button_bg);
-  color: var(--button_text);
-  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  background-color: var(--button_bg)!important;
+  border: solid 1px var(--button_bg)!important;
+  color: var(--button_text)!important;
+  border-radius: 100%;
 }
 .round:hover, .round:active, .round:focus{
-  background-color: var(--button_text);
-  color: var(--button_bg);
+  background-color: var(--button_text)!important;
+  color: var(--button_bg)!important;
 }
 .button_transparent{
-  background-color: transparent;
-  border: solid 1px var(--button_bg);
-  color: var(--button_bg);
+  background-color: transparent!important;
+  border: solid 1px var(--button_bg)!important;
+  color: var(--button_bg)!important;
 }
 .button_transparent:hover, .button_transparent:active, .button_transparent:focus{
-  background-color: var(--button_bg);
-  color: var(--button_text);
+  background-color: var(--transparent02)!important;
 }
 .button_fullcolor{
-  background-color: var(--button_text);
-  border: solid 1px var(--button_text);
-  color: var(--button_bg);
+  background-color: var(--button_text)!important;
+  border: solid 1px var(--button_text)!important;
+  color: var(--button_bg)!important;
 }
 .button_fullcolor:hover, .button_fullcolor:active, .button_fullcolor:focus{
-  background-color: var(--button_bg);
-  color: var(--button_text);
+  background-color: var(--button_bg)!important;
+  color: var(--button_text)!important;
 }
 
 textarea {
@@ -207,47 +293,90 @@ input{
   text-align: center;
   padding: var(--padding);
 }
-#exit{
+#exit_salon{
   display: inline-block;
   max-width: 100px;
 }
 
-/* SAPOU */
+/* SALON */
 .sapou{
   text-align: center;
+  margin-bottom: var(--padding);
 }
-/* PRODUCTS */
-.product_image, .product_info{
-  display: inline-block;
-  vertical-align: top;
+.cell_salon_container{
   padding: var(--padding);
+  text-align: center;
 }
-.cropped {
-  width: 100px; 
-  height: 100px; 
-  overflow: hidden;
+.cell_salon{
+  border: solid 1px var(--bg-text);
+  border-radius: var(--radius);
+  padding: var(--padding);
+  height: 140px;
+}
+.cell_salon p{
+  margin-bottom: 10px;
 }
 
-.cropped img{
-  width: 400px;
-  height: 400px;
+.casino_games_container{
+  overflow: hidden;
 }
-  
-.cropped .cropped_image_0 {
-  margin-top: 0px;
-  margin-left: 0px;
+.casino_games_table_container{
+  overflow: hidden;
+  height: 0px;
+  -webkit-transition: height 1s ease;
+    -moz-transition: height 1s ease;
+      -o-transition: height 1s ease;
+     -ms-transition: height 1s ease;
+         transition: height 1s ease;
 }
-.cropped .cropped_image_1 {
-  margin-top: 0px;
-  margin-left: -100px;
+.casino_games_table_container.open{
+  height: 160px;
 }
-.cropped .cropped_image_2 {
-  margin-top: 0px;
-  margin-left: -200px;
+.salon_games{
+  overflow: hidden;
 }
-.cropped .cropped_image_3 {
-  margin-top: 0px;
-  margin-left: -300px;
+.casino_games_title{
+  background-color: transparent;
+  padding: var(--padding);
+  margin-bottom: var(--padding);
+  border-radius: var(--radius_big);
+  text-align: center;
+  border: solid 1px var(--bg-text);
+  cursor: pointer;
+}
+.casino_games_title:hover{
+    background-color: var(--transparent02);
+}
+
+/* dropdown */
+.dropdown .dropdown-toggle, .dropdown .dropdown-toggle:hover, .dropdown .dropdown-toggle:active, .dropdown .dropdown-toggle:focus{
+  background-color: transparent;
+  border: solid 1px var(--bg-text);
+  color: var(--bg-text);
+  box-shadow: none!important;
+}
+.dropdown-toggle::after{
+  display: none;
+}
+.salon_games .dropdown .dropdown-toggle{
+  width: 100%;
+  border-radius: var(--radius_big);
+}
+.dropdown .dropdown-menu{
+  background-color: var(--box-text);
+  border: solid 1px var(--box);
+  color: var(--box);
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.dropdown-item{
+  color: var(--box);
+  text-align: center;
+}
+.dropdown-item:focus, .dropdown-item:active, .dropdown-item:hover{
+  background-color: var(--box);
+  color: var(--box-text);
 }
 
 /* POPUP */
@@ -367,6 +496,19 @@ input{
   position: relative;
   min-height: 100vh;
 }
+.content_wrap{
+  padding: var(--padding);
+  transform: translate(0px, -50%);
+  position: absolute;
+  width: 100%;
+  top: 50%;
+}
+.content_wrap .title{
+  text-align: center;
+  padding-bottom: var(--padding);
+  margin-bottom: var(--padding);
+  border-bottom: solid 1px var(--bg-text);
+}
 .footer_container {
   position: absolute;
   bottom: 0;
@@ -408,4 +550,28 @@ input{
   display: inline-block;
   padding: 0px var(--padding_small);
   border-right: solid 1px var(--box-text);
+  cursor: pointer;
+}
+.footer_list li:last-child{
+  border-right: solid 0px transparent;
+}
+
+/* LOADER */
+.loader_container{
+  position: fixed;
+  z-index: 9999;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 100%;
+}
+.loader{
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  transform: translate(0%, -50%);
+  font-size: 24px;
 }

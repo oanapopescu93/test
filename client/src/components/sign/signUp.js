@@ -49,7 +49,7 @@ function SignUp(props) {
                     if(data.obj && Object.keys(data.obj).length>0){
                         dispatch(changeUser(data.obj))
                         if(!isEmpty(data.obj.uuid)){
-                            setCookie("website_uuid", data.obj.uuid)
+                            setCookie("casino_uuid", data.obj.uuid)
                         }
                     }
                 }

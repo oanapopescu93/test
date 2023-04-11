@@ -14,6 +14,9 @@ const homeSlice = createSlice({
         },
         showPayload: (state, { payload }) => {
             state.products = payload.products
+            state.market = payload.market
+            state.profiles = payload.profiles
+            state.donations = payload.donations
             state.loaded = true
         },
         resetHome: () => initialState,

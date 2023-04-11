@@ -1,21 +1,42 @@
 import React, {useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import { changePage } from '../../reducers/page'
 import { translate } from '../../translations/translate'
+import PolicyPrivacy from '../pages/policyPrivacy'
+import Questions from '../pages/questions'
+import TermsConditions from '../pages/termsConditions'
 import Language from '../partials/language'
 import SignIn from './signIn'
 import SignUp from './signUp'
 
 function Sign(props) {
+    let dispatch = useDispatch()
+    let page = useSelector(state => state.page.page)
     const [visible, setVisible] = useState('signIn')
     const [errorEmail, setErrorEmail] = useState(false)
     const [errorUser, setErrorUser] = useState(false)
     const [errorPass, setErrorPass] = useState(false)
+    const [signIn, setSignIn] = useState('active')
+    const [signUp, setSignUp] = useState('')
+    const [checkboxOne, setCheckboxOne] = useState(false)
+
+    // console.log('page ', page)
 
     function handleClick(choice){
-        setVisible(choice)     
+        setErrorEmail(false)
+        setErrorUser(false)
+        setErrorPass(false)
+        setVisible(choice)    
+        if(choice === "signIn"){
+			setSignIn('active')
+			setSignUp('')
+		} else if(choice === "signUp"){
+			setSignIn('')
+			setSignUp('active')
+		}
     }
 
     function signSubmit(data){
-        console.log(data)
         setErrorEmail(false)
         setErrorUser(false)
         setErrorPass(false)
@@ -41,27 +62,76 @@ function Sign(props) {
         return error
     }
 
+    function handleForgotPassword(){
+        //will do
+    }
+
+    function handleLink(link){
+        dispatch(changePage(link))
+    }
+
+    function handleChangeCheck(x){
+        if(page === "Salon"){
+            switch(x){
+                case "checkbox1":
+                    setCheckboxOne(!checkboxOne)
+                    break
+            }
+        }       
+    } 
+
     return <>
-        <Language></Language>
-        <div className="sign_container">
-            <div className="sign_container_box">
-                <ul>
-                    <li id="signin_tab" onClick={()=>{handleClick('signIn')}}><span>{translate({lang: props.lang, info: "sign_in"})}</span></li>
-                    <li id="signup_tab" onClick={()=>{handleClick('signUp')}}><span>{translate({lang: props.lang, info: "sign_up"})}</span></li>
-                </ul>
-                {visible === "signIn" ? <SignIn signSubmit={(e)=>{signSubmit(e)}} lang={props.lang} socket={props.socket}></SignIn> : 
-                <SignUp signSubmit={(e)=>{signSubmit(e)}} lang={props.lang} socket={props.socket}></SignUp>}
-            </div>
-            {(() => {
-                if(errorEmail || errorUser || errorPass){
-                    return <div className="alert alert-danger">
-                        {errorEmail ? <p className="text_red">errorEmail</p> : null}
-                        {errorUser ? <p className="text_red">errorUser</p> : null}
-                        {errorPass ? <p className="text_red">errorPass</p> : null}                        
-                    </div>
-                }
-            })()}
-        </div>        
+        {(() => {
+            switch (page) {
+                case "terms_cond":
+                    return <TermsConditions lang={props.lang}></TermsConditions>
+                case "policy_privacy":
+                    return <PolicyPrivacy lang={props.lang}></PolicyPrivacy>                
+                case "Salon":
+                default:
+                    return <>
+                        <Language></Language>
+                        <div className="sign_container">
+                            <div className="sign_container_box">
+                                <ul>
+                                    <li id="signin_tab" className={signIn} onClick={()=>{handleClick('signIn')}}><span>{translate({lang: props.lang, info: "sign_in"})}</span></li>
+                                    <li id="signup_tab" className={signUp} onClick={()=>{handleClick('signUp')}}><span>{translate({lang: props.lang, info: "sign_up"})}</span></li>
+                                </ul>
+                                {visible === "signIn" ? <SignIn signSubmit={(e)=>{signSubmit(e)}} lang={props.lang} socket={props.socket}></SignIn> : 
+                                <SignUp signSubmit={(e)=>{signSubmit(e)}} lang={props.lang} socket={props.socket}></SignUp>}
+                            </div>  
+                            <div className="sign_extra_info">
+                                {visible === "signIn" ? <p onClick={()=>handleForgotPassword()}>{translate({lang: props.lang, info: "signin_forgot_password"})}</p> : <>
+                                <div className="checkbox_radio_container">
+                                    <label>
+                                        <input type="checkbox" name="checkbox1" checked={checkboxOne} onChange={()=>{handleChangeCheck("checkbox1")}}/>
+                                        {(() => {
+                                            switch (props.lang) {
+                                                case "RO":
+                                                    return <p>Sunt de acord cu <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> si <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></p>
+                                                case "ENG":
+                                                default:
+                                                    return <p>I agree to <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> and <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></p>
+                                            }
+                                        })()}
+                                    </label>
+                                </div>
+                                </>}
+                            </div>
+                            {(() => {
+                                if(errorEmail || errorUser || errorPass){
+                                    return <div className="alert alert-danger">
+                                        {errorEmail ? <p className="text_red">errorEmail</p> : null}
+                                        {errorUser ? <p className="text_red">errorUser</p> : null}
+                                        {errorPass ? <p className="text_red">errorPass</p> : null}                        
+                                    </div>
+                                }
+                            })()}
+                        </div>   
+                    </>
+            }
+        })()}
+             
     </>
 }
 

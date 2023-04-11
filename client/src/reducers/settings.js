@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 import { getCookie, setCookie } from '../utils'
 
 const initialState = {
-    lang: getCookie("website_language") !== "" ? getCookie("website_language") : "ENG",
-    cookies: getCookie("website_cookies") !== "" ? getCookie("website_cookies") : "0",
+    lang: getCookie("casino_language") !== "" ? getCookie("casino_language") : "ENG",
+    cookies: getCookie("casino_cookies") !== "" ? getCookie("casino_cookies") : "0",
 }
 
 const settingsSlice = createSlice({
@@ -12,11 +12,11 @@ const settingsSlice = createSlice({
     reducers: {
         changeLanguage: (state, { payload }) => {
             state.lang = payload
-            setCookie("website_language", payload)
+            setCookie("casino_language", payload)
         },
         changeCookies: (state) => {
             state.cookies = '1'
-            setCookie("website_cookies", '1')
+            setCookie("casino_cookies", '1')
         },
         resetSettings: () => initialState,
     }

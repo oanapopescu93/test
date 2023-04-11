@@ -40,13 +40,13 @@ function App() {
 		//my_console.disable()
 	}, [])
 
-  	let dispatch = useDispatch()
-	let home = useSelector(state => state.home)
+  	//let dispatch = useDispatch()
+	//let home = useSelector(state => state.home)
   	let lang = useSelector(state => state.settings.lang)
 
   	useEffect(() => {
 		socket.connect()
-		dispatch(bringPayload())		
+		//dispatch(bringPayload())		
 
 		return () => {
 			socket.disconnect()
@@ -57,9 +57,7 @@ function App() {
     	socket.emit('heartbeat', { data: "ping" })
   	}, 15000)
 
-	return <>
-		{home.loaded ? <Page home={home} socket={socket} lang={lang}></Page> : <Loader></Loader>}		
-	</>
+	return <Page socket={socket} lang={lang}></Page>
 }
 
 export default App

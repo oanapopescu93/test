@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { getCookie, setCookie } from '../utils'
 
 const initialState = {
     user: {
@@ -7,7 +8,7 @@ const initialState = {
         email: "",
         money: 0,
         user: "",
-        uuid: null,
+        uuid: getCookie("casino_uuid") !== "" ? getCookie("casino_uuid") : null,
     },
 }
 
@@ -33,6 +34,7 @@ const pageSlice = createSlice({
             }
             if(payload.uuid){
                 state.user.uuid = payload.uuid
+                setCookie("casino_uuid", payload.uuid)
             }
         },
         resetAuth: () => initialState,
