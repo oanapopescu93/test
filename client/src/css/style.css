@@ -86,12 +86,12 @@ ul.list_circle li{
 
 /* FORMS, BUTTONS, INPUTS, TEXTAREA */
 .sign_container{
-  display: inline-block;
   width: 100%;
   max-width: 300px;
-  margin-left: 50%;
-  margin-top: 50%;
-  transform: translate(-50%, -50%)
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
 .sign_container_box{
   background-color: white;
