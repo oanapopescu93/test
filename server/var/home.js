@@ -43,4 +43,5 @@ module.exports = Object.freeze({
         {type: "crypto", title: "Dogecoin", text: "-"},
         {type: "paypal", title: "Paypal", link: "#"},
     ],
+    career: [],
 })

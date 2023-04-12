@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import {useDispatch} from 'react-redux'
-import { changePage } from '../../reducers/page'
+import { changeGame, changePage } from '../../reducers/page'
 import { translate } from '../../translations/translate'
+import ukraine from '../../img/icons/ukraine.svg'
 
 function Footer(props){
     let dispatch = useDispatch()
@@ -20,6 +21,7 @@ function Footer(props){
 
     function handleClick(choice){
         dispatch(changePage(choice))
+        dispatch(changeGame(null))
     }
 
     function handleFooterUp(){
@@ -39,11 +41,13 @@ function Footer(props){
         <div className="footer_body">
             <div className="footer_list">
                 <ul>                    
-                    <li onClick={()=>{handleClick('About')}}><span>{translate({lang: props.lang, info: "about"})}</span></li>
-                    <li onClick={()=>{handleClick('Questions')}}><span>{translate({lang: props.lang, info: "questions"})}</span></li>
+                    <li onClick={()=>{handleClick('About')}}><span>{translate({lang: props.lang, info: "about"})}</span></li>                    
                     <li onClick={()=>{handleClick('terms_cond')}}><span>{translate({lang: props.lang, info: "terms_cond"})}</span></li>
                     <li onClick={()=>{handleClick('policy_privacy')}}><span>{translate({lang: props.lang, info: "policy_privacy"})}</span></li>
+                    <li onClick={()=>{handleClick('Questions')}}><span>{translate({lang: props.lang, info: "questions"})}</span></li>
+                    <li onClick={()=>{handleClick('Career')}}><span>{translate({lang: props.lang, info: "career"})}</span></li>
                     <li onClick={()=>{handleClick('Contact')}}><span>{translate({lang: props.lang, info: "contact"})}</span></li>
+                    <li><a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/fundraisers/explore/search/charities/?query=ukraine"><img id="ukraine_icon" alt="ukraine_icon" src={ukraine}></img></a></li>
                 </ul>
             </div>
             <footer>

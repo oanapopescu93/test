@@ -555,6 +555,9 @@ input{
 .footer_list li:last-child{
   border-right: solid 0px transparent;
 }
+#ukraine_icon{
+  width: 20px;
+}
 
 /* LOADER */
 .loader_container{
@@ -574,4 +577,45 @@ input{
   text-align: center;
   transform: translate(0%, -50%);
   font-size: 24px;
+}
+
+/* SALON SIDEBAR LEFT */
+.salon_button_container{
+	position: fixed;
+  z-index: 9999;
+  top: 0px;
+	bottom: 0px;
+  left: 0px;
+  width: 50px;
+	-webkit-transition:0.7s;
+  -moz-transition:0.7s;
+	-o-transition: 0.7s;
+	transition:0.7s;
+}
+.salon_button_box {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.salon_button{
+  background-color: var(--transparent02);
+  border: 1px solid var(--bg-text);
+  border-left: none;
+  color: var(--bg-text);
+  border-radius: 0px var(--radius) var(--radius) 0px;
+  width: 30px;
+  height: 130px;
+  text-align: center;
+  vertical-align: top;
+  padding: 10px 10px 10px 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.salon_button span{
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+  font-size: 12px;
+  line-height: 12px;
+  text-transform: uppercase;
+  margin-top: 5px;
 }

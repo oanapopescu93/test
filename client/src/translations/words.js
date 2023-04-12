@@ -6,9 +6,18 @@ var word_bank = {
         terms_cond: "Terms and conditions",
         policy_privacy: "Policy privacy",
         contact: "Contact",
+        career: "Career",
+        games: "Games",
+        race: "Race",
+        roulette: "Roulette",
+        blackjack: "Blackjack",
+        slots: "Slots",
+        craps: "Craps",
+        keno: "Keno",
 
         error: "Error",
-        all_rights_reserved: "All rights reserved",        
+        all_rights_reserved: "All rights reserved",   
+        no_career: "No jobs available. But feel free to send us your CV.",    
 
         cookies_modal_title: "Cookies Notification",
         cookies_modal_text: "In order to offer you the most relevant information and for optimal system performance, we use cookies that collect information from your game activity.",
@@ -29,7 +38,8 @@ var word_bank = {
 
         exit_salon: "Exit salon",
         salon_title: "Salon",
-        salon_subtitle: "Welcome to the salon"
+        salon_subtitle: "Welcome to the salon",
+        exit_game: "Exit game",
     },
     "RO":{
         salon: "Salon",
@@ -38,9 +48,18 @@ var word_bank = {
         terms_cond: "Termeni si conditii",
         policy_privacy: "Politici de confidentialitate",
         contact: "Contact",
+        career: "Cariera",
+        games: "Jocuri",
+        race: "Curse",
+        roulette: "Rouleta",
+        blackjack: "Blackjack",
+        slots: "Sloturi",
+        craps: "Craps",
+        keno: "Keno",
 
         error: "Eroare",
-        all_rights_reserved: "Toate drepturile rezervate",        
+        all_rights_reserved: "Toate drepturile rezervate",      
+        no_career: "Nu exista joburi disponibile. Puteti totusi sa ne trimiteti CV-ul dumneavoastra.",      
 
         cookies_modal_title: "Notificari de cookies",
         cookies_modal_text: "Pentru a va oferi cele mai relevante informatii si pentru o performanta optima a sistemul, noi folosim cookies pentru a colecta informatii din activitatea dumneavoatra.",
@@ -61,7 +80,8 @@ var word_bank = {
 
         exit_salon: "Iesi din salon",
         salon_title: "Salon",
-        salon_subtitle: "Welcome to the salon"
+        salon_subtitle: "Welcome to the salon",
+        exit_game: "Iesi din joc",
     }
 }
 

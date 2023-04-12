@@ -21,6 +21,7 @@ const pageSlice = createSlice({
 
 export const {
     changePage,
+    changeGame,
 } = pageSlice.actions
 
 export default pageSlice.reducer

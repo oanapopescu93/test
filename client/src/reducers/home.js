@@ -2,6 +2,10 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     products: [], 
+    market: [],
+    profiles: [],
+    donations: [],
+    career: [],
     loaded: false
 }
 
@@ -17,6 +21,7 @@ const homeSlice = createSlice({
             state.market = payload.market
             state.profiles = payload.profiles
             state.donations = payload.donations
+            state.career = payload.career
             state.loaded = true
         },
         resetHome: () => initialState,
