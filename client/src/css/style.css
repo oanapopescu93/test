@@ -814,7 +814,9 @@ input{
 }
 .game_start button{
   margin: var(--padding_small);
-  font-size: 20px;
+}
+.game_start button svg{
+  font-size: 24px;
 }
 
 #roulette_bets_canvas{

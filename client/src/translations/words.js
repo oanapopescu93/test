@@ -42,6 +42,7 @@ var word_bank = {
 
         donation: "Donations",
 
+        no_data: "No info",
         no_bets: "You didn't place any bets",
     },
     "RO":{
@@ -87,6 +88,7 @@ var word_bank = {
 
         donation: "Donatii",
 
+        no_data: "Nu avem informatii disponibile",
         no_bets: "Nu ai plasat niciun pariu",
     }
 }

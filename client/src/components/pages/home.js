@@ -53,7 +53,7 @@ function Home(props) {
                                 case "Contact":
                                     return <Contact {...props}></Contact>
                                 case "Donation":
-                                    return <Donation {...props}></Donation>
+                                    return <Donation {...props} list={home.donations}></Donation>
                                 case "Salon":
                                 default:
                                     return <Salon {...props} user={user} home={home} game={game}></Salon>
