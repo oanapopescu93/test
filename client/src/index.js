@@ -16,9 +16,9 @@ const store = configureStore({
 })
 sagaMiddleware.run(rootSaga)
 
-const root = ReactDOM.createRoot(document.getElementById('root'))
+const root = ReactDOM.createRoot(document.getElementById('casino_root'))
 root.render(
-  <Provider store={store}>
+  	<Provider store={store}>
 		<App></App>
 	</Provider>
 )

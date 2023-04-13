@@ -1,10 +1,13 @@
 :root {
-	--bg: black;
-  --bg-text:white;  
-  --box: white;
+  --bg: black;
+  --bg-text:gold;
+
+  --box: gold;
   --box-text: black;
-  --button_bg: white;
+
+  --button_bg: gold;
   --button_text: black;
+
   --red: red;
   --green: green;
 
@@ -15,7 +18,7 @@
   --radius_big:25px;
 
   --transparent01: rgba(0, 0, 0, 0.5);
-  --transparent02: rgba(255, 255, 255,0.2);
+  --transparent02: rgba(255, 215, 0, 0.2);
 }
 
 body{
@@ -84,6 +87,10 @@ ul.list_circle li{
   text-align: center;
 }
 
+#logo_icon, #logo_splash{
+  width: 40px;
+}
+
 /* FORMS, BUTTONS, INPUTS, TEXTAREA */
 .sign_container{
   width: 100%;
@@ -94,10 +101,10 @@ ul.list_circle li{
   left: 50%;
 }
 .sign_container_box{
-  background-color: white;
-  color: black;
+  background-color: var(--transparent01);
+  border:solid 1px var(--bg-text);
+  color: var(--bg-text);
   padding: var(--padding);
-  border: solid 1px black;
   border-radius: 10px;
   text-align: center;
   height: 212px;
@@ -110,7 +117,7 @@ ul.list_circle li{
 }
 .sign_container ul li{
   padding: 5px;
-  border: solid 1px black;
+  border: solid 1px var(--bg-text);
   display: inline-block;
   vertical-align: middle;
   font-size: 14px;
@@ -119,8 +126,8 @@ ul.list_circle li{
   cursor: pointer;
 }
 .sign_container ul li.active, .sign_container ul li:hover, .sign_container ul li:focus, .sign_container ul li:active{
-  background-color: black;
-  color: white;
+  background-color: var(--button_bg);
+  color: var(--button_text);
 }
 .sign_container #signin_tab{
   border-radius: 10px 0px 0px 10px;
@@ -146,6 +153,7 @@ ul.list_circle li{
   font-size: 12px;
   line-height: 12px;
   padding: var(--padding_small);
+  height: 40px;
 }
 .sign_extra_info span{
   text-decoration: underline;
@@ -158,7 +166,7 @@ ul.list_circle li{
 	-webkit-appearance: none;
 	appearance: none;
 	/* For iOS < 15 to remove gradient background */
-	background-color: #fff;
+	background-color: transparent;
 	/* Not removed via appearance */
 	appearance: none;
   margin: 0px 5px 0px 0px;
@@ -166,7 +174,7 @@ ul.list_circle li{
   width: 20px;
   height: 20px;
 	border-radius: 100%!important;
-	transform: translateY(3px);
+	transform: translateY(-5px);
 	display: grid;
   place-content: center;
   cursor: pointer;
@@ -175,7 +183,7 @@ ul.list_circle li{
 	border-radius: 100%!important;
 }
 .checkbox_radio_container input[type="checkbox"] {
-	border-radius: var(--border_radius_5)!important;
+	border-radius: var(--radius_small)!important;
 }
 
 .checkbox_radio_container input[type="radio"]::before{
@@ -185,7 +193,7 @@ ul.list_circle li{
 	border-radius: 100%;
 	transform: scale(0);
 	transition: 120ms transform ease-in-out;
-	box-shadow: inset 1em 1em var(--color);
+	box-shadow: inset 1em 1em var(--bg-text);
 	background-color: CanvasText;
 }
 .checkbox_radio_container input[type="checkbox"]::before {
@@ -195,7 +203,7 @@ ul.list_circle li{
 	border-radius: 100%;
 	transform: scale(0);
 	transition: 120ms transform ease-in-out;
-	box-shadow: inset 1em 1em var(--color);
+	box-shadow: inset 1em 1em var(--bg-text);
 	background-color: CanvasText;
 	transform-origin: bottom left;
   	clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
@@ -248,20 +256,53 @@ ul.list_circle li{
   background-color: var(--transparent02)!important;
 }
 .button_fullcolor{
+  background-color: var(--button_bg)!important;
+  border: solid 1px var(--button_bg)!important;
+  color: var(--button_text)!important;
+}
+.button_fullcolor:hover, .button_fullcolor:active, .button_fullcolor:focus{
+  background-color: var(--button_text)!important;
+  color: var(--button_bg)!important;
+}
+.button_fullcolor_dark{
   background-color: var(--button_text)!important;
   border: solid 1px var(--button_text)!important;
   color: var(--button_bg)!important;
 }
-.button_fullcolor:hover, .button_fullcolor:active, .button_fullcolor:focus{
+.button_fullcolor_dark:hover, .button_fullcolor_dark:active, .button_fullcolor_dark:focus{
   background-color: var(--button_bg)!important;
   color: var(--button_text)!important;
+}
+
+.close{
+	width: 30px;
+  height: 30px;
+  background-color: var(--box);
+  border: solid 1px var(--box);
+  color: var(--box-text);
+  border-radius: 100%;
+  position: absolute;
+  z-index: 1;
+  top: -15px;
+  right: -15px;
+  font-size: 30px;
+  line-height: 25px;
+  font-family: Helvetica, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close:active, .close:focus, .close:hover{
+  background-color: var(--box-text);
+  color: var(--text);
 }
 
 textarea {
 	resize: none;
 }
 input{
-  border: solid 1px black;
+  border: solid 1px var(--box);
+  background-color: transparent;
+  color: var(--box);
   border-radius: 10px;
   padding: 5px 10px;
   font-size: 14px;
@@ -299,7 +340,7 @@ input{
 }
 
 /* SALON */
-.sapou{
+.header{
   text-align: center;
   margin-bottom: var(--padding);
 }
@@ -373,26 +414,43 @@ input{
 .dropdown-item{
   color: var(--box);
   text-align: center;
+  padding: var(--padding_small) var(--padding);
 }
 .dropdown-item:focus, .dropdown-item:active, .dropdown-item:hover{
   background-color: var(--box);
   color: var(--box-text);
 }
+.language .dropdown .dropdown-menu{
+  min-width: auto;
+}
+.language .dropdown .dropdown-toggle{
+  border-radius: var(--radius);
+  font-size: 12px;
+  line-height: 12px;
+  width: 100%;
+}
+.language .dropdown-item{
+  padding: var(--padding_small);
+  font-size: 12px;
+  line-height: 12px;
+}
 
 /* POPUP */
-#mymodal{
+.modal-content{
   background-color: var(--box);
+  border: solid 1px var(--box);
   color: var(--box-text);
 }
 .modal-header{
-  padding: var(--padding);
-  background: black;
-  color: white;
+  padding: var(--padding_small) var(--padding);
+  background: var(--box-text);
+  color: var(--box);
+  border: solid 0px transparent;
 }
 .closeButton{
-  background: black;
-  border: solid 1px black;  
-  color: white;
+  background: var(--box);
+  border: solid 1px var(--box);  
+  color: var(--box-text);
   border-radius: 100%;
   width: 25px;
   height: 25px;
@@ -411,8 +469,8 @@ input{
   font-weight: bold;
 }
 .closeButton:hover{
-  background: white;
-  color: black;
+  background: var(--box-text);
+  color: var(--box);
 }
 .popup_body{
   color: var(--box-text);
@@ -433,15 +491,15 @@ input{
   display: flex;
   align-items: center;
   justify-content: space-between;	
-  background: white;	
+  background: var(--box-text);	
   border-radius: 10px;
   padding: 20px;
-  border: 1px solid black;
+  border: 1px solid var(--box-text);  
 }
 .cookies_text {
   width: 75%;
   display: block;
-  color: black;
+  color: var(--box);
   font-size: 14px;
 }
 .confirm_cookies {
@@ -469,12 +527,14 @@ input{
 /* LANGUAGE */
 .language{
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   top:10px;
   left: 10px;
   padding: var(--padding_small);
   font-size: 12px;
   line-height: 12px;
+  width: 100%;
+  max-width: 80px;
 }
 .language li{
   display: inline-block;
@@ -502,6 +562,9 @@ input{
   position: absolute;
   width: 100%;
   top: 50%;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .content_wrap .title{
   text-align: center;
@@ -510,38 +573,42 @@ input{
   border-bottom: solid 1px var(--bg-text);
 }
 .footer_container {
-  position: absolute;
-  bottom: 0;
+  position: fixed;
+  z-index: 9999;
+  bottom: -1px;
   width: 100%;
 }
 .footer_button_container{
   text-align: right;
-  padding: var(--padding);
-  padding-bottom: 0px;
+  padding: 0px var(--padding);
   font-size: 12px;
   line-height: 12px;
   cursor: pointer;
 }
 .footer_button{
-  background-color: var(--box);
-  color: var(--box-text);
-  padding: var(--padding);
-  padding-bottom: 0px;
-  border-radius: var(--radius_small) var(--radius_small) 0px 0px;
+  background-color: var(--box-text);
+  border:solid 1px var(--box);
+  border-bottom: 0 solid transparent;
+  color: var(--box);
+  padding: var(--padding) var(--padding) var(--padding_small) var(--padding);
+  border-radius: var(--radius) var(--radius) 0px 0px;
   display: inline-block;  
+  position: relative;
+  top: 1px;
 }
 .footer_body{
-  background-color: var(--box);
-  color: var(--box-text);
+  background-color: var(--box-text);
+  color: var(--box);
   text-align: center;
   font-size: 12px;
   line-height: 12px;
-  height: 0px;
+  height: 1px;
   overflow: hidden;
-  transition: height 0.15s ease-out;
+  transition: height 0.2s ease-out;
 }
 .footer_container.up .footer_body{
-  height: 45px;
+  border-top:solid 1px var(--box);
+  height: 50px;
 }
 .footer_list, footer{
   padding: var(--padding_small) var(--padding);
@@ -582,11 +649,11 @@ input{
 /* SALON SIDEBAR LEFT */
 .salon_button_container{
 	position: fixed;
-  z-index: 9999;
+  z-index: 1;
   top: 0px;
 	bottom: 0px;
   left: 0px;
-  width: 50px;
+  width: 35px;
 	-webkit-transition:0.7s;
   -moz-transition:0.7s;
 	-o-transition: 0.7s;
@@ -596,20 +663,24 @@ input{
   position: relative;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 1;
 }
 .salon_button{
-  background-color: var(--transparent02);
+  background-color: var(--transparent01);
   border: 1px solid var(--bg-text);
   border-left: none;
   color: var(--bg-text);
   border-radius: 0px var(--radius) var(--radius) 0px;
-  width: 30px;
+  width: 35px;
   height: 130px;
   text-align: center;
   vertical-align: top;
   padding: 10px 10px 10px 5px;
   cursor: pointer;
   margin-bottom: 10px;
+}
+.salon_button:focus, .salon_button:hover{
+  background-color: var(--transparent02);
 }
 .salon_button span{
   writing-mode: vertical-lr;
@@ -618,4 +689,204 @@ input{
   line-height: 12px;
   text-transform: uppercase;
   margin-top: 5px;
+}
+
+/* GAME PANEL */
+.panel_container{
+	top:0px;
+	bottom:0px;
+	right:-265px;
+	width:300px;
+	position:fixed;	
+	z-index:9997;		
+  -webkit-transition:0.7s;
+  -moz-transition:0.7s;
+  -o-transition: 0.7s;
+	transition:0.7s;
+}
+.panel_button_box{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  left: 1px;
+}
+.panel_button{
+  background-color: var(--button_text);
+  border: 1px solid var(--bg-text);
+  border-right: none;
+  color: var(--bg-text);
+  border-radius: var(--radius) 0px 0px var(--radius);
+  width: 35px;
+  height: 110px;
+  text-align: center;
+  vertical-align: top;
+  padding: 10px 5px 10px 10px;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+.panel_button:focus, .panel_button:hover {
+  background-color: var(--transparent02);
+}
+.panel_container.open{	
+	right:0px;
+}
+.panel_box{
+	display:none;
+	background-color: var(--transparent01);
+	background-image: linear-gradient(var(--box-text), var(--transparent01) 50%);
+	border-left:solid 1px var(--bg-text);
+	padding: 20px 10px;	
+	position:absolute;
+	z-index:1;
+	height:100%;
+  top: 0px;
+	right:0px;
+	width:90%;
+	max-width:265px;
+	text-align: left;
+	color:var(--bg-text);
+}
+.panel_box.active{
+	display:block;
+}
+.panel_button span {
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+  font-size: 12px;
+  line-height: 12px;
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+
+/* GAMES */
+.game_container{
+  text-align: center;
+}
+.game_bets_container{
+	position: fixed;
+	z-index:1;
+	top:0px;
+	bottom:0px;
+	right:100%;
+	width:100%;
+	padding:0px 50px;
+	-webkit-transition:0.7s;
+    -moz-transition:0.7s;
+	-o-transition: 0.7s;
+	transition:0.7s;
+}
+.game_bets_container.open{
+	right:0px;
+}
+.game_bets{
+	position: relative;
+	z-index:1;
+	top:50%;
+	width:100%;
+	transform: translate(0px, -50%);
+	border:solid 1px var(--bg-text);
+	border-radius:10px;
+	padding:10px;
+	background: black;
+}
+.game_bets_box{
+	overflow: auto;
+  max-height: 400px;
+}
+.game_bets_clear{
+  padding-top: var(--padding_small);
+}
+#game_bets_clear{
+  background-color: var(--button_text);
+	color:var(--box);
+	border-radius: 100%;
+	border:solid 1px var(--box);
+	width: 50px;
+  height: 50px;
+  padding: 12px 10px;
+  display: inline-block;
+  cursor: pointer;
+}
+#game_bets_clear:active, #game_bets_clear:focus, #game_bets_clear:hover{
+  background-color: var(--box);
+	color:var(--button_text);
+}
+.game_start button{
+  margin: var(--padding_small);
+}
+
+#roulette_bets_canvas{
+  cursor: pointer;
+}
+
+/* media */
+@media (max-width: 1024px){
+	
+}
+@media (max-width: 960px){
+	
+}
+@media (max-width: 767px) {	
+	h1 {
+		font-size: 20px;
+		line-height: 20px;
+	}
+	h2 {
+		font-size: 18px;
+		line-height: 18px;
+	}
+	h3 {
+		font-size: 16px;
+		line-height: 16px;
+	}
+	h4 {
+		font-size: 14px;
+		line-height: 14px;
+	}	
+	h6 {
+		font-size: 10px;
+		line-height: 10px;
+	}
+}
+@media (max-width:600px) {	
+	
+}
+@media (max-width: 480px) {
+	
+}
+
+@media (min-width: 768px){
+	
+}
+
+@media (max-width: 960px) and (orientation: landscape) {
+	
+}
+
+@media (max-width: 768px) and (orientation: landscape){
+	
+}
+
+
+@media (max-height: 500px){
+	
+}
+
+::-webkit-scrollbar{
+	width: 10px;
+	height:5px;
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+	border-radius: 10px;
+	background:var(--bg-text);
+	border:solid 4px var(--bg)
+}
+
+::-webkit-scrollbar-thumb{
+	border-radius: 10px;
+	background-color: var(--bg-text);
+	border:solid 1px var(--bg)
 }

@@ -19,8 +19,6 @@ function Sign(props) {
     const [signUp, setSignUp] = useState('')
     const [checkboxOne, setCheckboxOne] = useState(false)
 
-    // console.log('page ', page)
-
     function handleClick(choice){
         setErrorEmail(false)
         setErrorUser(false)
@@ -89,7 +87,7 @@ function Sign(props) {
                 case "Salon":
                 default:
                     return <>
-                        <Language></Language>
+                        <Language title={props.lang}></Language>
                         <div className="sign_container">
                             <div className="sign_container_box">
                                 <ul>
@@ -130,7 +128,6 @@ function Sign(props) {
                     </>
             }
         })()}
-             
     </>
 }
 

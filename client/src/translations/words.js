@@ -37,9 +37,10 @@ var word_bank = {
         signin_forgot_password: "I forgot password",
 
         exit_salon: "Exit salon",
-        salon_title: "Salon",
         salon_subtitle: "Welcome to the salon",
         exit_game: "Exit game",
+
+        no_bets: "You didn't place any bets",
     },
     "RO":{
         salon: "Salon",
@@ -79,9 +80,10 @@ var word_bank = {
         signin_forgot_password: "Am uitat parola",        
 
         exit_salon: "Iesi din salon",
-        salon_title: "Salon",
-        salon_subtitle: "Welcome to the salon",
+        salon_subtitle: "Salon",
         exit_game: "Iesi din joc",
+
+        no_bets: "Nu ai plasat niciun pariu",
     }
 }
 

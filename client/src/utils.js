@@ -1,4 +1,4 @@
-export const isEmpty = function (element){
+export const isEmpty = function(element){
   let empty = true
   if(typeof element !== "undefined" && element !== 'null' && element !== null && element !== '' && element !== 'N/A'){
     empty = false
@@ -12,13 +12,13 @@ export const formatDate = function(date){
   return dateString
 }
 
-export const setCookie = function (cname, cvalue, hours=12){
+export const setCookie = function(cname, cvalue, hours=12){
   let d = new Date()
   d.setTime(d.getTime() + (hours * 60 * 60 * 1000))
   let expires = "expires=" + d.toGMTString()
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/"
 }
-export const getCookie = function (cname){
+export const getCookie = function(cname){
   let name = cname + "="
   let decodedCookie = decodeURIComponent(document.cookie)
   let ca = decodedCookie.split(';')
@@ -34,7 +34,7 @@ export const getCookie = function (cname){
   return ""
 }
 
-export const sortList = function(list=[], sort_by="", asc=true) {
+export const sortList = function(list=[], sort_by="", asc=true){
   if(list && list.length>0){
     if(sort_by === ""){
       let done = false
@@ -95,7 +95,7 @@ export const sortList = function(list=[], sort_by="", asc=true) {
   return list
 }
 
-export const getWindowDimensions = function() {
+export const getWindowDimensions = function(){
   const { innerWidth: width, innerHeight: height } = window
   return {width, height}
 }

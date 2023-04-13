@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from 'react-bootstrap'
 import { translate } from '../../translations/translate'
 
 function Cookies(props) {
@@ -9,7 +10,7 @@ function Cookies(props) {
                 <h6>{translate({lang: props.lang, info: "cookies_modal_text"})}</h6>
             </div>							
             <div className="confirm_cookies">
-                <button type="button" id="cookies_btn_ok" onClick={()=>props.cookiesClick()}>OK</button>
+                <Button type="button" id="cookies_btn_ok" className="mybutton button_fullcolor_dark" onClick={()=>props.cookiesClick()}>OK</Button>
             </div>
         </div>
     </div>

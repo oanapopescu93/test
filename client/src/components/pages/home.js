@@ -38,17 +38,17 @@ function Home(props) {
                         {(() => {
                             switch (page) {
                                 case "About":
-                                    return <About lang={props.lang}></About>
+                                    return <About {...props}></About>
                                 case "terms_cond":
-                                    return <TermsConditions lang={props.lang}></TermsConditions>
+                                    return <TermsConditions {...props}></TermsConditions>
                                 case "policy_privacy":
-                                    return <PolicyPrivacy lang={props.lang}></PolicyPrivacy>         
+                                    return <PolicyPrivacy {...props}></PolicyPrivacy>         
                                 case "Career":
-                                    return <Career lang={props.lang} list={home.career}></Career>           
+                                    return <Career {...props} list={home.career}></Career>           
                                 case "Questions":
-                                    return <Questions lang={props.lang}></Questions>
+                                    return <Questions {...props}></Questions>
                                 case "Contact":
-                                    return <Contact lang={props.lang}></Contact>         
+                                    return <Contact {...props}></Contact>         
                                 case "Salon":
                                 default:
                                     return <Salon {...props} user={user} home={home} game={game}></Salon>

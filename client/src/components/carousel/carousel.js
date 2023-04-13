@@ -1,40 +1,26 @@
-import React from 'react'
-import OwlCarousel from 'react-owl-carousel';
-import { translate } from '../../translations/translate';
-import Cell from './cell';
+import React, {useEffect} from 'react'
+import OwlCarousel from 'react-owl-carousel'
+import 'owl.carousel/dist/assets/owl.carousel.css'
+import 'owl.carousel/dist/assets/owl.theme.default.css'
+import List from './list'
+import $ from "jquery"
 
-function Carousel(props) {
-    let items = props.items ? props.items : []
-    let options = props.options ? props.options : {
-        loop: true,
-        center: true,
-        items: 3,
-        margin: 10,
-        autoplay: false,
-        dots: false,
-        nav: false,
-        responsive: {
-            0: {
-                items: 1
-            },
-            600: {
-                items: 3
-            },
-        }
-    }
+function Carousel(props){    
+    const {id, options} = props
+    let carouselList = <List {...props}></List>
 
-	return <OwlCarousel id="mycarousel" className='owl-theme' {...options}>
-        {(() => {
-            if(items.length>0){
-                return <>
-                    {items.map(function(item, i){
-                        return <Cell lang={props.lang} index={i} data={item} template={props.template}></Cell>
-                    })}
-                </>
-            } else {
-                return <p>{translate({lang: props.lang, info: "error"})}</p>
-            }
-        })()}
+    useEffect(() => {
+        $('#'+id+' .cell_button button').click(function(e) {
+            let table_name = $(e.target).attr('table_name')
+            let table_type = $(e.target).attr('table_type')
+            let table_id = $(e.target).attr('table_id')
+            let payload = {table_name, table_type, table_id}
+            props.getItem(payload)
+        })
+    }, [carouselList])
+
+    return <OwlCarousel id={id} className='owl-theme' {...options}>
+        {carouselList}
     </OwlCarousel>
 }
 

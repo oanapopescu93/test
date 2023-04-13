@@ -10,8 +10,8 @@ function Chat(props){
         console.log('message_read ', res)
     })
 
-    return <div className="page_container">
+    return <>
         <p>Chat</p>
-    </div>
+    </>
 }
 export default Chat

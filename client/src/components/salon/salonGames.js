@@ -5,6 +5,7 @@ import { getWindowDimensions } from '../../utils'
 import Carousel from '../carousel/carousel'
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import { changeGame } from '../../reducers/page'
 
 function SalonGames(props){
     const {lang, items} = props
@@ -14,6 +15,24 @@ function SalonGames(props){
     const [index, setIndex] = useState(0)
     const [titleDropdown, setTitleDropdown] = useState("")
     let dispatch = useDispatch()
+
+    let salon_carousel_options = {
+        items: 4,
+        nav: false,
+        rewind: true,
+        autoplay: false,
+        slideBy: 1,
+        dots: false,
+        loop:true,
+        responsive:{
+            0:{
+                items:1
+            },
+            768:{
+                items:3
+            },
+        }
+    }
 
     useEffect(() => {
         create_casino_games()
@@ -51,18 +70,18 @@ function SalonGames(props){
         setCasinoGames(casino_games)
         setCasinoGamesTitle(casino_games_title)  
         setTitleDropdown(casino_games_title[0])
-    }
-
-    function gameChoice(x){
-        console.log('gameChoice ', x)
-    }
+    }    
 
     function handleSelect(x){
         let i = casinoGamesTitle.indexOf(x)
-        if(i != -1){
+        if(i !== -1){
             setIndex(i)
         }
         setTitleDropdown(x)
+    }
+
+    function gameChoice(x){
+        dispatch(changeGame(x))
     }
 
     return <div className="salon_games">
@@ -95,9 +114,17 @@ function SalonGames(props){
                                 )
                             }
                         })()} 
-                        <div box={t} className={"casino_games_table_container " + box}>
+                        <div box={t} className={"casino_games_table_container "+box}>
                             <div className="casino_games_table">
-                                <Carousel template="salon" lang={lang} items={casinoGames[t]}></Carousel>
+                                <Carousel 
+                                    id={"carousel_salon_"+t}
+                                    template="salon" 
+                                    type={t}
+                                    options={salon_carousel_options} 
+                                    lang={lang} 
+                                    itemList={casinoGames[t]} 
+                                    getItem={(e)=>gameChoice(e)}
+                                ></Carousel>
                             </div>
                         </div>
                     </div>

@@ -13,10 +13,8 @@ function SalonSidebarLeft(props){
         dispatch(changePage('Salon'))
         switch(x){
             case "race":
-                dispatch(changeGame('race'))
-                break
             case "keno":
-                dispatch(changeGame('keno'))
+                dispatch(changeGame({table_name: x}))
                 break
             case "game":
             default:
