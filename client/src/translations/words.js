@@ -40,6 +40,8 @@ var word_bank = {
         salon_subtitle: "Welcome to the salon",
         exit_game: "Exit game",
 
+        donation: "Donations",
+
         no_bets: "You didn't place any bets",
     },
     "RO":{
@@ -82,6 +84,8 @@ var word_bank = {
         exit_salon: "Iesi din salon",
         salon_subtitle: "Salon",
         exit_game: "Iesi din joc",
+
+        donation: "Donatii",
 
         no_bets: "Nu ai plasat niciun pariu",
     }

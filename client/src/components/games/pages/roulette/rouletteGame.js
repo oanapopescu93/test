@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux'
 import { translate } from '../../../../translations/translate'
 import { Button } from 'react-bootstrap'
 import { changePopup } from '../../../../reducers/popup'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faRotate, faCarrot} from '@fortawesome/free-solid-svg-icons'
 
 function roulette_game(props){
     console.log(props)
@@ -113,12 +115,12 @@ function RouletteGame(props){
                 type="button"  
                 className="mybutton round button_transparent"
                 onClick={()=>gameStart()}
-            >{translate({lang: props.lang, info: "Spin"})}</Button>
+            ><FontAwesomeIcon icon={faRotate} /></Button>
             <Button 
                 type="button"  
                 className="mybutton round button_transparent"
                 onClick={()=>openTable()}
-            >{translate({lang: props.lang, info: "Bet"})}</Button>
+            ><FontAwesomeIcon icon={faCarrot} /></Button>
         </div>
     </div>
 }

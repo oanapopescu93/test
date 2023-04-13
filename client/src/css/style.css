@@ -814,10 +814,36 @@ input{
 }
 .game_start button{
   margin: var(--padding_small);
+  font-size: 20px;
 }
 
 #roulette_bets_canvas{
   cursor: pointer;
+}
+
+/* DONATE */
+#donate{
+	opacity: 0;
+	position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 999999;
+  width: 36px;
+  height: 36px;
+	cursor: pointer;
+}
+#donate svg{
+	fill:var(--bg-text);
+}
+#donate svg path{
+	stroke:var(--box-text);
+}
+#donate.open{
+	-webkit-transition: opacity 2.0s ease-in;
+	-moz-transition: opacity 2.0s ease-in;
+	-o-transition: opacity 2.0s ease-in;
+	transition: opacity 2.0s ease-in;
+	opacity: 1;
 }
 
 /* media */

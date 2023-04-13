@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import Footer from '../partials/footer'
 import About from './about'
@@ -13,6 +13,9 @@ import Questions from './questions'
 import TermsConditions from './termsConditions'
 import PolicyPrivacy from './policyPrivacy'
 import Career from './career'
+import { ReactComponent as Bitcoin } from '../../img/icons/bitcoin-love-heart.svg'
+import { changePage } from '../../reducers/page'
+import Donation from './donation'
 
 function Home(props) {
     let home = useSelector(state => state.home)
@@ -48,13 +51,16 @@ function Home(props) {
                                 case "Questions":
                                     return <Questions {...props}></Questions>
                                 case "Contact":
-                                    return <Contact {...props}></Contact>         
+                                    return <Contact {...props}></Contact>
+                                case "Donation":
+                                    return <Donation {...props}></Donation>
                                 case "Salon":
                                 default:
                                     return <Salon {...props} user={user} home={home} game={game}></Salon>
                             }
                         })()}        
                         {cookies !== '1' ? <Cookies lang={props.lang} cookiesClick={()=>handleCookiesClick()}></Cookies> : null}
+                        <Donate></Donate>
                         <Footer></Footer>
                     </div>
                 } else {
@@ -65,6 +71,25 @@ function Home(props) {
             }   
         })()}
     </>
+}
+
+function Donate(){
+    const dispatch = useDispatch()
+    const [open, setOpen] = useState("")
+
+    useEffect(() => {
+        setTimeout(function(){
+            setOpen("open")
+        }, 500)
+	}, [])
+    
+    function handleClick(){        
+        dispatch(changePage('Donation'))
+    }
+
+	return <div id="donate" className={open} onClick={()=>handleClick()}>
+        <Bitcoin></Bitcoin>
+    </div>
 }
 
 export default Home
