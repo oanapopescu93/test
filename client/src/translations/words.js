@@ -42,6 +42,16 @@ var word_bank = {
 
         donation: "Donations",
 
+        all: "All",
+        other: "Other",
+        title: "Title",
+        location: "Location",
+        requirements: "Requirements",
+        responsabilities: "Responsabilities",
+        no_jobs: "No jobs available yet. But feel free to send us your CV.",
+
+        under_construction: "Under construction",
+
         no_data: "No info",
         no_bets: "You didn't place any bets",
     },
@@ -87,6 +97,16 @@ var word_bank = {
         exit_game: "Iesi din joc",
 
         donation: "Donatii",
+
+        all: "Tot",
+        other: "Altceva",
+        title: "Titlu",
+        location: "Locatie",
+        requirements: "Requirements",
+        responsabilities: "Responsabilities",
+        no_jobs: "Nu exista job-uri disponibile. Puteti sa ne trimiteti CV-ul dumneavoastra pe mail.",
+
+        under_construction: "In constructie",
 
         no_data: "Nu avem informatii disponibile",
         no_bets: "Nu ai plasat niciun pariu",

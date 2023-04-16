@@ -16,6 +16,7 @@ import Career from './career'
 import { ReactComponent as Bitcoin } from '../../img/icons/bitcoin-love-heart.svg'
 import { changePage } from '../../reducers/page'
 import Donation from './donation'
+import Language from '../partials/language'
 
 function Home(props) {
     let home = useSelector(state => state.home)
@@ -38,6 +39,7 @@ function Home(props) {
             if(home){
                 if(home.loaded){
                     return <div id="page-container">
+                        <Language title={props.lang}></Language>
                         {(() => {
                             switch (page) {
                                 case "About":
@@ -47,9 +49,9 @@ function Home(props) {
                                 case "policy_privacy":
                                     return <PolicyPrivacy {...props}></PolicyPrivacy>         
                                 case "Career":
-                                    return <Career {...props} list={home.career}></Career>           
+                                    return <Career {...props} list={home.career[0][props.lang]}></Career>           
                                 case "Questions":
-                                    return <Questions {...props}></Questions>
+                                    return <Questions {...props} list={home.questions[0][props.lang]}></Questions>
                                 case "Contact":
                                     return <Contact {...props}></Contact>
                                 case "Donation":
@@ -60,8 +62,8 @@ function Home(props) {
                             }
                         })()}        
                         {cookies !== '1' ? <Cookies lang={props.lang} cookiesClick={()=>handleCookiesClick()}></Cookies> : null}
-                        <Donate></Donate>
-                        <Footer></Footer>
+                        <Donate lang={props.lang}></Donate>
+                        <Footer lang={props.lang}></Footer>
                     </div>
                 } else {
                     return <Loader></Loader>

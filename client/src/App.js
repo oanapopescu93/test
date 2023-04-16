@@ -1,21 +1,22 @@
 import React, {useEffect} from "react"
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 import * as io from 'socket.io-client'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
+import "./css/roboto.css"
 import "./css/style.css"
 import 'owl.carousel/dist/assets/owl.carousel.css'
 import 'owl.carousel/dist/assets/owl.theme.default.css'
 
-import Loader from "./components/partials/loader"
-import { bringPayload } from "./reducers/home"
 import Page from "./components/pages/page"
 
 const socket = io()
 
 function App() {
-  let my_console = function(){
+	let lang = useSelector(state => state.settings.lang)
+
+  	let my_console = function(){
 		let oldConsole = null
 		let me = {}
 	
@@ -37,21 +38,12 @@ function App() {
 	}()
 
   	useEffect(() => {
-		//my_console.disable()
-	}, [])
-
-  	//let dispatch = useDispatch()
-	//let home = useSelector(state => state.home)
-  	let lang = useSelector(state => state.settings.lang)
-
-  	useEffect(() => {
-		socket.connect()
-		//dispatch(bringPayload())		
-
+		my_console.disable()
+		socket.connect()		
 		return () => {
 			socket.disconnect()
-		}    
-	}, [])
+		}  
+	}, []) 
 
   	setInterval(function () {		  
     	socket.emit('heartbeat', { data: "ping" })

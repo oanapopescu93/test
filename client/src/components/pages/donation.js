@@ -25,37 +25,35 @@ function Donation(props){
                                 Donation for Ukraine <img id="ukraine_icon" alt="ukraine_icon" src={ukraine}></img>
                             </a>
                         </div>
-                        {donation_type.map(function(item01, i){
-                            let style = "donation_body donation_body_crypto shadow_concav"
-                            if(item01 !== "crypto"){
-                                style = "donation_body"
-                            }
-                            return <div key={i} className="donation_box">
-                                <ul className={style}>
-                                    {list.map(function(item02, j){
-                                        if(item01 === item02.type){
-                                            if(item01 === "crypto"){
-                                                return (
-                                                    <li key={j} className="donation_link donation_link_crypto">
-                                                        <p key={i}><span>{item02.title}: </span><b>{item02.text}</b></p>
+                        <div className="deco">
+                            <div className="donation_box">
+                                {donation_type.map(function(item01, i){
+                                    let style = ""
+                                    if(item01 === "crypto"){
+                                        style = "donation_body_crypto"
+                                    }
+                                    return <ul key={i} className={'donation_body ' + style}>
+                                        {list.map(function(item02, j){
+                                            if(item01 === item02.type){
+                                                if(item01 === "crypto"){
+                                                    return <li key={j} className="donation_link donation_link_crypto">
+                                                        <span>{item02.title}: </span><span>{item02.text}</span>
+                                                    </li>                                               
+                                                } else if(item01 === "paypal"){
+                                                    return <li key={j} className="donation_link donation_link_paypall">
+                                                        <a id="paypal_button" className="mybutton button_transparent shadow_convex" rel="noopener noreferrer" target="_blank" href={item02.link}>{item02.title}</a>
                                                     </li>
-                                                )                                                        
-                                            } else if(item01 === "paypal"){
-                                                return (                                                                
-                                                    <li key={j} className="donation_link donation_link_paypall">
-                                                        <a className="paypal_button shadow_convex" rel="noopener noreferrer" target="_blank" href="https://paypal.me/oanapopescu93?country.x=RO&locale.x=en_US">Paypal</a>
-                                                    </li>
-                                                )
+                                                } else {
+                                                    return null
+                                                }
                                             } else {
                                                 return null
-                                            }
-                                        } else {
-                                            return null
-                                        }   
-                                    })}
-                                </ul>
+                                            }   
+                                        })}
+                                    </ul>
+                                })}
                             </div>
-                        })}
+                    </div>
                     </div>
                 } else {
                     return <div className="donation_container">
@@ -65,7 +63,7 @@ function Donation(props){
             })()} 
         </div>
         <div className="text_center">
-            <Button type="button" onClick={()=>handleBack()} className="mybutton round button_transparent">
+            <Button type="button" onClick={()=>handleBack()} className="mybutton round button_transparent shadow_convex">
                 {translate({lang: props.lang, info: "back"})}
             </Button>
         </div>

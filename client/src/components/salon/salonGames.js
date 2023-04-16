@@ -109,7 +109,9 @@ function SalonGames(props){
                             if (width > 960) {
                                 return (
                                     <div className="casino_games_title_container">
-                                        <div className="capitalize casino_games_title shadow_convex" onClick={()=>handleSelect(t)}>{t}</div>
+                                        <div className="capitalize casino_games_title shadow_convex" onClick={()=>handleSelect(t)}>
+                                            <h4>{t}</h4>
+                                        </div>
                                     </div>
                                 )
                             }

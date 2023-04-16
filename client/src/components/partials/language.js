@@ -13,7 +13,7 @@ function Language(props) {
   }
 
   return <div className="language">
-    <DropdownButton title={title} id="dropdown-menu-align-right" onSelect={handleSelect}>
+    <DropdownButton title={title} id="language_button"  className="shadow_convex" onSelect={handleSelect}>
       <Dropdown.Item eventKey={"ENG"}><span>ENG</span></Dropdown.Item>
       <Dropdown.Item eventKey={"RO"}><span>RO</span></Dropdown.Item>
     </DropdownButton>

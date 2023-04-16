@@ -34,7 +34,8 @@ export const getCookie = function(cname){
   return ""
 }
 
-export const sortList = function(list=[], sort_by="", asc=true){
+export const sortList = function(arrayForSort=[], sort_by="", asc=true){
+  let list = [...arrayForSort]
   if(list && list.length>0){
     if(sort_by === ""){
       let done = false
@@ -70,7 +71,7 @@ export const sortList = function(list=[], sort_by="", asc=true){
           done = true
           for (let i = 1; i < list.length; i += 1) {
               if (list[i - 1][sort_by] > list[i][sort_by]){
-                  done = false
+                  done = false                  
                   let tmp = list[i - 1]
                   list[i - 1] = list[i]
                   list[i] = tmp

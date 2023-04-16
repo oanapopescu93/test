@@ -89,6 +89,7 @@ function Sign(props) {
                     return <>
                         <Language title={props.lang}></Language>
                         <div className="sign_container">
+                            <div className="deco">
                             <div className="sign_container_box">
                                 <ul>
                                     <li id="signin_tab" className={signIn} onClick={()=>{handleClick('signIn')}}><span>{translate({lang: props.lang, info: "sign_in"})}</span></li>
@@ -105,10 +106,10 @@ function Sign(props) {
                                         {(() => {
                                             switch (props.lang) {
                                                 case "RO":
-                                                    return <p>Sunt de acord cu <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> si <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></p>
+                                                    return <h6>Sunt de acord cu <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> si <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
                                                 case "ENG":
                                                 default:
-                                                    return <p>I agree to <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> and <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></p>
+                                                    return <h6>I agree to <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> and <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
                                             }
                                         })()}
                                     </label>
@@ -124,6 +125,7 @@ function Sign(props) {
                                     </div>
                                 }
                             })()}
+                            </div>
                         </div>   
                     </>
             }

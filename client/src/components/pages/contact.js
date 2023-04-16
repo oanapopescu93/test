@@ -15,7 +15,7 @@ function Contact(props){
 
         </div>
         <div className="text_center">
-            <Button type="button" onClick={()=>handleBack()} className="mybutton round button_transparent">
+            <Button type="button" onClick={()=>handleBack()} className="mybutton round button_transparent shadow_convex">
                 {translate({lang: props.lang, info: "back"})}
             </Button>
         </div>

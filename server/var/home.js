@@ -1,5 +1,5 @@
 module.exports = Object.freeze({
-    products: [
+    PRODUCTS: [
         {table_id: '001', table_name: "roulette", table_type: "european"},
         {table_id: '002', table_name: "roulette", table_type: "american"},
         {table_id: '003', table_name: "roulette", table_type: "european"},
@@ -18,7 +18,7 @@ module.exports = Object.freeze({
         {table_id: '016', table_name: "craps"},
         {table_id: '017', table_name: "craps"},
     ],
-    market: [        
+    MARKET: [        
         {id: "garlic", name: "garlic", value:"0.1 carrots", price:0.1, quantity: 1},
         {id: "onion", name: "onion", value:"0.2 carrots", price:0.2, quantity: 1},
         {id: "radish", name: "radish", value:"0.5 carrots", price:0.5, quantity: 1},
@@ -27,7 +27,7 @@ module.exports = Object.freeze({
         {id: "potato", name: "potato", value:"5 carrots", price:5, quantity: 1},
         {id: "cabbage", name: "cabbage", value:"10 carrots", price:10, quantity: 1},
     ],
-    profiles: [        
+    PROFILES: [        
         {id: 1, name_eng: "weasel", name_ro: "nevastuica", free: true},
         {id: 2, name_eng: "fox", name_ro: "vulpe", free: false},
         {id: 3, name_eng: "wolf", name_ro: "lup", free: false},
@@ -35,13 +35,21 @@ module.exports = Object.freeze({
         {id: 5, name_eng: "ferret", name_ro: "dihor", free: true},
         {id: 6, name_eng: "martin", name_ro: "jder", free: true},
     ],
-    donations: [        
+    DONATIONS: [        
         {type: "crypto", title: "Bitcoin", text: "-", link: "bitcoin:-"},
         {type: "crypto", title: "Ethereum", text: "-"},
         {type: "crypto", title: "Litecoin", text: "-"},
         {type: "crypto", title: "Bitcoin Cash", text: "-"},
         {type: "crypto", title: "Dogecoin", text: "-"},
-        {type: "paypal", title: "Paypal", link: "#"},
+        {type: "paypal", title: "Paypal", link: "https://paypal.me/oanapopescu93?country.x=RO&locale.x=en_US"},
     ],
-    career: [],
+    SLOT_PRIZES: [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3],
+    RACE_RABBITS: [
+        {id: 1, name: "Red", color: "red"},
+        {id: 2, name: "Orange", color: "orange"},
+        {id: 3, name: "Yellow", color: "yellow"},
+        {id: 4, name: "Green", color: "green"},
+        {id: 5, name: "Blue", color: "blue"},
+        {id: 6, name: "Purple", color: "purple"},
+    ],
 })

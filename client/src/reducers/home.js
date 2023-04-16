@@ -6,6 +6,9 @@ const initialState = {
     profiles: [],
     donations: [],
     career: [],
+    questions: [],
+    slot_prises: [],
+    race_rabbits: [],
     loaded: false
 }
 
@@ -22,6 +25,9 @@ const homeSlice = createSlice({
             state.profiles = payload.profiles
             state.donations = payload.donations
             state.career = payload.career
+            state.questions = payload.questions
+            state.slot_prises = payload.slot_prises
+            state.race_rabbits = payload.race_rabbits
             state.loaded = true
         },
         resetHome: () => initialState,
