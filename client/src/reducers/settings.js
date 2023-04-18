@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getCookie, setCookie } from '../utils'
+import { getCookie, setCookie } from '../utils/utils'
 
 const initialState = {
     lang: getCookie("casino_language") !== "" ? getCookie("casino_language") : "ENG",

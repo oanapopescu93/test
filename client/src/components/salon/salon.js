@@ -1,14 +1,14 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
 import { translate } from '../../translations/translate'
-import { setCookie } from '../../utils'
+import { setCookie } from '../../utils/utils'
 import Header from '../partials/header'
 import SalonGames from './salonGames'
 import SalonSidebarLeft from './salonSidebarLeft'
 import Game from '../games/game'
 
 function Salon(props) {
-    const {lang, home, game} = props 
+    const {lang, home, page} = props 
 
     function handleExit(){
         setCookie('casino_uuid', '')
@@ -16,7 +16,7 @@ function Salon(props) {
     }
 
     return <>
-        {game ? <Game {...props}></Game> : <>            
+        {page.game ? <Game {...props}></Game> : <>            
             <div className="content_wrap">  
                 <Header template="salon" lang={lang}></Header>
                 <SalonGames lang={lang} items={home.products}></SalonGames>

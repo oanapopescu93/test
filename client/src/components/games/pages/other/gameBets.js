@@ -1,15 +1,26 @@
-import React from 'react'
+import React, {useState} from 'react'
 import RouletteTable from '../roulette/rouletteTable'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faTrashCan} from '@fortawesome/free-solid-svg-icons'
 
 function GameBets(props){
     let open = props.open ? "open" : ""
-    let template = props.game.table_name
+    let template = props.page.game.table_name
+    const [clear, setClear] = useState(0)
+    let t = 0
 
     function handleClose(){
         props.closeTable()
     }
+
+    function handleClear(){
+        t++
+        setClear(t)
+    }
+
+    function getData(x){
+        props.getData(x)
+	}
 
     return <div className={"game_bets_container " + open}>
         <div className="game_bets shadow_concav">
@@ -18,13 +29,15 @@ function GameBets(props){
                 {(() => {
                     switch (template) {
                         case "roulette":
-                            return <RouletteTable {...props}></RouletteTable>               
+                            return <RouletteTable {...props} clear={clear} getData={(e)=>getData(e)}></RouletteTable>               
                         default:
                             return null
                     }
                 })()}
                 <div className="game_bets_clear">
-                    <div id="game_bets_clear" className="shadow_convex"><FontAwesomeIcon icon={faTrashCan}/></div>
+                    <div id="game_bets_clear" className="shadow_convex" onClick={()=>handleClear()}>
+                        <FontAwesomeIcon icon={faTrashCan}/>
+                    </div>
                 </div>
             </div>
         </div>

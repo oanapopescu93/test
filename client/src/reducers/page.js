@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     page: 'Salon',
     game: null,
+    game_page: null,
 }
 
 const pageSlice = createSlice({
@@ -15,6 +16,9 @@ const pageSlice = createSlice({
         changeGame: (state, { payload }) => {
             state.game = payload
         },
+        changeGamePage: (state, { payload }) => {
+            state.game_page = payload
+        },
         resetPage: () => initialState,
     }
 })
@@ -22,6 +26,7 @@ const pageSlice = createSlice({
 export const {
     changePage,
     changeGame,
+    changeGamePage,
 } = pageSlice.actions
 
 export default pageSlice.reducer

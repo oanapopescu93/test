@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { isEmpty } from '../../utils'
+import { isEmpty } from '../../utils/utils'
 import Popup from '../popup/popup'
 import Sign from '../sign/sign'
 import Home from './home'

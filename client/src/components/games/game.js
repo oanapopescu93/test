@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { Button } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import { translate } from '../../translations/translate'
@@ -15,8 +15,10 @@ import Panel from './sidebar/panel'
 import Blackjack from './pages/blackjack/blackjack'
 
 function Game(props){
-    const {lang, game} = props
+    const {lang, page, user} = props
+    let game = page.game
     let title = game.table_name ? game.table_name : ""
+    const [bets, setBets] = useState([])
     let dispatch = useDispatch()
 
     function results(x){
@@ -29,29 +31,42 @@ function Game(props){
         dispatch(changeGame(null))
     }
 
+    useEffect(() => {
+        return () => {            
+            if(bets && bets.length>0){ // meaning he actually bet and started playing
+                let payload = {win: false, user, game, bets}
+                results(payload)
+            }
+        }
+    }, [])
+
+    function getBets(x){
+        setBets(x)
+    }
+
     return <>
         <div className="content_wrap">
-            <Header template={game} lang={lang}></Header>
+            <Header template="game" details={page} lang={lang}></Header>
             {(() => {
                 switch (title) {
                     case "roulette":
-                        return <Roulette {...props} results={(e)=>results(e)}></Roulette>
+                        return <Roulette {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Roulette>
                     case "blackjack":
-                        return <Blackjack {...props} results={(e)=>results(e)}></Blackjack>
+                        return <Blackjack {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Blackjack>
                     case "slots":
-                        return <Slots {...props} results={(e)=>results(e)}></Slots>
+                        return <Slots {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Slots>
                     case "craps":
-                        return <Craps {...props} results={(e)=>results(e)}></Craps>
+                        return <Craps {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Craps>
                     case "race":
-                        return <Race {...props} results={(e)=>results(e)}></Race>
+                        return <Race {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Race>
                     case "keno":
-                        return <Keno {...props} results={(e)=>results(e)}></Keno>
+                        return <Keno {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Keno>
                     default:
                         return <p>{translate({lang: lang, info: "error"})}</p>
                 }
             })()}
             <div className="page_exit">
-                <Button id="exit_salon" type="button" onClick={()=>handleExit()} className="mybutton button_transparent">
+                <Button id="exit_salon" type="button" onClick={()=>handleExit()} className="mybutton button_transparent shadow_convex">
                     {translate({lang: lang, info: "exit_game"})}
                 </Button>
             </div>

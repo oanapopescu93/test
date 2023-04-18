@@ -3,7 +3,7 @@ import { translate } from '../../translations/translate'
 import { useDispatch } from 'react-redux'
 import { changePopup } from '../../reducers/popup';
 import { changeUser } from '../../reducers/auth';
-import { isEmpty, setCookie } from '../../utils';
+import { isEmpty, setCookie } from '../../utils/utils';
 import { Form, Button, Col, Row } from 'react-bootstrap';
 
 function SignUp(props) {  
@@ -55,10 +55,10 @@ function SignUp(props) {
                 }
             }
         })
-    }, [lang]) 
+    }, []) 
 
     return <div className="sign_up_container">
-        <h3>{translate({lang: props.lang, info: "sign_up"})}</h3>
+        {/* <h3>{translate({lang: props.lang, info: "sign_up"})}</h3> */}
         <Form>
             <Row>
                 <Col sm={4} className="label_container">

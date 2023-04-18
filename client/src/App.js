@@ -1,5 +1,5 @@
 import React, {useEffect} from "react"
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 import * as io from 'socket.io-client'
 
@@ -10,11 +10,13 @@ import 'owl.carousel/dist/assets/owl.carousel.css'
 import 'owl.carousel/dist/assets/owl.theme.default.css'
 
 import Page from "./components/pages/page"
+import { bringPayload } from "./reducers/home"
 
 const socket = io()
 
 function App() {
 	let lang = useSelector(state => state.settings.lang)
+	let dispatch = useDispatch()
 
   	let my_console = function(){
 		let oldConsole = null
@@ -38,7 +40,8 @@ function App() {
 	}()
 
   	useEffect(() => {
-		my_console.disable()
+		//my_console.disable()
+		//dispatch(bringPayload())	
 		socket.connect()		
 		return () => {
 			socket.disconnect()

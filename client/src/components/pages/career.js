@@ -3,9 +3,9 @@ import { Button } from 'react-bootstrap'
 import {useDispatch} from 'react-redux'
 import { changePage } from '../../reducers/page'
 import { translate } from '../../translations/translate'
-import { sortList } from '../../utils'
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
+import { sortList } from '../../utils/utils'
+import Dropdown from 'react-bootstrap/Dropdown'
+import DropdownButton from 'react-bootstrap/DropdownButton'
 
 function CareerList(props){
     const {lang} = props
@@ -35,7 +35,7 @@ function CareerList(props){
         setList(mylist)
         setHeader(header)
         setFilter(mylist)
-	}, [])
+	}, [props.list])
 
     function handleDropdown(choice='all', i=0){ 
         setTitleDropdown(choice)

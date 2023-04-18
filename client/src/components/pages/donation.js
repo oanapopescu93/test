@@ -6,7 +6,7 @@ import { translate } from '../../translations/translate'
 import ukraine from '../../img/icons/ukraine.svg'
 
 function Donation(props){
-    const {lang, list, socket} = props
+    const {lang, list} = props
     let dispatch = useDispatch()
     let donation_type = ["crypto", "paypal"]
 

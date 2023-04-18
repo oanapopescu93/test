@@ -1,11 +1,11 @@
 import React, {useEffect, useState } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
-import { getWindowDimensions } from '../../utils'
+import { getWindowDimensions } from '../../utils/utils'
 import Carousel from '../carousel/carousel'
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import { changeGame } from '../../reducers/page'
+import Dropdown from 'react-bootstrap/Dropdown'
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import { changeGame, changeGamePage } from '../../reducers/page'
 
 function SalonGames(props){
     const {lang, items} = props
@@ -82,6 +82,7 @@ function SalonGames(props){
 
     function gameChoice(x){
         dispatch(changeGame(x))
+        dispatch(changeGamePage(null))
     }
 
     return <div className="salon_games">

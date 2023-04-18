@@ -21,8 +21,7 @@ import Language from '../partials/language'
 function Home(props) {
     let home = useSelector(state => state.home)
     let user = useSelector(state => state.auth.user)
-    let page = useSelector(state => state.page.page)
-    let game = useSelector(state => state.page.game)
+    let page = useSelector(state => state.page)
     let cookies = useSelector(state => state.settings.cookies)
     let dispatch = useDispatch()
     
@@ -41,7 +40,7 @@ function Home(props) {
                     return <div id="page-container">
                         <Language title={props.lang}></Language>
                         {(() => {
-                            switch (page) {
+                            switch (page.page) {
                                 case "About":
                                     return <About {...props}></About>
                                 case "terms_cond":
@@ -58,7 +57,7 @@ function Home(props) {
                                     return <Donation {...props} list={home.donations}></Donation>
                                 case "Salon":
                                 default:
-                                    return <Salon {...props} user={user} home={home} game={game}></Salon>
+                                    return <Salon {...props} user={user} home={home} page={page}></Salon>
                             }
                         })()}        
                         {cookies !== '1' ? <Cookies lang={props.lang} cookiesClick={()=>handleCookiesClick()}></Cookies> : null}

@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter } from '../utils'
+import { capitalizeFirstLetter } from '../utils/utils'
 import { words } from './words'
 
 export const translate = function (data){

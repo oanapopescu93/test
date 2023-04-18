@@ -14,7 +14,7 @@ function RaceTables(props){
         <div className="game_start">
             <Button 
                 type="button"  
-                className="mybutton round button_transparent"
+                className="mybutton round button_transparent shadow_convex"
                 onClick={()=>getData()}
             >{translate({lang: lang, info: "Click"})}</Button>
         </div>

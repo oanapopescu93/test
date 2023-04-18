@@ -9,7 +9,15 @@ function request(){
 
 function api(){
     return new Promise(function(resolve, reject){
-        fetch('/api/home')
+        fetch('/api/home', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              "Accept": "application/json",
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
         .then((response) => response.json())
         .then((data) => resolve(data))
         .catch(err => console.error('fetchBringThemAll2--> ' + err));

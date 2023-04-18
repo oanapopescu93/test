@@ -35,6 +35,7 @@ var word_bank = {
         sign_in_email_error: "Email is incorrect",
         sign_in_pass_error: "Password is incorrect",
         signin_forgot_password: "I forgot password",
+        subtitle: "Dare catch the rabbit",
 
         exit_salon: "Exit salon",
         salon_subtitle: "Welcome to the salon",
@@ -90,7 +91,8 @@ var word_bank = {
         sign_in_pass_empty: "Parola este goala",
         sign_in_email_error: "Email-ul este incorect",
         sign_in_pass_error: "Parola este incorecta",
-        signin_forgot_password: "Am uitat parola",        
+        signin_forgot_password: "Am uitat parola",  
+        subtitle: "Indrazneste sa prinzi iepurele",      
 
         exit_salon: "Iesi din salon",
         salon_subtitle: "Salon",
