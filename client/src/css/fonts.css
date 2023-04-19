@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Hazel Deco Light';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://fonts.cdnfonts.com/s/75716/HazelDecoLight-Regular.woff') format('woff');
+}
+
+
 /* cyrillic-ext */
 @font-face {
     font-family: 'Roboto Condensed';

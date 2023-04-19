@@ -20,11 +20,11 @@ function Donation(props){
             {(() => {
                 if(list && list.length>0){
                     return <div className="donation_container">
-                        <div className="donation_ukraine">
+                        {/* <div className="donation_ukraine">
                             <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/fundraisers/explore/search/charities/?query=ukraine">
                                 Donation for Ukraine <img id="ukraine_icon" alt="ukraine_icon" src={ukraine}></img>
                             </a>
-                        </div>
+                        </div> */}
                         <div className="deco">
                             <div className="donation_box">
                                 {donation_type.map(function(item01, i){

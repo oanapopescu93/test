@@ -31,6 +31,9 @@ function SalonGames(props){
             768:{
                 items:3
             },
+            1200:{
+                items:4
+            },
         }
     }
 

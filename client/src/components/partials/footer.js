@@ -47,7 +47,7 @@ function Footer(props){
                     <li onClick={()=>{handleClick('Questions')}}><span>{translate({lang: props.lang, info: "questions"})}</span></li>
                     <li onClick={()=>{handleClick('Career')}}><span>{translate({lang: props.lang, info: "career"})}</span></li>
                     <li onClick={()=>{handleClick('Contact')}}><span>{translate({lang: props.lang, info: "contact"})}</span></li>
-                    <li><a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/fundraisers/explore/search/charities/?query=ukraine"><img id="ukraine_icon" alt="ukraine_icon" src={ukraine}></img></a></li>
+                    {/* <li><a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/fundraisers/explore/search/charities/?query=ukraine"><img id="ukraine_icon" alt="ukraine_icon" src={ukraine}></img></a></li> */}
                 </ul>
             </div>
             <footer>

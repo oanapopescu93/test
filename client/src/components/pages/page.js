@@ -1,18 +1,72 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, {useEffect, useState} from 'react'
+import { useSelector,useDispatch } from 'react-redux'
 import { isEmpty } from '../../utils/utils'
 import Popup from '../popup/popup'
 import Sign from '../sign/sign'
 import Home from './home'
+import { bringPayload } from '../../reducers/home'
+import Splash from '../partials/splashScreen'
+import { translate } from '../../translations/translate'
 
 
 function Page(props) {
+    let home = useSelector(state => state.home)
     let user = useSelector(state => state.auth.user)
+    let page = useSelector(state => state.page)
+    let cookies = useSelector(state => state.settings.cookies)
     let uuid = user.uuid ? user.uuid : ''
+    const [loaded, setLoaded] = useState(false)
+    const [progressNumber, setProgressNumber] = useState(0)
+    let dispatch = useDispatch()
+
+    useEffect(() => {
+		dispatch(bringPayload())	
+        splash_screen()
+	}, [])
+
+    function splash_screen(){	
+		setTimeout(function(){
+			progress_move(300, 1000)
+		}, 500)
+	}
+
+    function progress_move(progress_frame, progress_timeout){
+        let width = 0
+		let id = setInterval(frame, progress_frame)
+		function frame() {
+            let random = randomIntFromInterval(1, 20)	
+            width = width + random
+            if (width >= 100){
+                setProgressNumber(100)
+                clearInterval(id)
+                setTimeout(function(){
+                    // setLoaded(true) //comment this to observe the splash screen
+                }, progress_timeout)
+            } else {
+                setProgressNumber(width)
+            }
+        }
+    }
+
+    function randomIntFromInterval(min, max) { // min and max included 
+		return Math.floor(Math.random() * (max - min + 1) + min)
+	}
 
     return <>
-        {isEmpty(uuid) ? <Sign lang={props.lang} socket={props.socket}></Sign> : <Home lang={props.lang} socket={props.socket}></Home>}
-        <Popup lang={props.lang}></Popup>
+        {(() => {
+            if(home){
+                if(loaded){
+                    return <>
+                        {isEmpty(uuid) ? <Sign {...props}></Sign> : <Home {...props} home={home} page={page} user={user} cookies={cookies}></Home>}
+                        <Popup lang={props.lang}></Popup>
+                    </>
+                } else {
+                    return <Splash {...props} progressNumber={progressNumber}></Splash>
+                }
+            } else {
+                return <p>{translate({lang: props.lang, info: "error"})}</p>
+            }
+        })()}         
     </>
 }
 
