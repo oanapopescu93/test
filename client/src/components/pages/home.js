@@ -38,7 +38,7 @@ function Home(props) {
                     if(home.career && home.career[0] && home.career[0][props.lang]){
                         list_career = home.career[0][props.lang]
                     }
-                    return <Career {...props} list={list}></Career>           
+                    return <Career {...props} list={list_career}></Career>           
                 case "Questions":
                     let list_questions = []
                     if(home.questions && home.questions[0] && home.questions[0][props.lang]){
