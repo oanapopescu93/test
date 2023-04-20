@@ -104,3 +104,19 @@ export const getWindowDimensions = function(){
 export const capitalizeFirstLetter = function(string){
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+export const postData = async function (url = "", data = {}) {
+  const response = await fetch(url, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: JSON.stringify(data),
+  })
+  return response.json()
+}

@@ -1323,8 +1323,14 @@ textarea {
 .contact_form .label_container, .contact_form input{
   margin-bottom: var(--padding_small);
 }
-.contact_form textarea{
+.contact_box .alert{
   margin-bottom: var(--padding);
+}
+.contact_box input, .contact_box textarea{
+  background-color: var(--transparent_2);
+}
+#contact_list, #contact_map{
+  background-color: var(--transparent_2);
 }
 
 /* media */

@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import Footer from '../partials/footer'
-import About from './about'
-import Contact from '../contact/contact'
+import About from './about/about'
+import Contact from './contact/contact'
 import Salon from '../salon/salon'
 import Cookies from '../partials/cookies'
 import { changeCookies } from '../../reducers/settings'
 import Questions from './questions'
-import TermsConditions from './termsConditions'
-import PolicyPrivacy from './policyPrivacy'
+import TermsConditions from './termsConditions/termsConditions'
+import PolicyPrivacy from './policyPrivacy/policyPrivacy'
 import Career from './career'
 import { ReactComponent as Bitcoin } from '../../img/icons/bitcoin-love-heart.svg'
 import { changePage } from '../../reducers/page'
@@ -26,8 +26,8 @@ function Home(props) {
     return <div id="page-container">
         <Language title={props.lang}></Language>
         {(() => {
-            //return <Contact {...props}></Contact>
-            switch (page) {
+            // return <Contact {...props}></Contact>
+            switch (page.page) {
                 case "About":
                     return <About {...props}></About>
                 case "terms_cond":

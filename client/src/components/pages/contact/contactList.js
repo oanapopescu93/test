@@ -8,7 +8,7 @@ function ContactList(props){
         handleChooseContactElement(x)
     }
 
-    return <div className="contact_box shadow_concav">
+    return <div id="contact_list" className="contact_box shadow_concav">
         <div className="contact_list">
             {list.map(function(item, i){
                 return <div key={i} className='contact_list_item_container'>

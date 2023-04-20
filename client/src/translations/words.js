@@ -73,6 +73,10 @@ var word_bank = {
         email_no_send: "Email has not been sent",
         subject: "Subject",
         message: "Message",
+
+        incorrect_email: "The email is incorrect",
+        empty_input_subject: "The subject input is empty",
+        empty_input_message: "The message input is empty",
     },
     "RO":{
         salon: "Salon",
@@ -148,6 +152,10 @@ var word_bank = {
         email_no_send: "Emailul nu a fost trimis",
         subject: "Subiect",
         message: "Mesaj",
+
+        incorrect_email: "Emailul este incorect",
+        empty_input_subject: "Campul Subiect este gol",
+        empty_input_message: "Campul Mesaj este gol",
     }
 }
 

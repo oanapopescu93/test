@@ -1,5 +1,5 @@
 import React from 'react'
-import { translate } from '../../translations/translate'
+import { translate } from '../../../translations/translate'
 
 function ListCell(props){
     const {lang, item} = props

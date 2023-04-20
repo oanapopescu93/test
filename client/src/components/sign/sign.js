@@ -3,8 +3,8 @@ import {useDispatch, useSelector} from 'react-redux'
 import { changePage } from '../../reducers/page'
 import { changePopup } from '../../reducers/popup'
 import { translate } from '../../translations/translate'
-import PolicyPrivacy from '../pages/policyPrivacy'
-import TermsConditions from '../pages/termsConditions'
+import PolicyPrivacy from '../pages/policyPrivacy/policyPrivacy'
+import TermsConditions from '../pages/termsConditions/termsConditions'
 import Header from '../partials/header'
 import Language from '../partials/language'
 import SignIn from './signIn'
@@ -137,14 +137,14 @@ function Sign(props) {
                                 </div>                                
                             </div> 
                             {(() => {
-                                    if(errorEmail || errorUser || errorPass){
-                                        return <div className="alert alert-danger">
-                                            {errorEmail ? <p className="text_red">errorEmail</p> : null}
-                                            {errorUser ? <p className="text_red">errorUser</p> : null}
-                                            {errorPass ? <p className="text_red">errorPass</p> : null}                        
-                                        </div>
-                                    }
-                                })()}                           
+                                if(errorEmail || errorUser || errorPass){
+                                    return <div className="alert alert-danger">
+                                        {errorEmail ? <p className="text_red">{translate({lang: props.lang, info: "incorrect_email"})}</p> : null}
+                                        {errorUser ? <p className="text_red">{translate({lang: props.lang, info: "empty_input_subject"})}</p> : null}
+                                        {errorPass ? <p className="text_red">{translate({lang: props.lang, info: "empty_input_message"})}</p> : null}                        
+                                    </div>
+                                }
+                            })()}                           
                         </div>   
                     </>
             }
