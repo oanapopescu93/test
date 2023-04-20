@@ -1,4 +1,4 @@
-export const check_submit = function(input="", type){
+export const validateInput = function(input="", type){
     let regex = ''
     switch(type){
       case "email":
@@ -13,10 +13,13 @@ export const check_submit = function(input="", type){
 				// At least one special character, (?=.*?[#?!@$%^&*-])
 				// Minimum eight in length .{8,}
 				break
+      default:
+        regex = ''
+        break
     }		
     let regex_exp = new RegExp(regex)			
     let pass_result = regex_exp.test(input)
-    //pass_result = true
+    pass_result = true //to make any input valid
     return pass_result
 }
   

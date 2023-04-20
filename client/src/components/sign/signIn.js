@@ -20,7 +20,7 @@ function SignIn(props) {
                 setPass(e.target.value)
                 break
             default:              
-          }
+        }
     }
 
     function handleSubmit(e){
@@ -54,7 +54,7 @@ function SignIn(props) {
                     <div className="label">{translate({lang: props.lang, info: "user"})}</div>
                 </Col>
                 <Col sm={8}>
-                    <input type="text" value={user} onChange={(e)=>{handleChange('user', e)}}/>
+                    <input className="input_light" type="text" value={user} onChange={(e)=>{handleChange('user', e)}}/>
                 </Col>
             </Row>
             <Row>
@@ -62,7 +62,7 @@ function SignIn(props) {
                     <div className="label">{translate({lang: props.lang, info: "password"})}</div>
                 </Col>
                 <Col sm={8}>
-                    <input type="password" value={pass} onChange={(e)=>{handleChange('pass', e)}}/>
+                    <input className="input_light" type="password" value={pass} onChange={(e)=>{handleChange('pass', e)}}/>
                 </Col>
             </Row>
             <Row>

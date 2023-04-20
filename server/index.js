@@ -16,9 +16,21 @@ const { get_device, get_extra_data } = require("./utils/other")
 const crypto = require('crypto')
 const { roulette } = require("./games/roulette")
 
+var nodemailer = require('nodemailer')
+var constants = require('./var/constants')
+
 const account_type = 1
 const user_money = 100
 const how_lucky = 7
+
+var transport = nodemailer.createTransport({
+	host: "smtp.mailtrap.io",
+	port: 2525,
+	auth: {
+	  user: constants.AUTH_USER,
+	  pass: constants.AUTH_PASS
+	}
+})
 
 io.on('connection', function(socket) {
   socket.on('signin_send', (data) => {
@@ -48,7 +60,6 @@ io.on('connection', function(socket) {
       console.log('[error]','signin_read2--> ', e)
     }
   })
-
   socket.on('signup_send', (data) => {  
     let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
     let login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
@@ -133,6 +144,72 @@ io.on('connection', function(socket) {
       }
     }   
   })  
+  socket.on('forgotPassword_send', (data) => {    
+    let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
+    let user = null    
+    for(let i in users_array){
+      if(users_array[i].email === data.email){
+        user = users_array[i]        
+        break
+      }
+    } 
+    if(user){
+      sendEmail(user, data).then(function(res){
+        try{
+          io.to(socket.id).emit('forgotPassword_read', res)
+        }catch(e){
+          console.log('[error]','forgotPassword_read2--> ', e)
+        }
+      })      
+    } else {
+      try{
+        io.to(socket.id).emit('forgotPassword_read', {send: "no_user"})
+      }catch(e){
+        console.log('[error]','forgotPassword_read3--> ', e)
+      }
+    } 
+  })
+
+  function sendEmail(data){ //send an email with instructions to reset token
+    let lang = data.lang ? data.lang : 'ENG'
+    let user = data.user
+    let email = data.email
+
+    console.log(data)
+
+    let subject = ''
+    let html = ''
+    switch(lang){
+      case "RO":
+        subject = 'BunnyBet resetare parola'
+        html = html + '<p>Buna ' + user + '</p>'
+        html = html + '<p>Ai cerut resetarea parolei tale.</p>'
+        break
+      default:
+        subject = 'BunnyBet reset password'
+        html = html + '<p>Hi ' + user + '</p>'
+        html = html + '<p>You requested to reset your password.</p>'
+        break
+    }
+
+    let mailOptions = {
+      from: constants.AUTH_FROM,
+      to: email,
+      subject: subject,
+      html: html
+    }
+    return new Promise(function(resolve, reject){
+      transport.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log('error--> ', error, mailOptions)
+          resolve({send: "email_no_send"})
+        } else {
+          console.log('info--> ', info.response)
+          resolve({send: "email_send"})
+        }
+      })
+    })
+  }
 
   // games
 	socket.on('roulette_send', function(data) {

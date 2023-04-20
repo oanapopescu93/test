@@ -5,13 +5,15 @@ import pageReducer from './page'
 import homeReducer from './home'
 import authReducer from './auth'
 import popupReducer from './popup'
+import contactReducer from './contact'
 
 const allReducers = combineReducers({	
 	settings: settingsReducer,
 	page: pageReducer,
 	home: homeReducer,
 	auth: authReducer,
-	popup: popupReducer
+	popup: popupReducer,
+	contact: contactReducer,
 })
 
 export default allReducers

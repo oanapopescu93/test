@@ -22,7 +22,7 @@ body{
 	color:var(--color);
 	font-family: 'Roboto Condensed';
   font-size: 14px;
-  line-height: 14px;
+  line-height: 16px;
 }
 .grad {
 	background-color:var(--green);
@@ -90,12 +90,12 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, p, address {
 h1 {
 	font-size: 30px;
 	line-height: 30px;
-	/* font-family: Helvetica, sans-serif; */
   font-family: 'Hazel Deco Light';
 }
 h2 {
 	font-size: 24px;
 	line-height: 24px;
+  font-family: 'Hazel Deco Light';
 }
 h3 {
 	font-size: 20px;
@@ -191,7 +191,20 @@ textarea:focus, input:focus{
   padding: var(--padding);
   border-radius: 10px;
   text-align: center;
-  height: 200px;
+  height: 180px;
+  position: relative;
+  z-index: 1;
+}
+.sign_box.isMinor_sign{
+  padding: 50px;  
+}
+.sign_box.isMinor_sign p{
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 0%;
+  width: 100%;
+  transform: translate(0px, -50%);
 }
 .sign_container input{
     margin-bottom: 5px;
@@ -226,14 +239,14 @@ textarea:focus, input:focus{
   border-left: solid 1px var(--bg);
 }
 .sign_container button{
-  margin-top: 5px;
+  margin-top: var(--padding_small);
 }
 .sign_container form{
   margin-top: var(--padding);
 }
 .sign_container .label_container{
   text-align: right;
-  padding-top: 5px;
+  padding-top: var(--padding_small);
 }
 .sign_container_error{
   padding: var(--padding);
@@ -382,19 +395,26 @@ textarea:focus, input:focus{
   color: var(--text);
 }
 
-textarea {
-	resize: none;
-}
-input{
-  border: solid 1px var(--color);
-  background-color: transparent;
-  color: var(--color);
+input, textarea{
   border-radius: 10px;
   padding: 5px 10px;
   font-size: 14px;
   line-height: 14px;
   height: 25px;
   width: 100%;
+  background-color: transparent;
+}
+.input_light{
+  border: solid 1px var(--color);  
+  color: var(--color);
+}
+.input_dark{
+  border: solid 1px var(--bg);
+  color: var(--bg);
+}
+textarea {
+	resize: none;
+  min-height: 200px;
 }
 
 .alert {
@@ -404,6 +424,7 @@ input{
   font-size: 12px;
   line-height: 12px;
   margin: 0px;
+  margin-top: var(--padding);
 }
 .alert.alert-success {
   background-color: rgba(0, 128, 0, 0.3);
@@ -414,9 +435,6 @@ input{
   background-color: rgba(255, 0, 0, 0.3);
   border: solid 1px var(--red);
   color: var(--red);
-}
-.sign_container .alert{
-  margin-top: var(--padding);
 }
 
 .page_exit{
@@ -541,7 +559,7 @@ input{
 }
 .modal-content{
   background-color: var(--color);
-  border: solid 1px var(--color);
+  border: solid 1px var(--bg);
   color: var(--bg);
 }
 .modal-header{
@@ -577,6 +595,16 @@ input{
 }
 .popup_body{
   color: var(--bg);
+}
+.isMinor_button{
+  display: inline-block;
+  width: 50%;
+  padding: var(--padding_small);
+}
+.mymodal .modal-header{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* COOKIES */
@@ -673,6 +701,7 @@ input{
   padding-bottom: var(--padding);
   margin-bottom: var(--padding);
   border-bottom: solid 1px var(--color);
+  font-family: 'Hazel Deco Light';
 }
 .footer_container {
   position: fixed;
@@ -746,6 +775,9 @@ input{
   text-align: center;
   transform: translate(0%, -50%);
   font-size: 24px;
+}
+.loader_container .loader img{
+	width:200px;
 }
 
 /* SALON SIDEBAR LEFT */
@@ -1117,14 +1149,14 @@ input{
   width: 100%;
 }
 #splash_screen .content-dot {
-  border-top: 1px dotted var(--color);
-  border-bottom: 1px dotted var(--color);
+  border-top: solid 1px var(--color);
+  border-bottom: solid 1px var(--color);
   padding: var(--padding_small) 0px;
   margin: var(--padding_small) 0px;
 }
 #splash_screen .content {
-  border-top: 1px solid var(--color);
-  border-bottom: 1px solid var(--color);
+  border-top: solid 1px var(--color);
+  border-bottom: solid 1px var(--color);
   padding: var(--padding_small);
 }
 #splash_screen #logo_icon{
@@ -1139,7 +1171,7 @@ input{
 }
 #splash_screen .main-diamond-outer {
   transform: rotate(45deg);
-  border: 1px solid var(--color);
+  border: solid 1px var(--color);
   background-color: var(--transparent_5);
   height: 400px;
   width: 400px;
@@ -1148,14 +1180,14 @@ input{
   z-index: 1;
 }
 #splash_screen .main-diamond-inner {
-  border: 1px dotted var(--color);
-    width: 100%;
-    height: 100%;
+  border: solid 1px var(--color);
+  width: 100%;
+  height: 100%;
 }
 #splash_screen .mid-diamond-left,
 #splash_screen .mid-diamond-right{
   transform: rotate(45deg);
-  border: 1px solid var(--color);
+  border: solid 1px var(--color);
   background-color: var(--transparent_5);
   position:absolute;
   z-index: 1;
@@ -1167,7 +1199,7 @@ input{
 #splash_screen .small-diamond-right-top,
 #splash_screen .small-diamond-right-bottom{
   transform: rotate(45deg);
-  border: 1px dotted var(--color);
+  border: solid 1px var(--color);
   background-color: var(--transparent_5);
   position:absolute;
   z-index: 2;
@@ -1179,7 +1211,7 @@ input{
 #splash_screen .small-diamond-3,
 #splash_screen .small-diamond-4{
   transform: rotate(45deg);
-  border: 1px dotted var(--color);
+  border: solid 1px var(--color);
   background-color: var(--transparent_5);
   position:absolute;
   z-index: 3;
@@ -1236,10 +1268,14 @@ input{
   line-height: 12px;
   margin-top: var(--padding_small);
 }
-.progress_box{
+.progress_box_container{
   background-color: transparent;
   border: solid 1px var(--color);
   padding: var(--padding_small);  
+}
+.progress_box{
+  border: solid 1px var(--color);
+  background-color: var(--transparent_5);
 }
 .progress{
     background-color: var(--color);
@@ -1254,6 +1290,41 @@ input{
 .progress_text span{
   position: absolute;
   right: -15px;
+}
+
+/* FORGOT PASSWORD */
+.forgotPassword_buttons{
+  padding: var(--padding_small) 0px;
+}
+.forgotPassword_buttons input{
+  margin-bottom: var(--padding_small);
+}
+
+/* CONTACT */
+.contact_box{
+  padding: var(--padding);
+  border-radius: var(--radius);
+  border: solid 1px var(--color);
+  margin-bottom: var(--padding);
+  text-align: left;
+}
+.contact_list{
+  padding: var(--padding);
+  height: 360px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.contact_list_item{
+  padding: var(--padding);
+  border-radius: var(--radius);
+  border: solid 1px var(--color);
+  margin-bottom: var(--padding);
+}
+.contact_form .label_container, .contact_form input{
+  margin-bottom: var(--padding_small);
+}
+.contact_form textarea{
+  margin-bottom: var(--padding);
 }
 
 /* media */
@@ -1372,6 +1443,11 @@ input{
   .progress_text span {
     position: static;
   }
+
+  /* LOADER */
+  .loader_container .loader img{
+		width:100px;
+	}
 }
 @media (max-width:576px) {	
   .sign_container_box{

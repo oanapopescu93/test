@@ -1,5 +1,5 @@
 import React, {useEffect} from "react"
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 import * as io from 'socket.io-client'
 
@@ -15,7 +15,6 @@ const socket = io()
 
 function App() {
 	let lang = useSelector(state => state.settings.lang)
-	let dispatch = useDispatch()
 
   	let my_console = function(){
 		let oldConsole = null

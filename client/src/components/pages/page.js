@@ -6,7 +6,7 @@ import Sign from '../sign/sign'
 import Home from './home'
 import { bringPayload } from '../../reducers/home'
 import Splash from '../partials/splashScreen'
-import { translate } from '../../translations/translate'
+import Loader from '../partials/loader'
 
 
 function Page(props) {
@@ -26,7 +26,7 @@ function Page(props) {
 
     function splash_screen(){	
 		setTimeout(function(){
-			progress_move(300, 1000)
+			progress_move(200, 1000)
 		}, 500)
 	}
 
@@ -40,7 +40,7 @@ function Page(props) {
                 setProgressNumber(100)
                 clearInterval(id)
                 setTimeout(function(){
-                    // setLoaded(true) //comment this to observe the splash screen
+                    setLoaded(true) //comment this to observe the splash screen
                 }, progress_timeout)
             } else {
                 setProgressNumber(width)
@@ -54,19 +54,21 @@ function Page(props) {
 
     return <>
         {(() => {
-            if(home){
+            if(isEmpty(uuid)){
                 if(loaded){
-                    return <>
-                        {isEmpty(uuid) ? <Sign {...props}></Sign> : <Home {...props} home={home} page={page} user={user} cookies={cookies}></Home>}
-                        <Popup lang={props.lang}></Popup>
-                    </>
+                    return <Sign {...props}></Sign>
                 } else {
                     return <Splash {...props} progressNumber={progressNumber}></Splash>
-                }
+                }                
             } else {
-                return <p>{translate({lang: props.lang, info: "error"})}</p>
+                if(home.loaded){
+                    return <Home {...props} home={home} page={page} user={user} cookies={cookies}></Home>
+                } else {
+                    return <Loader></Loader>
+                }
             }
-        })()}         
+        })()} 
+        <Popup {...props}></Popup>
     </>
 }
 

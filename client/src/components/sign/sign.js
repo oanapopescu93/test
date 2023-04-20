@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import { changePage } from '../../reducers/page'
+import { changePopup } from '../../reducers/popup'
 import { translate } from '../../translations/translate'
 import PolicyPrivacy from '../pages/policyPrivacy'
 import TermsConditions from '../pages/termsConditions'
@@ -11,7 +12,8 @@ import SignUp from './signUp'
 
 function Sign(props) {
     let dispatch = useDispatch()
-    let page = useSelector(state => state.page.page)
+    let page = useSelector(state => state.page.page)    
+    let isMinor = useSelector(state => state.auth.isMinor)
     const [visible, setVisible] = useState('signIn')
     const [errorEmail, setErrorEmail] = useState(false)
     const [errorUser, setErrorUser] = useState(false)
@@ -61,7 +63,14 @@ function Sign(props) {
     }
 
     function handleForgotPassword(){
-        //will do
+        let payload = {
+            open: true,
+            template: "forgotPassword",
+            title: translate({lang: props.lang, info: "forgot_password_title"}),
+            data: translate({lang: props.lang, info: "forgot_password_text"}),
+            size: 'lg',
+        }
+        dispatch(changePopup(payload))
     }
 
     function handleLink(link){
@@ -73,6 +82,8 @@ function Sign(props) {
             switch(x){
                 case "checkbox1":
                     setCheckboxOne(!checkboxOne)
+                    break
+                default:
                     break
             }
         }       
@@ -91,34 +102,38 @@ function Sign(props) {
                         <Language title={props.lang}></Language>
                         <div className="sign_container">
                             <div className="sign_container_box">
-                                <div className="deco">
-                                    <Header template="sign" lang={props.lang}></Header>
-                                    <div className="sign_box">
-                                        <ul>
-                                            <li id="signin_tab" className={signIn} onClick={()=>{handleClick('signIn')}}><span>{translate({lang: props.lang, info: "sign_in"})}</span></li>
-                                            <li id="signup_tab" className={signUp} onClick={()=>{handleClick('signUp')}}><span>{translate({lang: props.lang, info: "sign_up"})}</span></li>
-                                        </ul>
-                                        {visible === "signIn" ? <SignIn signSubmit={(e)=>{signSubmit(e)}} lang={props.lang} socket={props.socket}></SignIn> : 
-                                        <SignUp signSubmit={(e)=>{signSubmit(e)}} lang={props.lang} socket={props.socket}></SignUp>}
-                                    </div>  
-                                    <div className="sign_extra_info">
-                                        {visible === "signIn" ? <p onClick={()=>handleForgotPassword()}>{translate({lang: props.lang, info: "signin_forgot_password"})}</p> : <>
-                                        <div className="checkbox_radio_container">
-                                            <label>
-                                                <input type="checkbox" name="checkbox1" checked={checkboxOne} onChange={()=>{handleChangeCheck("checkbox1")}}/>
-                                                {(() => {
-                                                    switch (props.lang) {
-                                                        case "RO":
-                                                            return <h6>Sunt de acord cu <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> si <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
-                                                        case "ENG":
-                                                        default:
-                                                            return <h6>I agree to <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> and <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
-                                                    }
-                                                })()}
-                                            </label>
+                                <div className="deco">                                    
+                                    {isMinor === "false" ? <>
+                                        <Header template="sign" lang={props.lang}></Header>
+                                        <div className="sign_box">
+                                            <ul>
+                                                <li id="signin_tab" className={signIn} onClick={()=>{handleClick('signIn')}}><span>{translate({lang: props.lang, info: "sign_in"})}</span></li>
+                                                <li id="signup_tab" className={signUp} onClick={()=>{handleClick('signUp')}}><span>{translate({lang: props.lang, info: "sign_up"})}</span></li>
+                                            </ul>
+                                            {visible === "signIn" ? <SignIn signSubmit={(e)=>{signSubmit(e)}} lang={props.lang} socket={props.socket}></SignIn> : 
+                                            <SignUp signSubmit={(e)=>{signSubmit(e)}} lang={props.lang} socket={props.socket}></SignUp>}
+                                        </div>  
+                                        <div className="sign_extra_info">
+                                            {visible === "signIn" ? <p onClick={()=>handleForgotPassword()}>{translate({lang: props.lang, info: "signin_forgot_password"})}</p> : <>
+                                            <div className="checkbox_radio_container">
+                                                <label>
+                                                    <input className="input_light" type="checkbox" name="checkbox1" checked={checkboxOne} onChange={()=>{handleChangeCheck("checkbox1")}}/>
+                                                    {(() => {
+                                                        switch (props.lang) {
+                                                            case "RO":
+                                                                return <h6>Sunt de acord cu <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> si <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
+                                                            case "ENG":
+                                                            default:
+                                                                return <h6>I agree to <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> and <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
+                                                        }
+                                                    })()}
+                                                </label>
+                                            </div>
+                                            </>}
                                         </div>
-                                        </>}
-                                    </div>
+                                    </> : <div className="sign_box isMinor_sign">
+                                        <p>{translate({lang: props.lang, info: "isMinor_sign"})}</p>
+                                    </div>}                                    
                                 </div>                                
                             </div> 
                             {(() => {

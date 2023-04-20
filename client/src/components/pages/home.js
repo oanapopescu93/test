@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import Footer from '../partials/footer'
 import About from './about'
-import Contact from './contact'
+import Contact from '../contact/contact'
 import Salon from '../salon/salon'
 import Cookies from '../partials/cookies'
 import { changeCookies } from '../../reducers/settings'
@@ -26,6 +26,7 @@ function Home(props) {
     return <div id="page-container">
         <Language title={props.lang}></Language>
         {(() => {
+            //return <Contact {...props}></Contact>
             switch (page) {
                 case "About":
                     return <About {...props}></About>

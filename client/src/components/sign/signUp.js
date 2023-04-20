@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { translate } from '../../translations/translate'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { changePopup } from '../../reducers/popup';
 import { changeUser } from '../../reducers/auth';
 import { isEmpty, setCookie } from '../../utils/utils';
@@ -8,6 +8,7 @@ import { Form, Button, Col, Row } from 'react-bootstrap';
 
 function SignUp(props) {  
     const {lang, socket} = props  
+    let isMinor = useSelector(state => state.auth.isMinor)
     const [email, setEmail] = useState('')
     const [user, setUser] = useState('')
     const [pass, setPass] = useState('')
@@ -57,6 +58,21 @@ function SignUp(props) {
         })
     }, []) 
 
+    useEffect(() => {
+        if(isEmpty(isMinor)){
+            // first time check
+            let payload = {
+                open: true,
+                template: "isMinor",
+                title: translate({lang: lang, info: "isMinor_title"}),
+                ata: translate({lang: lang, info: "isMinor_text"}),
+                size: 'lg',
+                sticky: true
+            }
+            dispatch(changePopup(payload))
+        }
+	}, [isMinor]) 
+
     return <div className="sign_up_container">
         {/* <h3>{translate({lang: props.lang, info: "sign_up"})}</h3> */}
         <Form>
@@ -65,7 +81,7 @@ function SignUp(props) {
                     <div className="label">{translate({lang: props.lang, info: "email"})}</div>
                 </Col>
                 <Col sm={8}>
-                    <input type="text" value={email} onChange={(e)=>{handleChange('email', e)}}/>
+                    <input className="input_light" type="text" value={email} onChange={(e)=>{handleChange('email', e)}}/>
                 </Col>
             </Row>
             <Row>
@@ -73,7 +89,7 @@ function SignUp(props) {
                     <div className="label">{translate({lang: props.lang, info: "user"})}</div>
                 </Col>
                 <Col sm={8}>
-                    <input type="text" value={user} onChange={(e)=>{handleChange('user', e)}}/>
+                    <input className="input_light" type="text" value={user} onChange={(e)=>{handleChange('user', e)}}/>
                 </Col>
             </Row>
             <Row>
@@ -81,7 +97,7 @@ function SignUp(props) {
                     <div className="label">{translate({lang: props.lang, info: "password"})}</div>
                 </Col>
                 <Col sm={8}>
-                    <input type="password" value={pass} onChange={(e)=>{handleChange('pass', e)}}/>
+                    <input className="input_light" type="password" value={pass} onChange={(e)=>{handleChange('pass', e)}}/>
                 </Col>
             </Row>
             <Row>

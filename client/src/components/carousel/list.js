@@ -18,8 +18,7 @@ function List(props) {
             } else {
                 return <p>{translate({lang: lang, info: "no_data"})}</p>
             }
-        })()}
-        
+        })()}        
     </>
 }
 

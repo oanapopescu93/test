@@ -11,6 +11,7 @@ const initialState = {
         user: getCookie("casino_user") !== "" ? getCookie("casino_user") : null,
         uuid: getCookie("casino_uuid") !== "" ? getCookie("casino_uuid") : null,
     },
+    isMinor: getCookie("casino_isminor") !== "" ? getCookie("casino_isminor") : null,
 }
 
 const pageSlice = createSlice({
@@ -43,12 +44,17 @@ const pageSlice = createSlice({
                 setCookie("casino_uuid", payload.uuid)
             }
         },
+        changeIsMinor: (state, { payload }) => {
+            state.isMinor = payload
+            setCookie("casino_isminor", payload)
+        },
         resetAuth: () => initialState,
     }
 })
 
 export const {
     changeUser,
+    changeIsMinor
 } = pageSlice.actions
 
 export default pageSlice.reducer

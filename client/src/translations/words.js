@@ -36,6 +36,9 @@ var word_bank = {
         sign_in_pass_error: "Password is incorrect",
         signin_forgot_password: "I forgot password",
         subtitle: "Dare catch the rabbit",
+        country: "Country",
+        city: "City",
+        phone: "Phone",
 
         exit_salon: "Exit salon",
         salon_subtitle: "Welcome to the salon",
@@ -55,6 +58,21 @@ var word_bank = {
 
         no_data: "No info",
         no_bets: "You didn't place any bets",
+        no_user: "No user was found",
+
+        isMinor_title: "Age verification",
+        isMinor_text: "Are you over 18?",
+        yes: "Yes",
+        no: "No",
+        isMinor_sign: "You can't enter because you are underage.",
+        
+        forgot_password_title: "Forgot your passowrd",
+        forgot_password_text: "Please enter the email address used to register. We will send you your new password to that address.",
+        send: "Send",
+        email_send: "Email has been sent",
+        email_no_send: "Email has not been sent",
+        subject: "Subject",
+        message: "Message",
     },
     "RO":{
         salon: "Salon",
@@ -92,7 +110,10 @@ var word_bank = {
         sign_in_email_error: "Email-ul este incorect",
         sign_in_pass_error: "Parola este incorecta",
         signin_forgot_password: "Am uitat parola",  
-        subtitle: "Indrazneste sa prinzi iepurele",      
+        subtitle: "Indrazneste sa prinzi iepurele",  
+        country: "Country",
+        city: "City",
+        phone: "Phone",    
 
         exit_salon: "Iesi din salon",
         salon_subtitle: "Salon",
@@ -112,6 +133,21 @@ var word_bank = {
 
         no_data: "Nu avem informatii disponibile",
         no_bets: "Nu ai plasat niciun pariu",
+        no_user: "Nu exista user",
+        
+        isMinor_title: "Verificare varsta",
+        isMinor_text: "Ai peste 18 ani?",
+        yes: "Da",
+        no: "Nu",
+        isMinor_sign: "Nu poti sa accesezi acest site pentru ca ai sub 18 ani.",
+
+        forgot_password_title: "Ti-ai uitat parola?",
+        forgot_password_text: "Introdu adresa ta de email cu care te-ai inregistrat. Noi iti vom trimite parola noua pe acesta adresa.",
+        send: "Trimite",
+        email_send: "Emailul a fost trimis",
+        email_no_send: "Emailul nu a fost trimis",
+        subject: "Subiect",
+        message: "Mesaj",
     }
 }
 

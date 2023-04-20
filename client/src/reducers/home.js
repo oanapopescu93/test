@@ -9,6 +9,7 @@ const initialState = {
     questions: [],
     slot_prises: [],
     race_rabbits: [],
+    contact: [],
     loaded: false
 }
 
@@ -28,6 +29,7 @@ const homeSlice = createSlice({
             state.questions = payload.questions
             state.slot_prises = payload.slot_prises
             state.race_rabbits = payload.race_rabbits
+            state.contact = payload.contact
             state.loaded = true
         },
         resetHome: () => initialState,
