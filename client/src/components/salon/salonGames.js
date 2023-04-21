@@ -37,11 +37,17 @@ function SalonGames(props){
         }
     }
 
+    function handleResize(event){
+        setWidth(getWindowDimensions().width)
+    }
+
     useEffect(() => {
         create_casino_games()
-        window.addEventListener('resize', function(event){
-            setWidth(getWindowDimensions().width)
-        })
+        if (typeof window !== "undefined") {
+            window.addEventListener("resize", handleResize)
+            handleResize()
+            return () => window.removeEventListener("resize", handleResize)
+        }
 	}, [])
 
     function create_casino_games(){

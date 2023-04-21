@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {useDispatch} from 'react-redux'
 import { changeGame, changePage } from '../../reducers/page'
 import { translate } from '../../translations/translate'
-import ukraine from '../../img/icons/ukraine.svg'
+// import ukraine from '../../img/icons/ukraine.svg'
 
 function Footer(props){
     let dispatch = useDispatch()

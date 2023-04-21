@@ -102,8 +102,10 @@ function Sign(props) {
                         <Language title={props.lang}></Language>
                         <div className="sign_container">
                             <div className="sign_container_box">
-                                <div className="deco">                                    
-                                    {isMinor === "false" ? <>
+                                <div className="deco">      
+                                    {isMinor === "true" ? <div className="sign_box isMinor_sign">
+                                        <p>{translate({lang: props.lang, info: "isMinor_sign"})}</p>
+                                    </div> : <>
                                         <Header template="sign" lang={props.lang}></Header>
                                         <div className="sign_box">
                                             <ul>
@@ -131,9 +133,7 @@ function Sign(props) {
                                             </div>
                                             </>}
                                         </div>
-                                    </> : <div className="sign_box isMinor_sign">
-                                        <p>{translate({lang: props.lang, info: "isMinor_sign"})}</p>
-                                    </div>}                                    
+                                    </>}                                  
                                 </div>                                
                             </div> 
                             {(() => {

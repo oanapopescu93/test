@@ -26,6 +26,8 @@ function User(props){
                 dispatch(changePage(choice))
                 dispatch(changeGame(null))
 				break
+            default:
+                break
 		}
     }
 

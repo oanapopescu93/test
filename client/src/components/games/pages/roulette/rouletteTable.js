@@ -1,20 +1,15 @@
 import React, {useEffect} from 'react'
-import { useDispatch } from 'react-redux'
-import { translate } from '../../../../translations/translate'
 import { getMousePos, get_roulette_bets, isInside } from '../../../../utils/games'
 import $ from 'jquery'
-import { changePopup } from '../../../../reducers/popup'
+import carrot_img from '../../../../img/icons/carrot_icon.png'
 
 function roulette_bets(props){
     let self = this	
-    let lang = props.lang
-	const dispatch = props.dispatch
-
 	let canvas
 	let ctx
+    let reason = ""
 	let canvas_width = 0
 	let canvas_height = 0
-    let reason = ""
 	
 	let small_image = false
 	let roulette_bets_coord = [0, 0, 795, 268, 0, 0, 795, 268]
@@ -24,8 +19,9 @@ function roulette_bets(props){
 
     let list_bets = []
     let your_bets = []
+	let your_last_bet = {} 
     let numbers = []
-    let bet_value = 1
+	let bet_square = 40
 
     this.ready = function(r){
         reason = r
@@ -46,27 +42,28 @@ function roulette_bets(props){
 	}
 
     this.createCanvas = function(){
-		ctx = canvas.getContext("2d")		
+		ctx = canvas.getContext("2d")	
+		small_image = false	
 		if (window.innerWidth < 960){
 			if(window.innerHeight < window.innerWidth){
 				//small landscape				
-				canvas.width = 400
+				canvas.width = 300
 				canvas.height = 150
-				small_image = false
 				roulette_bets_coord = [0, 0, 795, 268, 0, 0, 400, 135]
 			} else {
 				//small portrait
 				canvas.width = 150
-				canvas.height = 400
+				canvas.height = 300
 				small_image = true
-				roulette_bets_coord = [0, 0, 382, 1136, 0, 0, 191, 568]
-			}			
+				roulette_bets_coord = [0, 0, 382, 1136, 0, 0, 191, 568]				
+			}	
+			bet_square = 30		
 		} else {
 			//big
 			canvas.width = 900
 			canvas.height = 280
-			small_image = false
 			roulette_bets_coord = [0, 0, 795, 268, 0, 0, 795, 268]
+			bet_square = 40
 		}
         canvas_width = canvas.width
 		canvas_height = canvas.height	
@@ -230,15 +227,15 @@ function roulette_bets(props){
 					squares.c.y = squares.c.y - squares.c.w
 				}
 				//draw_rect(ctx_bets, squares.c.x, squares.c.y, squares.c.w, squares.c.h, 'transparent', 1, 'red')
-				list_bets.push({x: squares.c.x, y: squares.c.y, width: squares.c.w, height: squares.c.h, color: color[i-1], text: i.toString()})
+				list_bets.push({x: squares.c.x, y: squares.c.y, width: squares.c.w, height: squares.c.h, color: color[i-1], text: i.toString(), bet_value: 1})
 			}
 
 			// draw_rect(ctx_bets, 0*squares.d.w + squares.d.x, squares.d.y, squares.d.w, squares.d.h, 'transparent', 1, 'red')
 			// draw_rect(ctx_bets, 1*squares.d.w + squares.d.x, squares.d.y, squares.d.w, squares.d.h, 'transparent', 1, 'red')
 			// draw_rect(ctx_bets, 2*squares.d.w + squares.d.x, squares.d.y, squares.d.w, squares.d.h, 'transparent', 1, 'red')
-			list_bets.push({x: 0*squares.d.w + squares.d.x, y: squares.d.y, width: squares.d.w, height: squares.d.h, color: "", text: "1st 12"})	
-			list_bets.push({x: 1*squares.d.w + squares.d.x, y: squares.d.y, width: squares.d.w, height: squares.d.h, color: "", text: "2st 12"})	
-			list_bets.push({x: 2*squares.d.w + squares.d.x, y: squares.d.y, width: squares.d.w, height: squares.d.h, color: "", text: "3st 12"})	
+			list_bets.push({x: 0*squares.d.w + squares.d.x, y: squares.d.y, width: squares.d.w, height: squares.d.h, color: "", text: "1st 12", bet_value: 1})	
+			list_bets.push({x: 1*squares.d.w + squares.d.x, y: squares.d.y, width: squares.d.w, height: squares.d.h, color: "", text: "2st 12", bet_value: 1})	
+			list_bets.push({x: 2*squares.d.w + squares.d.x, y: squares.d.y, width: squares.d.w, height: squares.d.h, color: "", text: "3st 12", bet_value: 1})	
 		
 			// draw_rect(ctx_bets, 0*squares.e.w + squares.e.x, squares.e.y, squares.e.w, squares.e.h, 'transparent', 1, 'red')
 			// draw_rect(ctx_bets, 1*squares.e.w + squares.e.x, squares.e.y, squares.e.w, squares.e.h, 'transparent', 1, 'red')
@@ -246,19 +243,19 @@ function roulette_bets(props){
 			// draw_rect(ctx_bets, 3*squares.e.w + squares.e.x, squares.e.y, squares.e.w, squares.e.h, 'transparent', 1, 'red')
 			// draw_rect(ctx_bets, 4*squares.e.w + squares.e.x, squares.e.y, squares.e.w, squares.e.h, 'transparent', 1, 'red')
 			// draw_rect(ctx_bets, 5*squares.e.w + squares.e.x, squares.e.y, squares.e.w, squares.e.h, 'transparent', 1, 'red')				
-			list_bets.push({x: 0*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "1-18"})
-			list_bets.push({x: 1*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "Even"})
-			list_bets.push({x: 2*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "reds"})
-			list_bets.push({x: 3*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "blacks"})	
-			list_bets.push({x: 4*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "Odd"})
-			list_bets.push({x: 5*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "19-36"})
+			list_bets.push({x: 0*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "1-18", bet_value: 1})
+			list_bets.push({x: 1*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "Even", bet_value: 1})
+			list_bets.push({x: 2*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "reds", bet_value: 1})
+			list_bets.push({x: 3*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "blacks", bet_value: 1})	
+			list_bets.push({x: 4*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "Odd", bet_value: 1})
+			list_bets.push({x: 5*squares.e.w + squares.e.x, y: squares.e.y, width: squares.e.w, height: squares.e.h, color: "", text: "19-36", bet_value: 1})
 
 			// draw_rect(ctx_bets, squares.f.x, 0*squares.f.h + squares.f.y, squares.f.w, squares.f.h, 'transparent', 1, 'red')
 			// draw_rect(ctx_bets, squares.f.x, 1*squares.f.h + squares.f.y, squares.f.w, squares.f.h, 'transparent', 1, 'red')
 			// draw_rect(ctx_bets, squares.f.x, 2*squares.f.h + squares.f.y, squares.f.w, squares.f.h, 'transparent', 1, 'red')
-			list_bets.push({x: squares.f.x, y: 0*squares.f.h + squares.f.y, width: squares.f.w, height: squares.f.h, color: "", text: "2 to 1a"})	
-			list_bets.push({x: squares.f.x, y: 1*squares.f.h + squares.f.y, width: squares.f.w, height: squares.f.h, color: "", text: "2 to 1b"})	
-			list_bets.push({x: squares.f.x, y: 2*squares.f.h + squares.f.y, width: squares.f.w, height: squares.f.h, color: "", text: "2 to 1c"})
+			list_bets.push({x: squares.f.x, y: 0*squares.f.h + squares.f.y, width: squares.f.w, height: squares.f.h, color: "", text: "2 to 1a", bet_value: 1})	
+			list_bets.push({x: squares.f.x, y: 1*squares.f.h + squares.f.y, width: squares.f.w, height: squares.f.h, color: "", text: "2 to 1b", bet_value: 1})	
+			list_bets.push({x: squares.f.x, y: 2*squares.f.h + squares.f.y, width: squares.f.w, height: squares.f.h, color: "", text: "2 to 1c", bet_value: 1})
 		} else {
 			//small portrait
 			for(let i = 1; i < numbers.length-k; i++) {	
@@ -306,30 +303,51 @@ function roulette_bets(props){
     this.handleClick = function(){
         if($('#roulette_bets_canvas')){
             $('#roulette_bets_canvas').off('click').on('click', function(event) {
-                let money = props.user.money
                 let mousePos = getMousePos(canvas, event)
                 self.canvas_click(mousePos)
             })
         }
+		if($('#roulette_bets_clear')){
+			$('#roulette_bets_clear').off('click').on('click', function(event) {
+				your_last_bet = {}
+				your_bets = []
+				self.choose_roulette_bets()
+				self.create_roulette_bets()
+				self.handleClick()
+			})
+		}
+		
     }
 
-    this.canvas_click = function(mouse){        
+    this.canvas_click = function(mouse){ 
         for(let i in list_bets){
 			let obj = list_bets[i]
-			obj.bet_value = bet_value	
 			if (isInside(mouse, obj)) {
-				your_bets.push(obj)
+				your_bets = [...your_bets, obj]
+				your_last_bet = obj
+				self.draw_tokens(your_last_bet)
 				break
 			} 
 		}
         props.getData(your_bets)
     }
+
+	this.draw_tokens = function(bet){		
+		let x = bet.x + bet.width/2 - bet_square/4
+		let y = bet.y + bet.height/2 - bet_square/4 - 5
+		let w = bet_square/2
+		let h = bet_square/2+10
+		let img = new Image()
+		img.src = carrot_img
+		img.onload = function() {
+			ctx.drawImage(img, x, y, w, h)	
+		}
+	}
 }
 
 function RouletteTable(props){    
-    let clear = props.clear    
-    let dispatch = useDispatch()
-    let options = {...props, dispatch}
+    let clear = props.clear
+    let options = {...props}
     let my_roulette_bets = new roulette_bets(options)
 
     useEffect(() => {        
@@ -341,6 +359,11 @@ function RouletteTable(props){
 				my_roulette_bets.ready('resize')
 			}
 		})
+		return () => {
+			if(my_roulette_bets){
+				my_roulette_bets = null
+			}
+		}
     }, [clear])
 
     return <canvas id="roulette_bets_canvas"></canvas>	

@@ -14,6 +14,7 @@ var word_bank = {
         slots: "Slots",
         craps: "Craps",
         keno: "Keno",
+        back: "Back",
 
         error: "Error",
         all_rights_reserved: "All rights reserved",   
@@ -59,6 +60,7 @@ var word_bank = {
         no_data: "No info",
         no_bets: "You didn't place any bets",
         no_user: "No user was found",
+        no_money: "You don't have enough carrots. You can buy them from the market.",
 
         isMinor_title: "Age verification",
         isMinor_text: "Are you over 18?",
@@ -93,6 +95,7 @@ var word_bank = {
         slots: "Sloturi",
         craps: "Craps",
         keno: "Keno",
+        back: "Inapoi",
 
         error: "Eroare",
         all_rights_reserved: "Toate drepturile rezervate",      
@@ -138,6 +141,7 @@ var word_bank = {
         no_data: "Nu avem informatii disponibile",
         no_bets: "Nu ai plasat niciun pariu",
         no_user: "Nu exista user",
+        no_money: "Nu ai suficienti morcovi. Poti sa cumperi morcovi din Market.",
         
         isMinor_title: "Verificare varsta",
         isMinor_text: "Ai peste 18 ani?",

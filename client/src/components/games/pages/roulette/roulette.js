@@ -1,19 +1,20 @@
-import React, {useState, useEffect} from 'react'
-import {useSelector} from 'react-redux'
+import React, {useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import { translate } from '../../../../translations/translate'
 import GameBets from '../other/gameBets'
 import RouletteGame from './rouletteGame'
 import Dashboard from '../dashboard/dashboard'
 import Market from '../market/market'
+import { changeRouletteBets } from '../../../../reducers/games'
 
 function Roulette(props){
     let game_page = useSelector(state => state.page.game_page)
-    const [bets, setBets] = useState([])
     const [open, setOpen] = useState(false)
+    let dispatch = useDispatch()
+    let bets = useSelector(state => state.games.roulette.bets)	
 
     function getData(x){
-        let array = [...x]
-        setBets(array)
+        dispatch(changeRouletteBets(x))
 	}
 
     function openTable(x){setOpen(true)}

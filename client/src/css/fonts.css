@@ -1,8 +1,16 @@
 @font-face {
-  font-family: 'Hazel Deco Light';
+  font-family: 'Debonair Inline';
   font-style: normal;
   font-weight: 400;
-  src: url('https://fonts.cdnfonts.com/s/75716/HazelDecoLight-Regular.woff') format('woff');
+  src: url("../fonts/DebonairInlineNF.otf") format("opentype"), 
+    url("../fonts/DebonairInlineNF.ttf")format("truetype")  /* Safari, Android, iOS */
+}
+@font-face {
+  font-family: 'Grenadier';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/GrenadierNF.otf") format("opentype"), 
+    url("../fonts/GrenadierNF.ttf")format("truetype")  /* Safari, Android, iOS */
 }
 
 

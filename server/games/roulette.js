@@ -1,5 +1,5 @@
 function roulette(data, how_lucky){
-    let monkey_roulette = []	
+    let monkey_roulette = false	
     let monkey = []
     let is_lucky = Math.floor(Math.random() * 100)
     if(is_lucky % how_lucky === 0){

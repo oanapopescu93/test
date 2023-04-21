@@ -1,5 +1,3 @@
-import $ from 'jquery'
-
 import roulette_bets_european from '../img/roulette/roulette_bets_european.png'
 import roulette_bets_american from '../img/roulette/roulette_bets_american.png'
 import roulette_bets_european_small from '../img/roulette/roulette_bets_european_small.png'

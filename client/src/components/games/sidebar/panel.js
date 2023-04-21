@@ -7,7 +7,6 @@ import Chat from './chat'
 
 function Panel(props){
     const {lang} = props
-    const [show, setShow] = useState(false)
     const [open, setOpen] = useState('')
     const [panel, setPanel] = useState("user_panel_box")
     const [panelUser, setPanelUser] = useState("active")
@@ -34,6 +33,8 @@ function Panel(props){
                 setPanelUser("")
                 setPanelChat("active")
 				break
+            default:
+                break
 		}
     }
 

@@ -113,9 +113,44 @@ function get_extra_data(){
 	})
 }
 
-function sendMail(payload){
-	console.log('sendMail ', payload)	
-}
+function sendEmail(data){ //send an email with instructions to reset token
+    let lang = data.lang ? data.lang : 'ENG'
+    let user = data.user
+    let email = data.email
+
+    let subject = ''
+    let html = ''
+    switch(lang){
+      case "RO":
+        subject = 'BunnyBet resetare parola'
+        html = html + '<p>Buna ' + user + '</p>'
+        html = html + '<p>Ai cerut resetarea parolei tale.</p>'
+        break
+      default:
+        subject = 'BunnyBet reset password'
+        html = html + '<p>Hi ' + user + '</p>'
+        html = html + '<p>You requested to reset your password.</p>'
+        break
+    }
+
+    let mailOptions = {
+      from: constants.AUTH_FROM,
+      to: email,
+      subject: subject,
+      html: html
+    }
+    return new Promise(function(resolve, reject){
+      transport.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log('error--> ', error, mailOptions)
+          resolve({send: "email_no_send"})
+        } else {
+          console.log('info--> ', info.response)
+          resolve({send: "email_send"})
+        }
+      })
+    })
+  }
 
 module.exports = {
 	sort_array_obj,
@@ -125,5 +160,5 @@ module.exports = {
 	check_streak,
 	chatMessage,
 	get_extra_data,
-	sendMail,
+	sendEmail,
 }

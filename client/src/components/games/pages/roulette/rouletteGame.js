@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react'
-import { useDispatch } from 'react-redux'
+import React, {useEffect} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { translate } from '../../../../translations/translate'
 import { Button } from 'react-bootstrap'
 import { changePopup } from '../../../../reducers/popup'
@@ -7,6 +7,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faRotate, faCarrot} from '@fortawesome/free-solid-svg-icons'
 import { draw_dot, getDistance_between_entities } from '../../../../utils/games'
 import $ from 'jquery'
+import { decryptData } from '../../../../utils/crypto'
+import { changeRouletteLuckyBet } from '../../../../reducers/games'
 
 function roulette_game(props){
     let self = this	
@@ -19,7 +21,6 @@ function roulette_game(props){
 	let canvas_height = 800
 
     let start_game = false
-    let bets = props.bets
     let bet_x = 0
     let bet_square = 0
 
@@ -39,16 +40,13 @@ function roulette_game(props){
 	let circle = {radius: textRadius*0.6, angle:0}
 	let ball = {x:70, y:roulette_radius_x, speed:0.05, width:10}
     let roulette_index = 0
-    let spin_time = 0
-    let spin_click = 0
-    let my_click = -1
     let win_nr = null
 
 	let font_bold_10 = 'bold 10px sans-serif'
 	let font_bold_12 = 'bold 12px sans-serif'
 	let font_bold_14 = 'bold 14px sans-serif'
 
-    let spin_clear = [0, 0]
+    let spin_clear = [0, 0, 0, 0]
     let radiantLine01 = []
 	let radiantLine02 = []
 	let radiantLine03 = []
@@ -58,25 +56,6 @@ function roulette_game(props){
         self.createCanvas(canvas_width, canvas_height)
 		self.choose_roulette_type()
         self.start()
-
-        socket.on('roulette_read', function(data){	
-            //console.log('roulette_read ', data)
-			if(typeof data.arc !== "undefined" || typeof data.spin_time !== "undefined" || typeof data.ball_speed !== "undefined"){
-				spin_time = data.spin_time
-				// spin_time = 10
-				ball.speed = data.ball_speed			
-				if (window.innerWidth < 900){
-					if(window.innerHeight < window.innerWidth){
-						//landscape
-						ball.speed = 0.0173
-					} else {
-						//portrait
-						ball.speed = 0.018
-					}					
-				} 
-				self.spin(data.arc, spin_time, data.monkey)
-			}				
-		})	
     }
 
     this.createCanvas = function(canvas_width, canvas_height){	
@@ -101,12 +80,10 @@ function roulette_game(props){
 				
 				bet_x = 330
 				bet_square = 30
-
-                spin_clear = [[0,0, 260, canvas.height], [roulette_radius_x + 120, roulette_radius_y + 65, 150, 120]]
 			} else {
 				//small portrait
 				canvas.width = 290
-				canvas.height = 400
+				canvas.height = 300
 				roulette_radius_x = 150
 				roulette_radius_y = 150
 				outsideRadius = 120
@@ -119,8 +96,6 @@ function roulette_game(props){
 				
 				bet_x = 330
 				bet_square = 30	
-
-                spin_clear = [[0,0, 298, canvas.height], [roulette_radius_x + 120, roulette_radius_y + 65, 150, 120]]
 			}
             circle = {radius: textRadius-15, angle:0}
 			ball = {x:70, y:roulette_radius_x, speed:0.05, width:6}
@@ -150,8 +125,6 @@ function roulette_game(props){
 			font_bold_12 = 'bold 12px sans-serif'
 			font_bold_14 = 'bold 14px sans-serif'
 
-            spin_clear = [[0, 0, canvas.width, 490]]
-
 			radiantLine01 = [-60, 20]
 			radiantLine02 = [-60, -160]
 			radiantLine03 = [-160, -200]
@@ -160,6 +133,7 @@ function roulette_game(props){
         canvas_width = canvas.width
 		canvas_height = canvas.height	
 		canvas.height = canvas_height
+		spin_clear = [0, 0, canvas.width, canvas.height]
 	}
 	
 	this.choose_roulette_type = function(){			
@@ -286,144 +260,124 @@ function roulette_game(props){
 			ctx.stroke()
 			ctx.closePath()
 		}
-	}
+	} 
 
-    this.handleClick = function(){
-        start_game = true
-        if(bets && bets.length>0){
-            this.click()
-        } else {
-            let payload = {
-                open: true,
-                template: "error",
-                title: translate({lang: lang, info: "error"}),
-                data: translate({lang: lang, info: "no_bets"})
-            }
-            dispatch(changePopup(payload))
-        }
-    }
-
-    this.click = function(){
-        spin_click++
-		my_click++
-        let roulette_payload_server = {
-            uuid: props.user.uuid,
-            spin_click: spin_click,
-            my_click: my_click,
-            user: props.user.user, 
-            game_choice: props.page.game, 
-            bet: bets,
-        }
-        socket.emit('roulette_send', roulette_payload_server)
-    }
-
-    this.spin = function(arc, spin_time, monkey){        	
+    this.spin = function(data){  
+		start_game = true 
+		let arc = data.arc	
+		
 		let spin_nr = 0
+		let spin_time = data.spin_time
 		let spin_time_more = 200
-		let monkey_wait = 200	
+		//uncomment this to make the spin shorter
+		// spin_time = 10
+		// spin_time_more = 10
+
+		let monkey = data.monkey
+		let monkey_wait = 200
+
 		window.requestAnimFrame = (function(){
-			return  window.requestAnimationFrame       ||
-			window.webkitRequestAnimationFrame ||
-			window.mozRequestAnimationFrame    ||
+			return  window.requestAnimationFrame	||
+			window.webkitRequestAnimationFrame		||
+			window.mozRequestAnimationFrame			||
 			function( callback ){
 			  window.setTimeout(callback, 1000 / 60)
 			}
 	    })()
 	  
-	    function spin_roulette() {        
-            for(let i in spin_clear){
-                ctx.clearRect(spin_clear[i][0], spin_clear[i][1], spin_clear[i][2], spin_clear[i][3])
-            }
-            
-            let stop = false
-            if (spin_nr > spin_time) {
-                if(spin_nr > spin_time + spin_time_more){								
-                    self.drawRoulette()
-                    ctx.font = font_bold_14
-                    
-                    roulette_index = parseInt(self.closest_nr(ball, roulette_pos, "nr"))
-                    win_nr = roulette_pos[roulette_index]							
-                    
-                    self.drawBall(win_nr.x, win_nr.y, ball.width, 0, 2 * Math.PI, false)				
-                    self.check_win_lose(bets, win_nr)
-                     
-                    setTimeout(function(){ 
-                        //dispatch(popup_info({title: "Resultat", text: "Numarul norocos este " + win_nr.nr, width: 300, fireworks: false}))
-                        spin_click = 0
-                        self.start()
-                        start_game = false	
-                    }, 500)
-                    
-                    stop = true                    
-                } else {
-                    spin_nr++ 
-                    self.rotateWheel(arc-0.04)		
-                    
-                    roulette_index = parseInt(self.closest_nr(ball, roulette_pos, "nr"))
-                    win_nr = roulette_pos[roulette_index]
-                    
-                    circle.angle -= arc-0.04
-                    self.rotateBall(win_nr.x, win_nr.y)
-                    
-                    stop = false
-                }
-            } else {
-                spin_nr++
-                
-                switch (true) {
-                    case (spin_nr <= spin_time/2):						
-                        self.rotateWheel(arc)
-                        circle.angle += ball.speed	
-                        break
-                    case (spin_nr > spin_time/2 && spin_nr <= 2*spin_time/3):
-                        self.rotateWheel(arc-0.01)
-                        circle.angle += ball.speed-0.01	
-                        break
-                    case (spin_nr > 2*spin_time/3 && spin_nr <= 5*spin_time/6):
-                        self.rotateWheel(arc-0.02)
-                        circle.angle += ball.speed-0.02		
-                        break
-                    case (spin_nr > 5*spin_time/6 && spin_nr <= spin_time-20):
-                        self.rotateWheel(arc-0.03)
-                        circle.angle += ball.speed-0.03	
-                        break
-                    case (spin_nr > spin_time-20 && spin_nr <= spin_time-10):
-                        self.rotateWheel(arc-0.04)
-                        circle.angle += ball.speed-0.04	
-                        break
-                    default:
-                        break
-                }
-                
-                if(typeof monkey !== "undefined"){							
-                    roulette_index = parseInt(self.closest_nr(ball, roulette_pos, "nr"))
-                    win_nr = roulette_pos[roulette_index]
-                    
-                    if(typeof monkey === "number"){
-                        monkey = monkey.toString()
-                    }	
+	    function spin_roulette() {
+			if(ctx){
+				ctx.clearRect(spin_clear[0], spin_clear[1], spin_clear[2], spin_clear[3])
+				let stop = false
 
-                    if(monkey === win_nr.nr && spin_nr > spin_time -  monkey_wait){
-                        self.rotateBall(win_nr.x, win_nr.y)
-                        spin_nr = spin_time + 1
-                    } else {
-                        self.rotateBall(ball.x,ball.y)
-                    }					
-                } else {
-                    self.rotateBall(ball.x,ball.y)
-                }
-                
-                stop = false
-            }		
-            
-            if(!stop){
-                window.requestAnimFrame(spin_roulette)
-            } else {
-                window.cancelAnimationFrame(spin_roulette)
-            }
-	  }
+				if (spin_nr > spin_time) {
+					if(spin_nr > spin_time + spin_time_more){								
+						self.drawRoulette()
+						ctx.font = font_bold_14
+						
+						roulette_index = parseInt(self.closest_nr(ball, roulette_pos, "nr"))
+						win_nr = roulette_pos[roulette_index]							
+						
+						self.drawBall(win_nr.x, win_nr.y, ball.width, 0, 2 * Math.PI, false)				
+						self.check_win_lose(roulette_bets, win_nr)
+						
+						setTimeout(function(){ 
+							//dispatch(popup_info({title: "Resultat", text: "Numarul norocos este " + win_nr.nr, width: 300, fireworks: false}))
+							self.start()
+							start_game = false	
+						}, 500)
+						
+						stop = true                    
+					} else {
+						spin_nr++ 
+						self.rotateWheel(arc-0.04)		
+						
+						roulette_index = parseInt(self.closest_nr(ball, roulette_pos, "nr"))
+						win_nr = roulette_pos[roulette_index]
+						
+						circle.angle -= arc-0.04
+						self.rotateBall(win_nr.x, win_nr.y)
+						
+						stop = false
+					}
+				} else {
+					spin_nr++
+					
+					switch (true) {
+						case (spin_nr <= spin_time/2):						
+							self.rotateWheel(arc)
+							circle.angle += ball.speed	
+							break
+						case (spin_nr > spin_time/2 && spin_nr <= 2*spin_time/3):
+							self.rotateWheel(arc-0.01)
+							circle.angle += ball.speed-0.01	
+							break
+						case (spin_nr > 2*spin_time/3 && spin_nr <= 5*spin_time/6):
+							self.rotateWheel(arc-0.02)
+							circle.angle += ball.speed-0.02		
+							break
+						case (spin_nr > 5*spin_time/6 && spin_nr <= spin_time-20):
+							self.rotateWheel(arc-0.03)
+							circle.angle += ball.speed-0.03	
+							break
+						case (spin_nr > spin_time-20 && spin_nr <= spin_time-10):
+							self.rotateWheel(arc-0.04)
+							circle.angle += ball.speed-0.04	
+							break
+						default:
+							break
+					}
+					
+					if(typeof monkey !== "undefined"){							
+						roulette_index = parseInt(self.closest_nr(ball, roulette_pos, "nr"))
+						win_nr = roulette_pos[roulette_index]
+						
+						if(typeof monkey === "number"){
+							monkey = monkey.toString()
+						}	
 
-	  spin_roulette()  
+						if(monkey === win_nr.nr && spin_nr > spin_time -  monkey_wait){
+							self.rotateBall(win_nr.x, win_nr.y)
+							spin_nr = spin_time + 1
+						} else {
+							self.rotateBall(ball.x,ball.y)
+						}					
+					} else {
+						self.rotateBall(ball.x,ball.y)
+					}
+					
+					stop = false
+				}		
+            
+				if(!stop){
+					window.requestAnimFrame(spin_roulette)
+				} else {
+					window.cancelAnimationFrame(spin_roulette)
+				}
+			}
+	  	}
+
+	  	spin_roulette()  
 	}
 
     this.rotateWheel = function(x) {
@@ -461,102 +415,106 @@ function roulette_game(props){
 		}		
 	}
 
-    this.check_win_lose = function(elem01, elem02){
-        let money_history = props.user.money
-        for(let i in elem01){	
-			elem01[i].lucky_nr = elem02.nr		
+    this.check_win_lose = function(x){
+		//make a copy of elements
+		let elem01 = JSON.parse(JSON.stringify(roulette_bets))
+		let elem02 = JSON.parse(JSON.stringify(x))
+
+		dispatch(changeRouletteLuckyBet(elem02))
+        let money_history = decryptData(props.user.money)
+
+        for(let i in elem01){		
 			if(isNaN(elem01[i].text) === false){
 				if(parseInt(elem01[i].text) === parseInt(elem02.nr)){
 					//console.log('case-a', elem01[i].text, elem02.nr)
 					elem01[i].win = true
-					money_history = money_history + 1				
+					money_history = money_history + elem01[i].bet_value
 				} else {
 					//console.log('case-b', elem01[i].text, elem02.nr)
 					elem01[i].win = false
-					money_history = money_history - 1
+					money_history = money_history - elem01[i].bet_value
 				}
-				elem01[i].money_history = money_history
 			} else {
 				switch (elem01[i].text) {
 					case "1st 12":	
 						if(elem02.nr > 0 && elem02.nr < 13){
 							elem01[i].win = true
-							money_history = money_history + 1
+							money_history = money_history + elem01[i].bet_value
 						} else {
 							elem01[i].win = false
-							money_history = money_history - 1	
+							money_history = money_history - elem01[i].bet_value	
 						}
 						break
 					case "2st 12":	
 						if(elem02.nr > 12 && elem02.nr < 25){
 							elem01[i].win = true
-							money_history = money_history + 1
+							money_history = money_history + elem01[i].bet_value
 						} else {
 							elem01[i].win = false
-							money_history = money_history - 1
+							money_history = money_history - elem01[i].bet_value
 						}
 						break
 					case "3st 12":	
 						if(elem02.nr > 24 && elem02.nr < 37){
 							elem01[i].win = true
-							money_history = money_history + 1
+							money_history = money_history + elem01[i].bet_value
 						} else {
 							elem01[i].win = false
-							money_history = money_history - 1
+							money_history = money_history - elem01[i].bet_value
 						}
 						break
 					case "1-18":
 						if(elem02.nr > 0 && elem02.nr < 19){
 							elem01[i].win = true
-							money_history = money_history + 1
+							money_history = money_history + elem01[i].bet_value
 						} else {
 							elem01[i].win = false
-							money_history = money_history - 1
+							money_history = money_history - elem01[i].bet_value
 						}
 						break
 					case "Even":
 						if(elem02.nr % 2 === 0){
 							elem01[i].win = true
-							money_history = money_history + 1
+							money_history = money_history + elem01[i].bet_value
 						} else {
 							elem01[i].win = false
-							money_history = money_history - 1
+							money_history = money_history - elem01[i].bet_value
 						}
 						break
 					case "reds":
 						if(elem02.color === "red"){
 							elem01[i].win = true
-							money_history = money_history + 1
+							money_history = money_history + elem01[i].bet_value
 						} else {
 							elem01[i].win = false
-							money_history = money_history - 1
+							money_history = money_history - elem01[i].bet_value
 						}
 						break
 					case "blacks":
 						if(elem02.color === "black"){
 							elem01[i].win = true
-							money_history = money_history + 1
+							money_history = money_history + elem01[i].bet_value
 						} else {
 							elem01[i].win = false
-							money_history = money_history - 1
+							money_history = money_history - elem01[i].bet_value
 						}
 						break
 					case "Odd":
 						if(elem02.nr % 2 !== 0){
 							elem01[i].win = true
-							money_history = money_history + 1
+							money_history = money_history + elem01[i].bet_value
 						} else {
 							elem01[i].win = false
-							money_history = money_history - 1
+							money_history = money_history - elem01[i].bet_value
 						}
 						break
 					case "19-36":
 						if(elem02.nr > 18 && elem02.nr < 37){
 							elem01[i].win = true
-							money_history = money_history + 1
+							money_history = money_history + elem01[i].bet_value
 						} else {
 							elem01[i].win = false
-							money_history = money_history - 1
+							money_history = money_history - elem01[i].bet_value
 						}
 						break
 					case "2 to 1a":						
@@ -564,10 +522,10 @@ function roulette_game(props){
 							let x = 3*k+3
 							if(x === parseInt(elem02.nr)){
 								elem01[i].win = true
-								money_history = money_history + 1
+								money_history = money_history + elem01[i].bet_value
 							} else {
 								elem01[i].win = true
-								money_history = money_history - 1
+								money_history = money_history - elem01[i].bet_value
 							}							
 						}
 						break
@@ -576,10 +534,10 @@ function roulette_game(props){
 							let x = 3*k+2
 							if(x === parseInt(elem02.nr)){
 								elem01[i].win = true
-								money_history = money_history + 1
+								money_history = money_history + elem01[i].bet_value
 							} else {
 								elem01[i].win = true
-								money_history = money_history - 1
+								money_history = money_history - elem01[i].bet_value
 							}							
 						}
 						break
@@ -588,57 +546,103 @@ function roulette_game(props){
 							let x = 3*k+1
 							if(x === parseInt(elem02.nr)){
 								elem01[i].win = true
-								money_history = money_history + 1
+								money_history = money_history + elem01[i].bet_value
 							} else {
 								elem01[i].win = true
-								money_history = money_history - 1
+								money_history = money_history - elem01[i].bet_value
 							}							
 						}
 						break
 					default:
 						break
-				}	
-				elem01[i].money_history = money_history
+				}
 			}
+			elem01[i].money_history = money_history
 		}	
-        self.win_lose(elem01)
+        self.win_lose(elem01, money_history)
     }
 
-    this.win_lose = function(arr){
+    this.win_lose = function(arr, money_history){
 		let status = 'win'
-		let money_original = props.user.money
-        
-
-        console.log(money_original, arr)
+		let money_original = decryptData(props.user.money)	
+		if(money_original > money_history){
+			status = "lose"
+		}
+		let roulette_payload_server = {
+			user_uuid: props.user.uuid,
+			game_choice: props.game_choice,
+			money: money_history,
+			bet: Math.abs(money_original - money_history),
+			status: status,
+		}
+		console.log('arr ', arr, money_original, money_history)	
     }
 
     this.get_status_game = function(){
         return start_game
     }
+
+	this.leave = function(){
+		console.log('leave--> ', roulette_bets)
+		let elem01 = JSON.parse(JSON.stringify(roulette_bets))
+		let money_history = decryptData(props.user.money)
+
+		for(let i in elem01){
+			elem01[i].win = false
+			money_history = money_history - elem01[i].bet_value
+			elem01[i].money_history = money_history
+		}
+
+		self.win_lose(elem01, money_history)		
+	}
 }
 
+var roulette_bets = []
 function RouletteGame(props){
-    let dispatch = useDispatch()
+    let dispatch = useDispatch()	
     let options = {...props, dispatch}
     let my_roulette = new roulette_game(options)
+	roulette_bets = props.bets
 
     useEffect(() => {
-        if(my_roulette){
+        if(my_roulette && document.getElementById("roulette_canvas")){
             my_roulette.ready()
         }
         $(window).resize(function(){
-			if(document.getElementById("roulette_canvas")){
-				my_roulette.ready('resize')
+			if(my_roulette && document.getElementById("roulette_canvas")){
+				my_roulette.ready()
 			}
 		})
-    }, [props.clear, props.bets])
+		return () => {
+			if(my_roulette){
+				my_roulette.leave()// if the user leaves the game, if he bet, he will lose the bets
+				my_roulette = null
+			}
+		}
+    }, [])
+
+	props.socket.on('roulette_read', function(data){
+		if(typeof data.arc !== "undefined" || typeof data.spin_time !== "undefined" || typeof data.ball_speed !== "undefined"){
+			if (window.innerWidth < 960){
+				if(window.innerHeight < window.innerWidth){
+					//landscape
+					data.speed = 0.0173
+				} else {
+					//portrait
+					data.speed = 0.018
+				}					
+			} 
+			if(my_roulette && document.getElementById("roulette_canvas")){
+				my_roulette.spin(data)
+			}
+		}				
+	})	
 
     function openTable(){
         if(my_roulette){
             let status = my_roulette.get_status_game()
-            console.log('status ', status)
             if(!status){
-                let money = props.user.money
+                let money = decryptData(props.user.money)
                 if(money && money>0){
                     props.openTable()
                 } else {
@@ -655,8 +659,24 @@ function RouletteGame(props){
     }
 
     function gameStart(){
-        if(my_roulette){
-            my_roulette.handleClick()
+        if(my_roulette && document.getElementById("roulette_canvas")){
+			if(roulette_bets && roulette_bets.length>0){
+				let roulette_payload_server = {
+					uuid: props.user.uuid,
+					user: props.user.user, 
+					game_choice: props.page.game, 
+					bet: roulette_bets,
+				}
+				props.socket.emit('roulette_send', roulette_payload_server)
+			} else {
+				let payload = {
+					open: true,
+					template: "error",
+					title: translate({lang: props.lang, info: "error"}),
+					data: translate({lang: props.lang, info: "no_bets"})
+				}
+				dispatch(changePopup(payload))
+			}
         }
     }
 

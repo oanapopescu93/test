@@ -13,7 +13,6 @@ import Career from './career'
 import { ReactComponent as Bitcoin } from '../../img/icons/bitcoin-love-heart.svg'
 import { changePage } from '../../reducers/page'
 import Donation from './donation'
-import Language from '../partials/language'
 
 function Home(props) {
     const {home, page, user, cookies} = props
@@ -23,10 +22,8 @@ function Home(props) {
         dispatch(changeCookies())
     }
 
-    return <div id="page-container">
-        <Language title={props.lang}></Language>
+    return <div id="page-container">        
         {(() => {
-            // return <Contact {...props}></Contact>
             switch (page.page) {
                 case "About":
                     return <About {...props}></About>

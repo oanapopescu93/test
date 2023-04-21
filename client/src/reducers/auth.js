@@ -46,7 +46,7 @@ const pageSlice = createSlice({
         },
         changeIsMinor: (state, { payload }) => {
             state.isMinor = payload
-            setCookie("casino_isminor", payload)
+            setCookie("casino_isminor", payload, 336) //it will expire after 14 days
         },
         resetAuth: () => initialState,
     }

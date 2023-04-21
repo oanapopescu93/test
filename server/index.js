@@ -12,25 +12,19 @@ const path = require("path");
 const fs = require('fs')
 
 const { encrypt, decrypt } = require('./utils/crypto')
-const { get_device, get_extra_data } = require("./utils/other")
+const { get_device, get_extra_data, sendEmail, check_streak, chatMessage } = require("./utils/other")
 const crypto = require('crypto')
-const { roulette } = require("./games/roulette")
 
-var nodemailer = require('nodemailer')
-var constants = require('./var/constants')
+const { roulette } = require("./games/roulette")
+const { blackjack } = require("./games/blackjack")
+const { slots } = require("./games/slots")
+const { craps } = require("./games/craps")
+const { race } = require("./games/race")
+const { keno } = require("./games/keno")
 
 const account_type = 1
 const user_money = 100
 const how_lucky = 7
-
-var transport = nodemailer.createTransport({
-	host: "smtp.mailtrap.io",
-	port: 2525,
-	auth: {
-	  user: constants.AUTH_USER,
-	  pass: constants.AUTH_PASS
-	}
-})
 
 io.on('connection', function(socket) {
   socket.on('signin_send', (data) => {
@@ -170,60 +164,94 @@ io.on('connection', function(socket) {
     } 
   })
 
-  function sendEmail(data){ //send an email with instructions to reset token
-    let lang = data.lang ? data.lang : 'ENG'
-    let user = data.user
-    let email = data.email
-
-    console.log(data)
-
-    let subject = ''
-    let html = ''
-    switch(lang){
-      case "RO":
-        subject = 'BunnyBet resetare parola'
-        html = html + '<p>Buna ' + user + '</p>'
-        html = html + '<p>Ai cerut resetarea parolei tale.</p>'
-        break
-      default:
-        subject = 'BunnyBet reset password'
-        html = html + '<p>Hi ' + user + '</p>'
-        html = html + '<p>You requested to reset your password.</p>'
-        break
-    }
-
-    let mailOptions = {
-      from: constants.AUTH_FROM,
-      to: email,
-      subject: subject,
-      html: html
-    }
-    return new Promise(function(resolve, reject){
-      transport.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log('error--> ', error, mailOptions)
-          resolve({send: "email_no_send"})
-        } else {
-          console.log('info--> ', info.response)
-          resolve({send: "email_send"})
-        }
-      })
-    })
-  }
-
   // games
 	socket.on('roulette_send', function(data) {
-    console.log('roulette_send ', data)
-		if(data.uuid && data.spin_click === 1){
+		if(data.uuid){
 			let payload = roulette(data, how_lucky)
 			try{
-				//io.to(room_name).emit('roulette_spin_read', payload)
+				//io.to(room_name).emit('roulette_read', payload)
         io.emit('roulette_read', payload)
 			} catch(e){
 				console.log('[error]','roulette_read--> ', e)
 			}
 		}
-	})	
+	})
+  socket.on('blackjack_send', function(data) {
+		if(data.uuid){
+			let payload = blackjack(data, how_lucky)
+			try{
+				//io.to(room_name).emit('blackjack_read', payload)
+        io.emit('blackjack_read', payload)
+			} catch(e){
+				console.log('[error]','roulette_read--> ', e)
+			}
+		}
+	})
+  socket.on('blackjack_send', function(data) {
+		if(data.uuid){
+			let payload = blackjack(data, how_lucky)
+			try{
+				//io.to(room_name).emit('blackjack_read', payload)
+        io.emit('blackjack_read', payload)
+			} catch(e){
+				console.log('[error]','blackjack_read--> ', e)
+			}
+		}
+	})
+  socket.on('slots_send', function(data) {
+		if(data.uuid){
+			let payload = slots(data, how_lucky)
+			try{
+				//io.to(room_name).emit('slots_read', payload)
+        io.emit('slots_read', payload)
+			} catch(e){
+				console.log('[error]','slots_read--> ', e)
+			}
+		}
+	})
+  socket.on('craps_send', function(data) {
+		if(data.uuid){
+			let payload = craps(data, how_lucky)
+			try{
+				//io.to(room_name).emit('craps_read', payload)
+        io.emit('craps_read', payload)
+			} catch(e){
+				console.log('[error]','craps_read--> ', e)
+			}
+		}
+	})
+  socket.on('race_send', function(data) {
+		if(data.uuid){
+			let payload = race(data, how_lucky)
+			try{
+				//io.to(room_name).emit('race_read', payload)
+        io.emit('race_read', payload)
+			} catch(e){
+				console.log('[error]','race_read--> ', e)
+			}
+		}
+	})
+  socket.on('keno_send', function(data) {
+		if(data.uuid){
+			let payload = keno(data, how_lucky)
+			try{
+				//io.to(room_name).emit('keno_read', payload)
+        io.emit('keno_read', payload)
+			} catch(e){
+				console.log('[error]','keno_read--> ', e)
+			}
+		}
+	})
+  socket.on('game_results_send', function(data) {
+		if(data.uuid){
+			try{
+				//io.to(room_name).emit('game_results_read', payload)
+        io.emit('game_results_read', payload)
+			} catch(e){
+				console.log('[error]','game_results_read--> ', e)
+			}
+		}
+	})
 
   socket.on('join_room', function(room) {
     socket.join(room)

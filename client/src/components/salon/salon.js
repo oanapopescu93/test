@@ -6,6 +6,7 @@ import Header from '../partials/header'
 import SalonGames from './salonGames'
 import SalonSidebarLeft from './salonSidebarLeft'
 import Game from '../games/game'
+import Language from '../partials/language'
 
 function Salon(props) {
     const {lang, home, page} = props 
@@ -16,8 +17,9 @@ function Salon(props) {
     }
 
     return <>
-        {page.game ? <Game {...props}></Game> : <>            
-            <div className="content_wrap">  
+        {page.game ? <Game {...props}></Game> : <>  
+            <Language title={lang}></Language>          
+            <div className="content_wrap">                
                 <Header template="salon" lang={lang}></Header>
                 <SalonGames lang={lang} items={home.products}></SalonGames>
                 <div className="page_exit">

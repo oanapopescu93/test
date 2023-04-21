@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect } from 'react'
 import { Button, Row, Col } from 'react-bootstrap'
 import {useDispatch} from 'react-redux'
 import { changePage } from '../../../reducers/page'
@@ -6,18 +6,63 @@ import { translate } from '../../../translations/translate'
 import ContactForm from './contactForm'
 import ContactList from './contactList'
 import ContactMap from './contactMap'
+import { getWindowDimensions } from '../../../utils/utils'
 
 function Contact(props){
     const [contactElement, setContactElement] = useState(null)
-    let dispatch = useDispatch()
+    let dispatch = useDispatch() 
+    const [mapCenter, setsetMapCenter] = useState({lat: 44.439663, lng: 26.096306})
+    const [markerPosition, setMarkerPosition] = useState([44.439663, 26.096306])    
+    const [country, setCountry] = useState('')
+    const [city, setCity] = useState('') 
+    const [zoom, setZoom] = useState(10)  
+    const [width, setWidth] = useState(getWindowDimensions().width)  
 
     function handleBack(){
         dispatch(changePage('Salon'))
     }
 
     function handleChooseContactElement(x){
-        setContactElement(x)
+        if(x){
+            setContactElement(x)            
+            if(x.city){
+                setCity(x.city)
+            }
+            if(x.country){
+                setCountry(x.country)
+            }            
+            switch(x.country) {        
+                case "USA":
+                    setsetMapCenter({lat: 40.730610, lng: -73.935242})
+                    setMarkerPosition([40.730610, -73.935242])
+                    setZoom(10)
+                    break
+                case "Germany":
+                    setsetMapCenter({lat: 52.5200, lng: 13.4050})
+                    setMarkerPosition([52.5200, 13.4050])
+                    setZoom(10)
+                    break
+                case "Romania":
+                default:    
+                    setsetMapCenter({lat: 44.439663, lng: 26.096306})
+                    setMarkerPosition([44.439663, 26.096306])
+                    setZoom(10)
+                    break                  
+            } 
+        }
     }
+
+    function handleResize() {
+        setWidth(getWindowDimensions().width)     
+    }
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            window.addEventListener("resize", handleResize)
+            handleResize()
+            return () => window.removeEventListener("resize", handleResize)
+        }
+    }, []) 
 
     return <div className="content_wrap">
         <h2 className="title">{translate({lang: props.lang, info: "contact"})}</h2>        
@@ -30,11 +75,19 @@ function Contact(props){
                     <ContactList lang={props.lang} list={props.home.contact} handleChooseContactElement={(e)=>handleChooseContactElement(e)}></ContactList>
                 </Col>
             </Row>
-            <Row>
+            {width < 960 ? null : <Row>
                 <Col sm={12}>
-                    <ContactMap lang={props.lang} contactElement={contactElement}></ContactMap>
+                    <ContactMap 
+                        lang={props.lang} 
+                        contactElement={contactElement}
+                        mapCenter={mapCenter}
+                        markerPosition={markerPosition}
+                        country={country}
+                        city={city}
+                        zoom={zoom}
+                    ></ContactMap>
                 </Col>
-            </Row>
+            </Row>}            
         </div>
         <div className="text_center">
             <Button type="button" onClick={()=>handleBack()} className="mybutton round button_transparent shadow_convex">
