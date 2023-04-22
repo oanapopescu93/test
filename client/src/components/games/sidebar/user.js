@@ -4,6 +4,10 @@ import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { changePopup } from '../../../reducers/popup'
 import { translate } from '../../../translations/translate'
 import { decryptData } from '../../../utils/crypto'
+import Header from '../../partials/header'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCalendarDays} from '@fortawesome/free-solid-svg-icons'
+import carrot_img from '../../../img/icons/carrot_icon.png'
 
 function User(props){
     const {lang, user} = props
@@ -33,8 +37,38 @@ function User(props){
     }
 
     return <>
-        <h3>{decryptData(user.user)}</h3>
-        <p>{decryptData(user.money)}</p>
+        <Header template="panel_user" details={props.page} lang={props.lang}></Header>
+        <div id="user_subtitle">
+            <div className="user_subtitle_left">
+                <span id="user_name">{decryptData(user.user)}</span>
+            </div>
+            <div className="user_subtitle_right">
+                <span id="user_money">
+                    <span>{decryptData(user.money)}</span>
+                    <img alt="carrot_img" className="currency_img" src={carrot_img}/>
+                </span>
+                <span id="user_streak">
+                    <span>1</span>
+                    <div className="my_tooltip">
+                        <FontAwesomeIcon icon={faCalendarDays} />
+                        {(() => {
+                            switch (lang) {
+                                case "RO":
+                                    return <span className="my_tooltiptext">
+                                    <p>Cate zile la rand ai jucat</p>
+                                </span>                                
+                                case "ENG":
+                                default:
+                                    return <span className="my_tooltiptext">
+                                    <p><b>Your streak</b></p>
+                                    <p>How many days in a row you have played</p>
+                                </span>
+                            }
+                        })()}
+                    </div>
+                </span>
+            </div>
+         </div>
         <div className="user_panel_tabs">
             <div className="user_panel_tab" onClick={()=>{handleChange('dashboard')}}>
                 <span>{translate({lang: lang, info: "user"})}</span>

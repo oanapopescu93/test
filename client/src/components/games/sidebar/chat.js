@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react'
+import Header from '../../partials/header'
 function Chat(props){
-    const {lang, socket} = props
+    const {lang, socket, page} = props
 
     useEffect(() => {
         socket.emit('message_send', "message!!!")    
@@ -11,7 +12,10 @@ function Chat(props){
     })
 
     return <>
-        <p>Chat</p>
+        <Header template="panel_user" details={page} lang={lang}></Header>
+        <div>
+            Chat
+        </div>
     </>
 }
 export default Chat

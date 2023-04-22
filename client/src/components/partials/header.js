@@ -7,7 +7,7 @@ import TransparentText from './transparentText'
 function Header(props){
     const {lang, template, details} = props
     let title = props.title ? props.title : "BunnyBet"
-
+    
 	return <div className="header_container">
         {(() => {
             if(isEmpty(template)){
@@ -25,19 +25,27 @@ function Header(props){
                             let table_name = details.game.table_name
                             let table_type = details.game.table_type
                             let table_id = details.game.table_id
+                            let title = capitalizeFirstLetter(table_name) + ' ' + table_id + ' ' + capitalizeFirstLetter(table_type)
                             return <div id="header_game" className="header">
-                                {/* <h2>{capitalizeFirstLetter(table_name)} {table_id}</h2> */}
-                                <TransparentText text={capitalizeFirstLetter(table_name) + ' ' + table_id}></TransparentText>      
-                                {table_type ? <h3>{capitalizeFirstLetter(table_type)}</h3> : null}
+                                <TransparentText text={title}></TransparentText>
                             </div>
                         } else {
                             return <div id="header" className="header">
-                                {/* <h2>{title}</h2>     */}
-                                <TransparentText
-                                    text={title}
-                                    size={30}
-                                ></TransparentText>                             
+                                <TransparentText text={title}></TransparentText>                             
                             </div>
+                        }
+                    case "panel_user":
+                        if(typeof details === 'object' && details !== null){ // it means it's a game
+                            let table_name = details.game.table_name
+                            let table_id = details.game.table_id
+                            let title = capitalizeFirstLetter(table_name) + ' ' + table_id
+                            return <h3 id="user_title">
+                                <TransparentText text={title}></TransparentText>
+                            </h3>
+                        } else {
+                            return <h3 id="user_title">
+                                <TransparentText text={translate({lang: lang, info: "dashboard"})}></TransparentText>
+                            </h3>
                         }
                     case "sign":
                         return <div id="header_sign" className="header">

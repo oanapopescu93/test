@@ -6,7 +6,7 @@ function TransparentText(props){
     let fill = props.fill ? props.fill : "gold"
     let stroke = props.stroke ? props.stroke : "gold"
 
-    let width = props.width ? props.width : "300"
+    let width = props.width ? props.width : "100%"
     let height = props.height ? props.height : "30"
     let x = props.x ? props.x : "50%"
     let y = props.y ? props.y : "50%"

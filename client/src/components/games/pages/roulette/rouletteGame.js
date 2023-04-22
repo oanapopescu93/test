@@ -107,7 +107,7 @@ function roulette_game(props){
 		} else {
 			//big
 			canvas.width = 900
-			canvas.height = 500
+			canvas.height = 480
 			
 			roulette_radius_x = canvas_width/2
 			roulette_radius_y = 250

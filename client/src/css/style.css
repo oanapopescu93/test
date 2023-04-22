@@ -169,6 +169,11 @@ textarea:focus, input:focus{
   outline: none;
 }
 
+svg text{
+  font-family: 'Grenadier';
+  font-size: 30px;
+}
+
 /* FORMS, BUTTONS, INPUTS, TEXTAREA */
 .sign_container{
   width: 100%;
@@ -453,10 +458,6 @@ textarea {
 }
 #header_sign{
   margin: var(--padding);
-}
-.header .transparent_text svg text{
-  font-family: 'Grenadier';
-  font-size: 30px;
 }
 .header h3{
   font-family: 'Grenadier';
@@ -899,6 +900,80 @@ textarea {
   line-height: 12px;
   text-transform: uppercase;
   margin-top: 5px;
+}
+#user_title{
+  font-family: 'Grenadier';
+  font-size: 30px;
+}
+#user_subtitle{
+	padding-left:5px;
+}
+#user_list_user{
+	color:var(--yellow);
+}
+.user_subtitle_left, .user_subtitle_right{
+	display:inline-block;
+	vertical-align: middle;
+	width:50%;
+}
+.user_subtitle_right{
+	text-align:right;
+}
+#user_subtitle i{
+	display:inline-block;
+	padding: 0px 5px;
+}
+#user_money, #user_streak{
+	padding-left: 5px;
+}
+#user_panel_box .user_list{
+	margin-top: 5px;
+}
+#user_panel_box .user_list li{
+	border-bottom: solid 1px var(--yellow);
+	padding:10px;
+	cursor: pointer;
+}
+.currency_img {
+  width: 8px;
+  margin: -4px 5px 0;
+}
+
+/* TOOLTIP */
+.my_tooltip {
+	position: relative;
+	display: inline-block;
+	border-bottom: solid 1px var(--bg);
+}
+.my_tooltip .my_tooltiptext {
+	visibility: hidden;
+	width: 120px;
+	background-color: var(--color);
+	color: var(--bg);
+	text-align: center;
+  font-size: 12px;
+  line-height: 14px;
+  border-radius: var(--radius_small);
+	padding: var(--padding_small);
+	position: absolute;
+	z-index: 1;
+	top: 150%;
+  left: -95px;
+}
+.my_tooltip .my_tooltiptext::after {
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	right: 8px;
+	border-width: var(--padding_small);
+	border-style: solid;
+	border-color: transparent transparent var(--color) transparent;
+}
+.my_tooltip:hover .my_tooltiptext {
+	visibility: visible;
+}
+.my_tooltip svg{
+  padding: 0 var(--padding_small);
 }
 
 /* GAMES */
