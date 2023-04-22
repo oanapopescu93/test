@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
 import {useDispatch} from 'react-redux'
-import { changePage } from '../../../reducers/page'
+import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { translate } from '../../../translations/translate'
 import PolicyPrivacyEng from './policyPrivacyEng'
 import PolicyPrivacyRo from './policyPrivacyRo'
@@ -11,6 +11,8 @@ function PolicyPrivacy(props){
 
     function handleBack(){
         dispatch(changePage('Salon'))
+        dispatch(changeGame(null))
+        dispatch(changeGamePage(null))
     }
 
     return <div className="content_wrap">

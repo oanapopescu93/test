@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { translate } from '../../translations/translate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
   import { faFaceSmile, faFlagCheckered, faTicket } from '@fortawesome/free-solid-svg-icons'
-import { changeGame, changePage } from '../../reducers/page'
+import { changeGame, changeGamePage, changePage } from '../../reducers/page'
 
 function SalonSidebarLeft(props){
     const {lang} = props
@@ -11,6 +11,7 @@ function SalonSidebarLeft(props){
 
     function handleChange(x){
         dispatch(changePage('Salon'))
+        dispatch(changeGamePage(null))
         switch(x){
             case "race":
             case "keno":

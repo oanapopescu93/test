@@ -194,7 +194,7 @@ svg text{
 .sign_box{
   color: var(--color);
   padding: var(--padding);
-  border-radius: 10px;
+  border-radius: var(--radius);
   text-align: center;
   height: 180px;
   position: relative;
@@ -212,13 +212,13 @@ svg text{
   transform: translate(0px, -50%);
 }
 .sign_container input{
-    margin-bottom: 5px;
+  margin-bottom: var(--padding_small);
 }
 .sign_container ul{
-  margin-bottom: 10px;
+  margin-bottom: var(--padding);
 }
 .sign_container ul li{
-  padding: 5px;
+  padding: var(--padding_small);
   border: solid 1px var(--color);
   display: inline-block;
   vertical-align: middle;
@@ -232,10 +232,10 @@ svg text{
   color: var(--bg);
 }
 .sign_container #signin_tab{
-  border-radius: 10px 0px 0px 10px;
+  border-radius: var(--radius) 0px 0px var(--radius);
 }
 .sign_container #signup_tab{
-  border-radius: 0px 10px 10px 0px;
+  border-radius: 0px var(--radius) var(--radius) 0px;
 }
 .sign_container #signin_tab:hover, .sign_container #signin_tab:focus, .sign_container #signin_tab:active{
   border-right: solid 1px var(--bg);
@@ -322,7 +322,7 @@ svg text{
 	display: inline-flex;
   grid-template-columns: 20px auto;
   gap: 10px;
-	margin:5px!important;
+	margin:var(--padding_small)!important;
 }
 .checkbox_radio_container label h6{
   text-align: left;
@@ -333,7 +333,7 @@ svg text{
   text-align: center;
   font-size: 12px;
   line-height: 12px;
-  padding: 5px 10px;
+  padding: var(--padding_small) var(--padding);
   border-radius: 10px;
   height: 25px;
   width: 100%;
@@ -401,8 +401,8 @@ svg text{
 }
 
 input, textarea{
-  border-radius: 10px;
-  padding: 5px 10px;
+  border-radius: var(--radius);
+  padding: var(--padding_small) var(--padding);
   font-size: 14px;
   line-height: 14px;
   height: 25px;
@@ -475,7 +475,7 @@ textarea {
   background-color: var(--transparent_2);
 }
 .cell_salon p{
-  margin-bottom: 10px;
+  margin-bottom: var(--padding);
 }
 .cell_salon h4{
   font-size: 20px;
@@ -632,9 +632,9 @@ textarea {
   align-items: center;
   justify-content: space-between;	
   background: var(--color);	
-  border-radius: 10px;
+  border-radius: var(--radius);
   padding: 20px;
-  border: 1px solid var(--color);    
+  border: solid 1px var(--color);    
 }
 .cookies_text {
   width: 75%;
@@ -818,9 +818,9 @@ textarea {
   height: 130px;
   text-align: center;
   vertical-align: top;
-  padding: 10px 10px 10px 5px;
+  padding: var(--padding) var(--padding) var(--padding) var(--padding_small);
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: var(--padding);
 }
 .salon_button:focus, .salon_button:hover{
   background-color: var(--transparent_yellow);
@@ -831,7 +831,7 @@ textarea {
   font-size: 12px;
   line-height: 12px;
   text-transform: uppercase;
-  margin-top: 5px;
+  margin-top: var(--padding_small);
 }
 
 /* GAME PANEL */
@@ -864,9 +864,9 @@ textarea {
   height: 110px;
   text-align: center;
   vertical-align: top;
-  padding: 10px 5px 10px 10px;
+  padding: var(--padding) var(--padding_small) var(--padding) var(--padding);
   cursor: pointer;
-  margin-bottom: 5px;
+  margin-bottom: var(--padding_small);
 }
 .panel_button:focus, .panel_button:hover {
   background-color: var(--transparent_yellow);
@@ -879,9 +879,9 @@ textarea {
 	background-color: var(--transparent_5);
 	background-image: linear-gradient(var(--bg), var(--transparent_5) 50%);
 	border-left:solid 1px var(--color);
-	padding: 20px 10px;	
+	padding: 20px var(--padding);	
 	position:absolute;
-	z-index:1;
+	z-index:3;
 	height:100%;
   top: 0px;
 	right:0px;
@@ -899,17 +899,18 @@ textarea {
   font-size: 12px;
   line-height: 12px;
   text-transform: uppercase;
-  margin-top: 5px;
+  margin-top: var(--padding_small);
 }
 #user_title{
   font-family: 'Grenadier';
   font-size: 30px;
+  margin-bottom: var(--padding);
 }
 #user_subtitle{
-	padding-left:5px;
+	padding-left: var(--padding_small);
 }
-#user_list_user{
-	color:var(--yellow);
+#user_tags, #user_list{
+  margin-top: var(--padding);
 }
 .user_subtitle_left, .user_subtitle_right{
 	display:inline-block;
@@ -921,22 +922,56 @@ textarea {
 }
 #user_subtitle i{
 	display:inline-block;
-	padding: 0px 5px;
+	padding: 0px var(--padding_small);
 }
 #user_money, #user_streak{
-	padding-left: 5px;
+	padding-left: var(--padding_small);
 }
 #user_panel_box .user_list{
-	margin-top: 5px;
+	margin-top: var(--padding_small);
 }
 #user_panel_box .user_list li{
 	border-bottom: solid 1px var(--yellow);
-	padding:10px;
+	padding: var(--padding);
 	cursor: pointer;
 }
 .currency_img {
   width: 8px;
   margin: -4px 5px 0;
+}
+.user_list_button {
+  display: inline-block;
+  padding: var(--padding_small) var(--padding);
+  border: solid 1px var(--color);
+  width: 50%;
+  cursor: pointer;
+  text-align: center;
+}
+.user_list_button:first-child {
+  border-radius: var(--radius) 0px 0px var(--radius);
+}
+.user_list_button:last-child {
+  border-radius: 0px var(--radius) var(--radius) 0px;
+}
+.user_list_button.active, .user_list_button:hover{
+  background: var(--transparent_yellow);
+}
+#user_list li {
+  border-bottom: solid 1px var(--color);
+  padding: var(--padding);
+  cursor: pointer;
+}
+#user_list li:last-child {
+  border-bottom: solid 0px transparent;
+}
+#user_list li svg{
+  margin-right: var(--padding_small);
+}
+.chat_form textarea{
+  margin-bottom: var(--padding_small);
+}
+.chat_form input{
+  margin-bottom: var(--padding);
 }
 
 /* TOOLTIP */
@@ -1003,8 +1038,8 @@ textarea {
 	width:100%;
 	transform: translate(0px, -50%);
 	border:solid 1px var(--color);
-	border-radius:10px;
-	padding:10px;
+	border-radius:var(--radius);
+	padding:var(--padding);
 	background: black;
 }
 .game_bets_box{
@@ -1021,7 +1056,7 @@ textarea {
 	border:solid 1px var(--color);
 	width: 50px;
   height: 50px;
-  padding: 12px 10px;
+  padding: 12px var(--padding);
   display: inline-block;
   cursor: pointer;
 }
@@ -1082,7 +1117,7 @@ textarea {
 
 /* CAREER */
 .career_header_container{
-	margin-top: 10px;
+	margin-top: var(--padding);
 	border-bottom: solid 1px var(--color);
 	text-align: left;
 }
@@ -1090,11 +1125,11 @@ textarea {
 	display:inline-block;
 	vertical-align: middle;
 	text-align: center;
-	padding: 10px;
-	margin-left: 5px;
+	padding: var(--padding);
+	margin-left: var(--padding_small);
 	border: solid 1px var(--color);
 	border-bottom: solid 0px transparent;
-	border-radius: 10px 10px 0px 0px;
+	border-radius: var(--padding) var(--padding) 0px 0px;
   width: 100px;
 }
 .career_header_box:hover, .career_header_box:active, .career_header_box:focus, .career_header_box.open{
@@ -1108,10 +1143,10 @@ textarea {
   position: absolute;
   z-index: 2;
   width: 100%;
-  margin-bottom: -15px;
+  margin-bottom: var(--padding);
 }
 .career_header_title {
-  padding: 10px 20px;
+  padding: var(--padding) 20px;
   border: solid 1px var(--color);
   border-radius: 50px;
   display: inline-block;
@@ -1124,7 +1159,7 @@ textarea {
 .career_header_title_box_container {
   max-width: 600px;
   width: 100%;
-  padding: 0px 15px;
+  padding: 0px var(--padding);
   max-height: 105px;
   transition: height .5s ease-in-out;
   height: 0;
@@ -1144,28 +1179,28 @@ textarea {
 .career_header_title_box {
   border: solid 1px var(--color);
   border-radius: 0px 0px 20px 20px;
-  padding: 5px 10px;
+  padding: var(--padding_small) var(--padding);
   overflow: hidden;
   background-color: var(--color);
 }
 .career_header_title_box div {
-  padding: 5px 20px;
+  padding: var(--padding_small) 20px;
   border-bottom: solid 1px var(--bg);
 }
 .career_container{
 	text-align: left;
-	padding: 5px;
+	padding: var(--padding_small);
 }
 .career_scroll{
 	height: 400px;
 	overflow-y: auto;
 }
 .career_box{
-	padding: 5px 0px;
+	padding: var(--padding_small) 0px;
 	border-bottom: solid 1px var(--color);
 }
 .career_box:last-child{
-	padding: 5px 0px;
+	padding: var(--padding_small) 0px;
 	border-bottom: solid 0px transparent;
 }
 .career_info{
@@ -1181,15 +1216,15 @@ textarea {
 
 /* QUESTIONS */
 .question_box{
-	padding:10px;
+	padding:var(--padding);
 }
 .question_title{
-	padding: 10px 20px;
+	padding: var(--padding) 20px;
   border: solid 1px var(--color);
   border-radius: 50px;
   display: inline-block;
   max-width: 600px;
-  margin-top: 10px;
+  margin-top: var(--padding);
 	width: 100%;
 	cursor: pointer;
 	position: relative;
@@ -1589,7 +1624,7 @@ textarea {
 
   /* GAME */
   .content_wrap{
-    padding: var(--padding) 10px;
+    padding: var(--padding);
   }
 }
 @media (max-width:576px) {	
@@ -1602,7 +1637,7 @@ textarea {
   }
 	.sign_container .label_container {
     text-align: left;
-    padding-bottom: 5px;
+    padding-bottom: var(--padding_small);
   }
 
   /* SALON */
@@ -1688,15 +1723,15 @@ textarea {
 ::-webkit-scrollbar{
 	width: 10px;
 	height:5px;
-	border-radius: 10px;
+	border-radius: var(--radius);
 }
 ::-webkit-scrollbar-track {
-	border-radius: 10px;
+	border-radius: var(--radius);
 	background:var(--color);
 	border:solid 4px var(--bg)
 }
 ::-webkit-scrollbar-thumb{
-	border-radius: 10px;
+	border-radius: var(--radius);
 	background-color: var(--color);
 	border:solid 1px var(--bg)
 }

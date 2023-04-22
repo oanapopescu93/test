@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { useDispatch } from 'react-redux'
 import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { changePopup } from '../../../reducers/popup'
@@ -8,17 +8,25 @@ import Header from '../../partials/header'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCalendarDays} from '@fortawesome/free-solid-svg-icons'
 import carrot_img from '../../../img/icons/carrot_icon.png'
+import {faHouse, faGear, faPaperPlane, faPowerOff} from '@fortawesome/free-solid-svg-icons'
 
 function User(props){
     const {lang, user} = props
     let dispatch = useDispatch()
+    const [buttonUser, setButtonUser] = useState('active')
+    const [buttonMarket, setButtonMarket] = useState('')
 
     function handleChange(choice){
-        switch (choice) {
+        switch (choice) {           
 			case "dashboard":
 			case "market":
                 dispatch(changeGamePage(choice))
 				break
+            case "salon":
+                dispatch(changePage('Salon'))
+                dispatch(changeGame(null))
+                dispatch(changeGamePage(null))
+                break
             case "settings":
                 let payload = {
                     open: true,
@@ -30,11 +38,28 @@ function User(props){
             case "contact":
                 dispatch(changePage(choice))
                 dispatch(changeGame(null))
+                dispatch(changeGamePage(null))
+				break
+            case "logout":
+                setCookie('casino_uuid', '')
+                window.location.reload(false)
 				break
             default:
                 break
 		}
     }
+
+    useEffect(() => {	
+        if(props.page && props.page.game_page){
+            if(props.page.game_page === 'dashboard'){
+                setButtonUser('active')
+                setButtonMarket('')
+            } else if(props.page.game_page === 'market'){
+                setButtonUser('')
+                setButtonMarket('active')
+            }
+        }
+	}, [props.page.game_page]) 
 
     return <>
         <Header template="panel_user" details={props.page} lang={props.lang}></Header>
@@ -55,31 +80,41 @@ function User(props){
                             switch (lang) {
                                 case "RO":
                                     return <span className="my_tooltiptext">
-                                    <p>Cate zile la rand ai jucat</p>
-                                </span>                                
+                                        <p>Cate zile la rand ai jucat</p>
+                                    </span>                                
                                 case "ENG":
                                 default:
                                     return <span className="my_tooltiptext">
-                                    <p><b>Your streak</b></p>
-                                    <p>How many days in a row you have played</p>
-                                </span>
+                                        <p><b>Your streak</b></p>
+                                        <p>How many days in a row you have played</p>
+                                    </span>
                             }
                         })()}
                     </div>
                 </span>
             </div>
          </div>
-        <div className="user_panel_tabs">
-            <div className="user_panel_tab" onClick={()=>{handleChange('dashboard')}}>
+        <div id="user_tags">
+            <div className={"user_list_button " + buttonUser} onClick={()=>{handleChange('dashboard')}}>
                 <span>{translate({lang: lang, info: "user"})}</span>
             </div>
-            <div className="user_panel_tab" onClick={()=>{handleChange('market')}}>
+            <div className={"user_list_button " + buttonMarket} onClick={()=>{handleChange('market')}}>
                 <span>{translate({lang: lang, info: "market"})}</span>
             </div>
-        </div>
-        <ul className="user_panel_list">
-            <li onClick={()=>{handleChange('settings')}}><span>{translate({lang: lang, info: "settings"})}</span></li>
-            <li onClick={()=>{handleChange('contact')}}><span>{translate({lang: lang, info: "contact"})}</span></li>
+        </div>        
+        <ul id="user_list">
+            <li onClick={()=>{handleChange('salon')}}>
+                <span><FontAwesomeIcon icon={faHouse} />{translate({lang: lang, info: "salon"})}</span>
+            </li>
+            <li onClick={()=>{handleChange('settings')}}>
+                <span><FontAwesomeIcon icon={faGear} />{translate({lang: lang, info: "settings"})}</span>
+            </li>
+            <li onClick={()=>{handleChange('contact')}}>
+                <span><FontAwesomeIcon icon={faPaperPlane} />{translate({lang: lang, info: "contact"})}</span>
+            </li>
+            <li onClick={()=>{handleChange('logout')}}>
+                <span><FontAwesomeIcon icon={faPowerOff} />{translate({lang: lang, info: "logout"})}</span>
+            </li>
         </ul>
     </>
 }

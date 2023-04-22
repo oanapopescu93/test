@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from 'react'
 import { Button, Row, Col } from 'react-bootstrap'
 import {useDispatch} from 'react-redux'
-import { changePage } from '../../../reducers/page'
+import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { translate } from '../../../translations/translate'
 import ContactForm from './contactForm'
 import ContactList from './contactList'
@@ -20,6 +20,8 @@ function Contact(props){
 
     function handleBack(){
         dispatch(changePage('Salon'))
+        dispatch(changeGame(null))
+        dispatch(changeGamePage(null))
     }
 
     function handleChooseContactElement(x){

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
 import {useDispatch} from 'react-redux'
-import { changePage } from '../../../reducers/page'
+import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { translate } from '../../../translations/translate'
 import AboutEng from './aboutEng'
 import AboutRo from './aboutRo'
@@ -10,6 +10,8 @@ function About(props){
     let dispatch = useDispatch()
     function handleBack(){
         dispatch(changePage('Salon'))
+        dispatch(changeGame(null))
+        dispatch(changeGamePage(null))
     }
     return <div className="content_wrap">
         <h2 className="title">{translate({lang: props.lang, info: "about"})}</h2>

@@ -14,8 +14,6 @@ function roulette_game(props){
     let self = this	
     let canvas
     let ctx    
-    let lang = props.lang
-	let socket = props.socket
 	const dispatch = props.dispatch	
 	let canvas_width = 900
 	let canvas_height = 800
@@ -562,20 +560,26 @@ function roulette_game(props){
         self.win_lose(elem01, money_history)
     }
 
-    this.win_lose = function(arr, money_history){
-		let status = 'win'
-		let money_original = decryptData(props.user.money)	
-		if(money_original > money_history){
-			status = "lose"
+    this.win_lose = function(arr, money_history, leave=false){
+		let game = null
+		if(props.page && props.page.game){
+			game = props.page.game
 		}
-		let roulette_payload_server = {
-			user_uuid: props.user.uuid,
-			game_choice: props.game_choice,
+		let status = "lose"
+		if(!leave && money_original < money_history){
+			status = "win"
+		}
+		let money_original = decryptData(props.user.money)
+		let roulette_payload = {
+			uuid: props.user.uuid,
+			game: game,
 			money: money_history,
-			bet: Math.abs(money_original - money_history),
 			status: status,
+			bet: Math.abs(money_original - money_history)
 		}
-		console.log('arr ', arr, money_original, money_history)	
+		if(typeof props.results === "function"){
+            props.results(roulette_payload)
+        }			
     }
 
     this.get_status_game = function(){
@@ -583,17 +587,14 @@ function roulette_game(props){
     }
 
 	this.leave = function(){
-		console.log('leave--> ', roulette_bets)
 		let elem01 = JSON.parse(JSON.stringify(roulette_bets))
 		let money_history = decryptData(props.user.money)
-
 		for(let i in elem01){
 			elem01[i].win = false
 			money_history = money_history - elem01[i].bet_value
 			elem01[i].money_history = money_history
 		}
-
-		self.win_lose(elem01, money_history)		
+		self.win_lose(elem01, money_history, true)		
 	}
 }
 

@@ -102,7 +102,10 @@ export const getWindowDimensions = function(){
 }
 
 export const capitalizeFirstLetter = function(string){
-  return string.charAt(0).toUpperCase() + string.slice(1)
+  if(string){
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
+  return string
 }
 
 export const postData = async function (url = "", data = {}) {

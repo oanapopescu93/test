@@ -79,6 +79,10 @@ var word_bank = {
         incorrect_email: "The email is incorrect",
         empty_input_subject: "The subject input is empty",
         empty_input_message: "The message input is empty",
+
+        market: "Market",
+        settings: "Settings",
+        logout: "Logout",
     },
     "RO":{
         salon: "Salon",
@@ -160,6 +164,10 @@ var word_bank = {
         incorrect_email: "Emailul este incorect",
         empty_input_subject: "Campul Subiect este gol",
         empty_input_message: "Campul Mesaj este gol",
+
+        market: "Market",
+        settings: "Setari",
+        logout: "Logout",
     }
 }
 

@@ -32,3 +32,14 @@ export const getMousePos = function(canvas, event) {
 export const isInside = function(mousePos, obj){
 	return mousePos.x > obj.x && mousePos.x < obj.x + obj.width && mousePos.y < obj.y + obj.height && mousePos.y > obj.y
 }
+
+export const getRoom = function(game){
+	let room = game.table_name
+	if(game.table_id){
+		room = room + '_' + game.table_id
+	}
+	if(game.table_type){
+		room = room + '_' + game.table_type
+	}
+	return room
+}

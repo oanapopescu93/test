@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { Button } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import { translate } from '../../translations/translate'
-import { changeGame, changePage } from '../../reducers/page'
+import { changePage, changeGame, changeGamePage } from '../../reducers/page'
 
 import Header from '../partials/header'
 
@@ -13,36 +13,32 @@ import Race from './pages/race/race'
 import Keno from './pages/keno/keno'
 import Panel from './sidebar/panel'
 import Blackjack from './pages/blackjack/blackjack'
+import { getRoom } from './game_utils'
 
 function Game(props){
-    const {lang, page, user} = props
+    const {lang, page, socket} = props
     let game = page.game
     let title = game.table_name ? game.table_name : ""
-    const [bets, setBets] = useState([])
     let dispatch = useDispatch()
 
-    function results(x){
-        //will do
-        console.log('results--> ', x)
+    function results(payload){
+        if(payload && payload.bet && payload.bet>0){ //send results to server only if he bet
+            socket.emit('game_results_send', payload)
+        }
     }
 
     function handleExit(){
         dispatch(changePage('Salon'))
         dispatch(changeGame(null))
+        dispatch(changeGamePage(null))
     }
 
     useEffect(() => {
-        return () => {            
-            if(bets && bets.length>0){ // meaning he actually bet and started playing
-                let payload = {win: false, user, game, bets}
-                results(payload)
-            }
-        }
-    }, [])
-
-    function getBets(x){
-        setBets(x)
-    }
+        socket.emit('join_room', getRoom(game)) 
+        return () => {
+			socket.emit('leave_room', getRoom(game)) 
+		} 
+    }, [])      
 
     return <>
         <div className="content_wrap">
@@ -50,17 +46,17 @@ function Game(props){
             {(() => {
                 switch (title) {
                     case "roulette":
-                        return <Roulette {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Roulette>
+                        return <Roulette {...props} results={(e)=>results(e)}></Roulette>
                     case "blackjack":
-                        return <Blackjack {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Blackjack>
+                        return <Blackjack {...props} results={(e)=>results(e)}></Blackjack>
                     case "slots":
-                        return <Slots {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Slots>
+                        return <Slots {...props} results={(e)=>results(e)}></Slots>
                     case "craps":
-                        return <Craps {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Craps>
+                        return <Craps {...props} results={(e)=>results(e)}></Craps>
                     case "race":
-                        return <Race {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Race>
+                        return <Race {...props} results={(e)=>results(e)}></Race>
                     case "keno":
-                        return <Keno {...props} getBets={(e)=>getBets(e)} results={(e)=>results(e)}></Keno>
+                        return <Keno {...props} results={(e)=>results(e)}></Keno>
                     default:
                         return <p>{translate({lang: lang, info: "error"})}</p>
                 }

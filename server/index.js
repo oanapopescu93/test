@@ -243,10 +243,10 @@ io.on('connection', function(socket) {
 		}
 	})
   socket.on('game_results_send', function(data) {
+    console.log('game_results_send ==> ', data)
 		if(data.uuid){
 			try{
-				//io.to(room_name).emit('game_results_read', payload)
-        io.emit('game_results_read', payload)
+        io.to(socket.id).emit('game_results_read', data)
 			} catch(e){
 				console.log('[error]','game_results_read--> ', e)
 			}
@@ -257,16 +257,18 @@ io.on('connection', function(socket) {
     socket.join(room)
     console.log("User joined "+room)
   })
-
-  socket.on("change_room",function(data){
-    socket.leave(socket.room)
-    socket.join(data.newroom)
-  })
-
   socket.on('leave_room', function(room) {
-      socket.leave(room)
-      console.log("User left "+room)
+    socket.leave(room)
+    console.log("User left2 "+room)
   })
+  socket.on('message_send', function(data) {
+    let room = data.room
+		try{
+      io.to(room).emit('message_read', data)
+    } catch(e){
+      console.log('[error]','message_read--> ', e)
+    }
+	})
 
   socket.on('heartbeat', function(data) {
 		console.log('heartbeat', data)

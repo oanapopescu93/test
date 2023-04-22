@@ -18,11 +18,17 @@ function Roulette(props){
 	}
 
     function openTable(x){setOpen(true)}
-    function closeTable(){setOpen(false)}    
+    function closeTable(){setOpen(false)}
+    
+    function results(x){
+        if(typeof props.results === "function"){
+            props.results(x)
+        }
+    }
 
     return <>
         {!game_page ? <div className='game_container'>
-            <RouletteGame {...props} bets={bets} openTable={()=>openTable()}></RouletteGame>
+            <RouletteGame {...props} bets={bets} openTable={()=>openTable()} results={(e)=>results(e)}></RouletteGame>
             <GameBets {...props} open={open} getData={(e)=>getData(e)} closeTable={()=>closeTable()}></GameBets>
         </div> : <>
         {(() => {
