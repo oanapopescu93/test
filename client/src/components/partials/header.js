@@ -2,6 +2,7 @@ import React from 'react'
 import { translate } from '../../translations/translate'
 import logo_icon from '../../img/logo.png'
 import { capitalizeFirstLetter, isEmpty } from '../../utils/utils'
+import TransparentText from './transparentText'
 
 function Header(props){
     const {lang, template, details} = props
@@ -25,12 +26,17 @@ function Header(props){
                             let table_type = details.game.table_type
                             let table_id = details.game.table_id
                             return <div id="header_game" className="header">
-                                <h2>{capitalizeFirstLetter(table_name)} {table_id}</h2>
+                                {/* <h2>{capitalizeFirstLetter(table_name)} {table_id}</h2> */}
+                                <TransparentText text={capitalizeFirstLetter(table_name) + ' ' + table_id}></TransparentText>      
                                 {table_type ? <h3>{capitalizeFirstLetter(table_type)}</h3> : null}
                             </div>
                         } else {
                             return <div id="header" className="header">
-                                <h2>{title}</h2>                                 
+                                {/* <h2>{title}</h2>     */}
+                                <TransparentText
+                                    text={title}
+                                    size={30}
+                                ></TransparentText>                             
                             </div>
                         }
                     case "sign":

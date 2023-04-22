@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { changePopup } from '../../../reducers/popup'
 import { translate } from '../../../translations/translate'
+import { decryptData } from '../../../utils/crypto'
 
 function User(props){
     const {lang, user} = props
@@ -32,7 +33,8 @@ function User(props){
     }
 
     return <>
-        <h3>{user.user}</h3>
+        <h3>{decryptData(user.user)}</h3>
+        <p>{decryptData(user.money)}</p>
         <div className="user_panel_tabs">
             <div className="user_panel_tab" onClick={()=>{handleChange('dashboard')}}>
                 <span>{translate({lang: lang, info: "user"})}</span>

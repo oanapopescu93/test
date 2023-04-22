@@ -454,6 +454,14 @@ textarea {
 #header_sign{
   margin: var(--padding);
 }
+.header .transparent_text svg text{
+  font-family: 'Grenadier';
+  font-size: 30px;
+}
+.header h3{
+  font-family: 'Grenadier';
+}
+
 .cell_salon_container{
   padding: var(--padding);
   text-align: center;
