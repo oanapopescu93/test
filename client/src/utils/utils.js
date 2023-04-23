@@ -108,6 +108,10 @@ export const capitalizeFirstLetter = function(string){
   return string
 }
 
+export const randomIntFromInterval = function(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 export const postData = async function (url = "", data = {}) {
   const response = await fetch(url, {
       method: "POST",

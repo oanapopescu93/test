@@ -6,7 +6,7 @@ import User from './user'
 import Chat from './chat'
 
 function Panel(props){
-    const {lang} = props
+    const {lang, chatRoomUsers} = props
     const [open, setOpen] = useState('')
     const [panel, setPanel] = useState("user_panel_box")
     const [panelUser, setPanelUser] = useState("active")
@@ -57,7 +57,7 @@ function Panel(props){
             <User {...props}></User>
         </div>
         <div id="chat_panel_box" className={"panel_box " + panelChat }>
-            <Chat {...props}></Chat>
+            <Chat {...props} chatRoomUsers={chatRoomUsers}></Chat>
         </div>
     </div>
 }

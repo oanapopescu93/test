@@ -169,9 +169,8 @@ textarea:focus, input:focus{
   outline: none;
 }
 
-svg text{
+.transparent_text svg text{
   font-family: 'Grenadier';
-  font-size: 30px;
 }
 
 /* FORMS, BUTTONS, INPUTS, TEXTAREA */
@@ -228,20 +227,13 @@ svg text{
   cursor: pointer;
 }
 .sign_container ul li.active, .sign_container ul li:hover, .sign_container ul li:focus, .sign_container ul li:active{
-  background-color: var(--color);
-  color: var(--bg);
+  background-color: var(--transparent_yellow);
 }
 .sign_container #signin_tab{
   border-radius: var(--radius) 0px 0px var(--radius);
 }
 .sign_container #signup_tab{
   border-radius: 0px var(--radius) var(--radius) 0px;
-}
-.sign_container #signin_tab:hover, .sign_container #signin_tab:focus, .sign_container #signin_tab:active{
-  border-right: solid 1px var(--bg);
-}
-.sign_container #signup_tab:hover, .sign_container #signup_tab:focus, .sign_container #signup_tab:active{
-  border-left: solid 1px var(--bg);
 }
 .sign_container button{
   margin-top: var(--padding_small);
@@ -282,6 +274,7 @@ svg text{
 	display: grid;
   place-content: center;
   cursor: pointer;
+  margin: 0px;
 }
 .checkbox_radio_container input[type="radio"]{
 	border-radius: 100%!important;
@@ -326,6 +319,10 @@ svg text{
 }
 .checkbox_radio_container label h6{
   text-align: left;
+}
+
+.checkbox_radio_container h6{
+  margin-top: 4px;
 }
 
 /* BUTTONS */
@@ -848,11 +845,12 @@ textarea {
 	transition:0.7s;
 }
 .panel_button_box{
-  position: relative;
+  position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
   left: 1px;
+  width: 35px;
 }
 .panel_button{
   background-color: var(--bg);
@@ -881,7 +879,7 @@ textarea {
 	border-left:solid 1px var(--color);
 	padding: 20px var(--padding);	
 	position:absolute;
-	z-index:3;
+	z-index:1;
 	height:100%;
   top: 0px;
 	right:0px;
@@ -967,11 +965,38 @@ textarea {
 #user_list li svg{
   margin-right: var(--padding_small);
 }
-.chat_form textarea{
-  margin-bottom: var(--padding_small);
+
+#chatmessages{
+  border-radius: var(--radius);
+  margin-bottom: var(--padding);
+  padding: var(--padding_small);
+}
+#chatmessages .messages{
+  padding: var(--padding_small);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .chat_form input{
   margin-bottom: var(--padding);
+}
+
+.chat_list li{
+  padding: var(--padding_small);
+  border-bottom: solid 1px var(--color);
+}
+.chat_list li .left{
+	display:inline-block;
+	vertical-align: middle;
+	width:40%;
+	padding: 5px;
+	text-align:left;
+}
+.chat_list li .right{
+	display:inline-block;
+	vertical-align: middle;
+	width:60%;
+	padding: 5px;
+	text-align:right;
 }
 
 /* TOOLTIP */
@@ -1280,10 +1305,6 @@ textarea {
 #splash_screen #logo_icon{
   width: 60px;
 }
-#splash_screen .splash_title{
-  font-size: 50px;
-  line-height: 50px;
-}
 #splash_screen .splash_subtitle{
   font-family: 'Grenadier';
 }
@@ -1544,10 +1565,6 @@ textarea {
   #splash_screen #logo_splash{
     width: 30px;
   }
-  #splash_screen .splash_title{
-    font-size: 25px;
-    line-height: 25px;
-  }
   #splash_screen .main-diamond-outer {
     height: 300px;
     width: 300px;
@@ -1705,6 +1722,24 @@ textarea {
   }   
 }
 
+/* DASHBOARD */
+
+/* MARKET */
+.shop_shader{	
+	background-position: center;
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	height:115px;
+	margin-bottom: -20px;
+	position: relative;
+	z-index:1;
+}
+
+@media (max-width: 1024px){
+	.shop_shader{
+		height:80px;
+	}
+}
 @media (min-width: 768px){
 	
 }

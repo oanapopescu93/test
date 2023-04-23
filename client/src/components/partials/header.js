@@ -11,13 +11,14 @@ function Header(props){
 	return <div className="header_container">
         {(() => {
             if(isEmpty(template)){
-                return <h1 className="color_yellow">{title}</h1>
+                return <h1 className="header">{title}</h1>
             } else {
                 switch (template) {
                     case "salon":
                         return <div id="header_salon" className="header">
                             <img id="logo_icon" alt="logo_icon" src={logo_icon} />
-                            <h1>{title}</h1>
+                            {/* <h1>{title}</h1> */}
+                            <TransparentText text={title} height={50}></TransparentText>
                             <h3>{translate({lang: lang, info: "salon_subtitle"})}</h3>                                    
                         </div> 
                     case "game":

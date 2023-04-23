@@ -7,7 +7,7 @@ import Home from './home'
 import { bringPayload } from '../../reducers/home'
 import Splash from '../partials/splashScreen'
 import Loader from '../partials/loader'
-
+import {randomIntFromInterval} from '../../utils/utils'
 
 function Page(props) {
     let home = useSelector(state => state.home)
@@ -21,7 +21,9 @@ function Page(props) {
 
     useEffect(() => {
 		dispatch(bringPayload())	
-        splash_screen()
+        if(isEmpty(uuid)){
+            splash_screen()
+        }
 	}, [])
 
     function splash_screen(){	
@@ -46,11 +48,7 @@ function Page(props) {
                 setProgressNumber(width)
             }
         }
-    }
-
-    function randomIntFromInterval(min, max) { // min and max included 
-		return Math.floor(Math.random() * (max - min + 1) + min)
-	}
+    }   
 
     return <>
         {(() => {
@@ -61,7 +59,7 @@ function Page(props) {
                     return <Splash {...props} progressNumber={progressNumber}></Splash>
                 }                
             } else {
-                if(home.loaded){
+                if(home.loaded){                    
                     return <Home {...props} home={home} page={page} user={user} cookies={cookies}></Home>
                 } else {
                     return <Loader></Loader>

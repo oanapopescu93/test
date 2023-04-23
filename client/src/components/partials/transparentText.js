@@ -10,10 +10,11 @@ function TransparentText(props){
     let height = props.height ? props.height : "30"
     let x = props.x ? props.x : "50%"
     let y = props.y ? props.y : "50%"
+    let size = props.size ? props.size : "30"
 
     return <div className="transparent_text">
         <svg width={width} height={height}>
-            <text fill={fill} fillOpacity={opacity} x={x} y={y} dominantBaseline="middle" textAnchor="middle" stroke={stroke}>
+            <text fontSize={size} fill={fill} fillOpacity={opacity} x={x} y={y} dominantBaseline="middle" textAnchor="middle" stroke={stroke}>
                 {text}
             </text>
         </svg>

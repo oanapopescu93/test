@@ -1,14 +1,32 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import logo_splash from '../../img/logo.png'
+import TransparentText from './transparentText'
+import { getWindowDimensions } from '../../utils/utils'
 
 function Splash(props) {
+    const [height, setHeight] = useState(getWindowDimensions().width > 960 ? 72 : 30)
+
+    function handleResize(event){
+        setHeight(getWindowDimensions().width > 960 ? 72 : 30)
+    }
+
+    useEffect(() => {        
+        if (typeof window !== "undefined") {
+            window.addEventListener("resize", handleResize)
+            handleResize()
+            return () => window.removeEventListener("resize", handleResize)
+        }
+	}, [])
+
 	return <div id="splash_screen">
         <div className="splash_screen_container">
             <div className="content_box">
                 <img id="logo_splash" alt="logo_splash" src={logo_splash} />
                 <div className="content-dot">
                     <div className="content">
-                        <h1 className="splash_title">BunnyBet</h1>
+                        <h1 className="splash_title">
+                            <TransparentText text={"BunnyBet"} height={height} size={height}></TransparentText>
+                        </h1>
                     </div>                    
                 </div>
                 <div className="progress_container">

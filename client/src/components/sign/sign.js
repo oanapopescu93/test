@@ -18,6 +18,7 @@ function Sign(props) {
     const [errorEmail, setErrorEmail] = useState(false)
     const [errorUser, setErrorUser] = useState(false)
     const [errorPass, setErrorPass] = useState(false)
+    const [errorAgree, setErrorAgree] = useState(false)
     const [signIn, setSignIn] = useState('active')
     const [signUp, setSignUp] = useState('')
     const [checkboxOne, setCheckboxOne] = useState(false)
@@ -26,6 +27,7 @@ function Sign(props) {
         setErrorEmail(false)
         setErrorUser(false)
         setErrorPass(false)
+        setErrorAgree(false)
         setVisible(choice)    
         if(choice === "signIn"){
 			setSignIn('active')
@@ -40,6 +42,7 @@ function Sign(props) {
         setErrorEmail(false)
         setErrorUser(false)
         setErrorPass(false)
+        setErrorAgree(false)
         if(!checkPayload(data.payload)){
             props.socket.emit(data.emit, data.payload)
         }
@@ -58,6 +61,10 @@ function Sign(props) {
         if(typeof data.pass != "undefined" && (data.pass === "")){
             error = true
             setErrorPass(true)
+        }
+        if(!checkboxOne){
+            error = true
+            setErrorAgree(true)
         }
         return error
     }
@@ -137,11 +144,12 @@ function Sign(props) {
                                 </div>                                
                             </div> 
                             {(() => {
-                                if(errorEmail || errorUser || errorPass){
+                                if(errorEmail || errorUser || errorPass || errorAgree){
                                     return <div className="alert alert-danger">
                                         {errorEmail ? <p className="text_red">{translate({lang: props.lang, info: "incorrect_email"})}</p> : null}
                                         {errorUser ? <p className="text_red">{translate({lang: props.lang, info: "empty_input_subject"})}</p> : null}
-                                        {errorPass ? <p className="text_red">{translate({lang: props.lang, info: "empty_input_message"})}</p> : null}                        
+                                        {errorPass ? <p className="text_red">{translate({lang: props.lang, info: "empty_input_message"})}</p> : null}  
+                                        {errorAgree ? <p className="text_red">{translate({lang: props.lang, info: "empty_input_agree"})}</p> : null}  
                                     </div>
                                 }
                             })()}                           

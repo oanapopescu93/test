@@ -44,10 +44,9 @@ function SignIn(props) {
                 }
             }
         })
-    }, [lang])    
+    }, [])    
 
     return <div className="sign_in_container">
-        {/* <h3>{translate({lang: props.lang, info: "sign_in"})}</h3> */}
         <Form>
             <Row>
                 <Col sm={4} className="label_container">

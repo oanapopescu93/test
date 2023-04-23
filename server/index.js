@@ -26,6 +26,8 @@ const account_type = 1
 const user_money = 100
 const how_lucky = 7
 
+var allUsers = []
+
 io.on('connection', function(socket) {
   socket.on('signin_send', (data) => {
     let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
@@ -164,7 +166,7 @@ io.on('connection', function(socket) {
     } 
   })
 
-  // games
+  // GAMES
 	socket.on('roulette_send', function(data) {
 		if(data.uuid){
 			let payload = roulette(data, how_lucky)
@@ -253,27 +255,75 @@ io.on('connection', function(socket) {
 		}
 	})
 
-  socket.on('join_room', function(room) {
-    socket.join(room)
-    console.log("User joined "+room)
-  })
-  socket.on('leave_room', function(room) {
-    socket.leave(room)
-    console.log("User left2 "+room)
-  })
-  socket.on('message_send', function(data) {
+  // CHATROOM
+  socket.on('join_room', function(data){
     let room = data.room
-		try{
-      io.to(room).emit('message_read', data)
+    socket.join(data.room)
+
+    allUsers.push({ id: socket.id, user: data.user, room: room })
+    let timestamp = new Date().getTime()
+    let message = {text: 'join', timestamp: timestamp, user: data.user}
+
+    let chatRoomUsers = []
+    for(let i in allUsers){
+      if(allUsers[i].room === room){
+        chatRoomUsers.push({user: allUsers[i].user, timestamp: timestamp})
+      }
+    }
+
+    try{
+      io.to(room).emit('message_read', message)
+      io.to(room).emit('chatroom_users_read', chatRoomUsers)
     } catch(e){
       console.log('[error]','message_read--> ', e)
     }
-	})
+  })
+  socket.on('leave_room', function(data){
+    let room = data.room
+    socket.leave(room)
+    for( let i = 0; i < allUsers.length; i++){                                    
+      if (allUsers[i].user === data.user) { 
+        allUsers.splice(i, 1)
+        i--
+      }
+    }
+    console.log(data, allUsers)
+
+    let timestamp = new Date().getTime()
+    let message = {text: 'leave', timestamp: timestamp, user: data.user}
+    
+    let chatRoomUsers = []
+    for(let i in allUsers){
+      if(allUsers[i].room === room){
+        chatRoomUsers.push({user: allUsers[i].user, timestamp: timestamp})
+      }
+    }
+
+    try{
+      io.to(room).emit('message_read', message)
+      io.to(room).emit('chatroom_users_read', chatRoomUsers)
+    } catch(e){
+      console.log('[error]','message_read--> ', e)
+    }
+  })
+  socket.on('message_send', function(data){
+    let room = data.room
+    let timestamp = new Date().getTime()
+    let message = {text: data.text, timestamp: timestamp, user: data.user}
+		try{
+      io.to(room).emit('message_read', message)
+    } catch(e){
+      console.log('[error]','message_read--> ', e)
+    }
+	})  
 
   socket.on('heartbeat', function(data) {
 		console.log('heartbeat', data)
 	})
-});
+  socket.on('disconnect', function() {  
+    console.log('Got disconnect!')
+ })
+})
 
 http.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`)

@@ -65,8 +65,7 @@ function SignUp(props) {
                 open: true,
                 template: "isMinor",
                 title: translate({lang: lang, info: "isMinor_title"}),
-                ata: translate({lang: lang, info: "isMinor_text"}),
-                size: 'lg',
+                data: translate({lang: lang, info: "isMinor_text"}),
                 sticky: true
             }
             dispatch(changePopup(payload))
@@ -74,7 +73,6 @@ function SignUp(props) {
 	}, [isMinor]) 
 
     return <div className="sign_up_container">
-        {/* <h3>{translate({lang: props.lang, info: "sign_up"})}</h3> */}
         <Form>
             <Row>
                 <Col sm={4} className="label_container">

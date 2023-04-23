@@ -79,10 +79,13 @@ var word_bank = {
         incorrect_email: "The email is incorrect",
         empty_input_subject: "The subject input is empty",
         empty_input_message: "The message input is empty",
+        empty_input_agree: "You didn't agree with the Terms and contitions and the Policy privacy",
 
         market: "Market",
         settings: "Settings",
         logout: "Logout",
+        joined_the_chat: "joined the chat",
+        left_the_chat: "left the chat",
     },
     "RO":{
         salon: "Salon",
@@ -164,10 +167,13 @@ var word_bank = {
         incorrect_email: "Emailul este incorect",
         empty_input_subject: "Campul Subiect este gol",
         empty_input_message: "Campul Mesaj este gol",
+        empty_input_agree: "Nu ai fost de acord cu Termenii si conditiile si Politicile de confidentialitate",
 
         market: "Market",
         settings: "Setari",
         logout: "Logout",
+        joined_the_chat: "s-a alaturat chat-ului",
+        left_the_chat: "a parasit chat-ul",
     }
 }
 

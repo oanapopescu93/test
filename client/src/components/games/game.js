@@ -20,6 +20,7 @@ function Game(props){
     let game = page.game
     let title = game.table_name ? game.table_name : ""
     let dispatch = useDispatch()
+    const [chatRoomUsers, setChatRoomUsers] = useState([])
 
     function results(payload){
         if(payload && payload.bet && payload.bet>0){ //send results to server only if he bet
@@ -34,9 +35,15 @@ function Game(props){
     }
 
     useEffect(() => {
-        socket.emit('join_room', getRoom(game)) 
+        socket.emit('join_room', {room: getRoom(game), user: props.user.user}) 
+        socket.on('chatroom_users_read', function(res){
+            setChatRoomUsers(res)
+        })
         return () => {
-			socket.emit('leave_room', getRoom(game)) 
+			socket.emit('leave_room', {room: getRoom(game), username: props.user.user}) 
+            socket.on('chatroom_users_read', function(res){
+                setChatRoomUsers(res)
+            })
 		} 
     }, [])      
 
@@ -67,7 +74,7 @@ function Game(props){
                 </Button>
             </div>
         </div>
-        <Panel {...props}></Panel>
+        <Panel {...props} chatRoomUsers={chatRoomUsers}></Panel>
     </>
 }
 
