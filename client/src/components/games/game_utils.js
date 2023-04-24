@@ -1,4 +1,4 @@
-export const draw_dot = function(x, y, r,sAngle,eAngle,counterclockwise, fillStyle, lineWidth, strokeStyle){
+export const draw_dot = function(ctx, x, y, r,sAngle,eAngle,counterclockwise, fillStyle, lineWidth, strokeStyle){
 	ctx.beginPath()
 	ctx.arc(x, y, r, sAngle, eAngle, counterclockwise)
 	ctx.fillStyle = fillStyle

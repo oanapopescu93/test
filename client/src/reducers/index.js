@@ -6,6 +6,7 @@ import homeReducer from './home'
 import authReducer from './auth'
 import popupReducer from './popup'
 import gamesReducer from './games'
+import cartReducer from './cart'
 
 const allReducers = combineReducers({	
 	settings: settingsReducer,
@@ -14,6 +15,7 @@ const allReducers = combineReducers({
 	auth: authReducer,
 	popup: popupReducer,
 	games: gamesReducer,
+	cart: cartReducer,
 })
 
 export default allReducers

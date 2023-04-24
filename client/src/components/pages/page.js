@@ -66,7 +66,7 @@ function Page(props) {
                 }
             }
         })()} 
-        <Popup {...props}></Popup>
+        <Popup {...props} home={home}></Popup>
     </>
 }
 

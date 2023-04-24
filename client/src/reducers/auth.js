@@ -4,6 +4,7 @@ import { getCookie, setCookie } from '../utils/utils'
 
 const initialState = {
     user: {
+        profile_pic: getCookie("casino_profile_pic") !== "" ? getCookie("casino_profile_pic") : null,
         account_type: getCookie("casino_account_type") !== "" ? getCookie("casino_account_type") : null,
         device: getCookie("casino_device") !== "" ? getCookie("casino_device") : null,
         email: getCookie("casino_email") !== "" ? getCookie("casino_email") : null,
@@ -19,6 +20,10 @@ const pageSlice = createSlice({
     initialState,
     reducers: {
         changeUser: (state, { payload }) => {
+            if(payload.profile_pic){
+                state.user.profile_pic = encryptData(payload.profile_pic)
+                setCookie("casino_profile_pic", encryptData(payload.profile_pic))
+            }
             if(payload.account_type){
                 state.user.account_type = encryptData(payload.account_type)
                 setCookie("casino_account_type", encryptData(payload.account_type))
@@ -48,13 +53,27 @@ const pageSlice = createSlice({
             state.isMinor = payload
             setCookie("casino_isminor", payload, 336) //it will expire after 14 days
         },
+        changePic: (state, { payload }) => {
+            if(payload){
+                state.user.profile_pic = encryptData(payload)
+                setCookie("casino_profile_pic", encryptData(payload))
+            }
+        },
+        changeUsername: (state, { payload }) => {
+            if(payload){
+                state.user.user = encryptData(payload)
+                setCookie("casino_user", encryptData(payload))
+            }
+        },
         resetAuth: () => initialState,
     }
 })
 
 export const {
     changeUser,
-    changeIsMinor
+    changeIsMinor,
+    changePic,
+    changeUsername,
 } = pageSlice.actions
 
 export default pageSlice.reducer

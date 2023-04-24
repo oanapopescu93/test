@@ -6,7 +6,7 @@ import Header from '../partials/header'
 import SalonGames from './salonGames'
 import SalonSidebarLeft from './salonSidebarLeft'
 import Game from '../games/game'
-import Language from '../partials/language'
+import Language from '../settings/language'
 
 function Salon(props) {
     const {lang, home, page} = props 

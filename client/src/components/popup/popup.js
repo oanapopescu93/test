@@ -1,16 +1,22 @@
 import React, {useState} from "react"
 import { useSelector, useDispatch } from 'react-redux'
 import { Modal} from "react-bootstrap"
+
 import { changePopup } from "../../reducers/popup"
-import DefaultPopup from "./defaultPopup"
-import IsMinorPopup from "./isMinorPopup"
 import { changeIsMinor } from "../../reducers/auth"
-import ForgotPasswordPopup from "./forgotPasswordPopup"
 import { validateInput } from "../../utils/validate"
 import { translate } from "../../translations/translate"
 
+import Default from "./default"
+import IsMinor from "./isMinor"
+import ForgotPassword from "./forgotPassword"
+import Settings from "./settings"
+import ChangeProfilePic from "./changeProfilePic"
+import ChangeUsername from "./changeUsername"
+import ChangePassword from "./changePassword"
+
 function Popup(props){
-    const {lang, socket} = props
+    const {lang, date, currency, socket, home} = props
     let open = useSelector(state => state.popup.open)
     let title = useSelector(state => state.popup.title)
     let template = useSelector(state => state.popup.template)
@@ -19,6 +25,7 @@ function Popup(props){
     let sticky = useSelector(state => state.popup.sticky)
     let dispatch = useDispatch()
     const [forgotPasswordResult, setForgotPasswordResult] = useState('')
+    let currencies = home.currencies
 
   	function closeModal(){
         if(template !== "isMinor"){ //prevents modal from closing without making a choice
@@ -39,6 +46,10 @@ function Popup(props){
         }
     }
 
+    function dashboardChanges(x){
+        socket.emit('dashboardChanges_send', x)
+    }
+
     socket.on('forgotPassword_read', function(res){
         setForgotPasswordResult(translate({lang: lang, info: res.send}))      
     })
@@ -57,17 +68,25 @@ function Popup(props){
                 {(() => {					
                     switch (template) {
                         case "forgotPassword":
-                            return <ForgotPasswordPopup 
+                            return <ForgotPassword 
                                 lang={lang} 
                                 text={data} 
                                 forgotPasswordClick={(e)=>forgotPasswordClick(e)} 
                                 forgotPasswordResult={forgotPasswordResult}
-                            ></ForgotPasswordPopup>
+                            ></ForgotPassword>
                         case "isMinor":
-                            return <IsMinorPopup lang={lang} text={data} isMinorClick={(e)=>isMinorClick(e)}></IsMinorPopup>
+                            return <IsMinor lang={lang} text={data} isMinorClick={(e)=>isMinorClick(e)}></IsMinor>
+                        case "settings":
+                            return <Settings lang={lang} date={date} currency={currency} currencies={currencies}></Settings>
+                        case "change_pic":
+                            return <ChangeProfilePic profiles={data} choosePic={(e)=>dashboardChanges(e)}></ChangeProfilePic>
+                        case "change_username":
+                            return <ChangeUsername changeUsername={(e)=>dashboardChanges(e)}></ChangeUsername>
+                        case "change_password":
+                            return <ChangePassword changePassword={(e)=>dashboardChanges(e)}></ChangePassword>
                         case "error":
                         default:
-                            return <DefaultPopup lang={lang} text={data}></DefaultPopup>
+                            return <Default lang={lang} text={data}></Default>
                     }
                 })()}
             </Modal.Body>

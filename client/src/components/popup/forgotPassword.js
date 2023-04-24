@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 import { translate } from '../../translations/translate'
 
-function ForgotPasswordPopup(props) {
+function ForgotPassword(props) {
     const {forgotPasswordResult, lang} = props
     const [email, setEmail] = useState("")
 
@@ -40,4 +40,4 @@ function ForgotPasswordPopup(props) {
     </div>
 }
 
-export default ForgotPasswordPopup
+export default ForgotPassword

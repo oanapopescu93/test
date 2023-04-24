@@ -14,7 +14,10 @@ import Page from "./components/pages/page"
 const socket = io()
 
 function App() {
+	//settings
 	let lang = useSelector(state => state.settings.lang)
+	let date = useSelector(state => state.settings.date)
+	let currency = useSelector(state => state.settings.currency)
 
   	let my_console = function(){
 		let oldConsole = null
@@ -49,7 +52,7 @@ function App() {
     	socket.emit('heartbeat', { data: "ping" })
   	}, 15000)
 
-	return <Page socket={socket} lang={lang}></Page>
+	return <Page socket={socket} lang={lang} date={date} currency={currency}></Page>
 }
 
 export default App

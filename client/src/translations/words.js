@@ -61,6 +61,7 @@ var word_bank = {
         no_bets: "You didn't place any bets",
         no_user: "No user was found",
         no_money: "You don't have enough carrots. You can buy them from the market.",
+        no_payment_methods: "No payment methods yet",
 
         isMinor_title: "Age verification",
         isMinor_text: "Are you over 18?",
@@ -86,6 +87,20 @@ var word_bank = {
         logout: "Logout",
         joined_the_chat: "joined the chat",
         left_the_chat: "left the chat",
+        buy: "Buy",
+
+        language: "Language",
+        date_calendar: "Date",
+        currency: "Currency",      
+        
+        choose_profile_pic: "Choose profile pic",
+        animal: "Animal",
+        carrots: "Carrots",
+        change_username: "Change username",
+        change_password: "Change password",
+        buy_carrots: "Buy carrots",
+        profile_grey: "To have this pic you need to have more than 1000 carrots",
+        choose: "Choose",
     },
     "RO":{
         salon: "Salon",
@@ -149,6 +164,7 @@ var word_bank = {
         no_bets: "Nu ai plasat niciun pariu",
         no_user: "Nu exista user",
         no_money: "Nu ai suficienti morcovi. Poti sa cumperi morcovi din Market.",
+        no_payment_methods: "Nu exista metoda de plata inca",
         
         isMinor_title: "Verificare varsta",
         isMinor_text: "Ai peste 18 ani?",
@@ -174,6 +190,20 @@ var word_bank = {
         logout: "Logout",
         joined_the_chat: "s-a alaturat chat-ului",
         left_the_chat: "a parasit chat-ul",
+        buy: "Cumpara",
+
+        language: "Limba",
+        date_calendar: "Data calendaristica",
+        currency: "Moneda", 
+        
+        choose_profile_pic: "Alege imaginea de profil",
+        animal: "Animal",
+        carrots: "Morcovi",
+        change_username: "Schimba nume user",
+        change_password: "Schimba parola",
+        buy_carrots: "Cumpara morcovi",
+        profile_grey: "Pentru a avea acesta poza trebuie sa ai peste 1000 de morcovi",
+        choose: "Alege",
     }
 }
 

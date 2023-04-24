@@ -86,6 +86,7 @@ io.on('connection', function(socket) {
             email: data.email,
             pass: pass,
             account_type: account_type,
+            profile_pic: 0,
             money: user_money,
             signup: timestamp
           } 
@@ -111,6 +112,7 @@ io.on('connection', function(socket) {
             ip_address: extra_data.ip_address ? extra_data.ip_address : "",
             city: extra_data.city ? extra_data.city : "",
             country: extra_data.city ? extra_data.city : "",
+            profile_pic: 0
           }
           login_user.push(new_login)
           let payload_login_user = JSON.stringify(login_user)
@@ -123,7 +125,8 @@ io.on('connection', function(socket) {
             email: data.email, 
             account_type: account_type, 
             money: user_money, 
-            device: device
+            device: device,
+            profile_pic: 0
           }
           try{
             io.emit('signup_read', {exists, obj})
@@ -254,6 +257,32 @@ io.on('connection', function(socket) {
 			}
 		}
 	})
+
+  // DASHBOARD
+  socket.on('dashboardChanges_send', function(data){
+    if(data.uuid){
+      let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
+      for(let i in users_array){
+        if(users_array[i].uuid === data.uuid){
+          switch(data.type) {
+            case "pic":
+              users_array[i].profile_pic = data.value
+              break
+            case "user":
+              users_array[i].user = data.value
+              break
+            case "pass":
+              users_array[i].pass = data.value
+              break
+          }
+          break
+        }
+      }
+      let payload_user = JSON.stringify(users_array)
+      fs.writeFileSync(path.resolve(__dirname, "./json/users.json"), payload_user)
+      console.log('payload_user--> ',payload_user)
+    }   
+  })
 
   // CHATROOM
   socket.on('join_room', function(data){

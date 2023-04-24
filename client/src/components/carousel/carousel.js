@@ -10,13 +10,25 @@ function Carousel(props){
     let carouselList = <List {...props}></List>
 
     useEffect(() => {
-        $('#'+id+' .cell_button button').click(function(e) {
-            let table_name = $(e.target).attr('table_name')
-            let table_type = $(e.target).attr('table_type')
-            let table_id = $(e.target).attr('table_id')
-            let payload = {table_name, table_type, table_id}
-            props.getItem(payload)
-        })
+        if($('#'+id+' .cell_button button')){
+            $('#'+id+' .cell_button button').click(function(e) {
+                let payload = {}
+
+                if(id === "carousel_market"){
+                    let id = $(e.target).attr('market_id')
+                    let qty = $(e.target).attr('market_qty')
+                    payload = {id, qty}
+                } else {
+                    //carousel_salon
+                    let table_name = $(e.target).attr('table_name')
+                    let table_type = $(e.target).attr('table_type')
+                    let table_id = $(e.target).attr('table_id')
+                    payload = {table_name, table_type, table_id}
+                }
+
+                props.getItem(payload)
+            })
+        }
     }, [carouselList])
 
     return <OwlCarousel id={id} className='owl-theme' {...options}>

@@ -11,6 +11,7 @@ var donations = require('./var/home').DONATIONS
 var slot_prises = require('./var/home').SLOT_PRIZES
 var race_rabbits = require('./var/home').RACE_RABBITS
 var contact = require('./var/home').CONTACT
+var currencies = require('./var/home').CURRENCIES
 var career = require('./var/career').CAREER_ARRAY
 var questions = require('./var/questions').QUESTION_ARRAY
 var constants = require('./var/constants')
@@ -37,7 +38,7 @@ router.get('*', (req, res) => {
 })
 
 router.post("/api/home", jsonParser, (req, res, next) => {
-  let payload = {products, market, profiles, donations, career, questions, slot_prises, race_rabbits, contact: contact}
+  let payload = {products, market, currencies, profiles, donations, career, questions, slot_prises, race_rabbits, contact}
   res.send(JSON.stringify(payload))
 })
 router.post("/api/contact", jsonParser, (req, res, next) => {

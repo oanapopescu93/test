@@ -6,7 +6,7 @@ import { translate } from '../../translations/translate'
 import PolicyPrivacy from '../pages/policyPrivacy/policyPrivacy'
 import TermsConditions from '../pages/termsConditions/termsConditions'
 import Header from '../partials/header'
-import Language from '../partials/language'
+import Language from '../settings/language'
 import SignIn from './signIn'
 import SignUp from './signUp'
 

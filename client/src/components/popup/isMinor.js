@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from 'react-bootstrap'
 import { translate } from '../../translations/translate'
 
-function IsMinorPopup(props) {
+function IsMinor(props) {
     return <div className="isMinor">
         <div className="isMinor_text">                    
             <p>{translate({lang: props.lang, info: "isMinor_text"})}</p>
@@ -22,4 +22,4 @@ function IsMinorPopup(props) {
     </div>
 }
 
-export default IsMinorPopup
+export default IsMinor

@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     products: [], 
     market: [],
+    currencies: [],
     profiles: [],
     donations: [],
     career: [],
@@ -23,6 +24,7 @@ const homeSlice = createSlice({
         showPayload: (state, { payload }) => {
             state.products = payload.products
             state.market = payload.market
+            state.currencies = payload.currencies
             state.profiles = payload.profiles
             state.donations = payload.donations
             state.career = payload.career
