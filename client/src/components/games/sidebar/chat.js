@@ -3,8 +3,8 @@ import Header from '../../partials/header'
 import { Form, Button } from 'react-bootstrap';
 import { translate } from '../../../translations/translate';
 import { formatDate, isEmpty } from '../../../utils/utils';
-import { getRoom } from '../game_utils';
 import { decryptData } from '../../../utils/crypto';
+import { getRoom } from '../../../utils/games';
 
 function ChatMessages(props){
     const messagesEndRef = React.createRef()
@@ -95,7 +95,7 @@ function Chat(props){
         <Header template="panel_user" details={page} lang={lang}></Header>
         <Form className="chat_form">            
             <div id="chatmessages" className="input_light">
-                <ChatMessages messages={messages} lang={props.lang} height={height}></ChatMessages>
+                <ChatMessages messages={messages} lang={lang} height={height}></ChatMessages>
             </div>
             <input className="input_light" type="text" value={input} onChange={(e)=>{handleChange(e)}}/>
             <Button type="button" onClick={(e)=>handleSubmit(e)} className="mybutton button_fullcolor shadow_convex">

@@ -9,6 +9,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCalendarDays} from '@fortawesome/free-solid-svg-icons'
 import carrot_img from '../../../img/icons/carrot_icon.png'
 import {faHouse, faGear, faPaperPlane, faPowerOff} from '@fortawesome/free-solid-svg-icons'
+import { setCookie } from '../../../utils/utils'
 
 function User(props){
     const {lang, user} = props

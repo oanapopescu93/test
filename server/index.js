@@ -12,8 +12,9 @@ const path = require("path");
 const fs = require('fs')
 
 const { encrypt, decrypt } = require('./utils/crypto')
-const { get_device, get_extra_data, sendEmail, check_streak, chatMessage } = require("./utils/other")
+const { get_device, get_extra_data, sendEmail, check_streak, chatMessage} = require("./utils/other")
 const crypto = require('crypto')
+const stripe = require('stripe')("sk_test_51Mdvu1CWq9uV6YuM2iH4wZdBXlSMfexDymB6hHwpmH3J9Dm7owHNBhq4l4wawzFV9dXL3xrYGbhO74oc8OeQn5uJ00It2XDg9U")
 
 const { roulette } = require("./games/roulette")
 const { blackjack } = require("./games/blackjack")
@@ -23,58 +24,132 @@ const { race } = require("./games/race")
 const { keno } = require("./games/keno")
 
 const account_type = 1
+const profile_pic = 0
 const user_money = 100
 const how_lucky = 7
 
 var allUsers = []
 
 io.on('connection', function(socket) {
-  socket.on('signin_send', (data) => {
+  socket.on('signin_send', (data) => {    
     let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
     let login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
-    let exists = false
-    let obj = {}
-    let pass01 = data.pass
 
-    for(let i in users_array){
-      let pass02 = decrypt(JSON.parse(users_array[i].pass))
-      if(data.user === users_array[i].user || data.user === users_array[i].email){
-        //the user was found
-        exists = true
-        if(pass01 === pass02){
-          //the password was correct
-          let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
-          let timestamp = new Date().getTime()
-          obj = {uuid: uuid, user: users_array[i].user, email: users_array[i].email, money: users_array[i].money, device: device}
+    if(users_array){
+      let user = users_array.filter(function(x){
+        return (x.user === data.user || x.email === data.email) && decrypt(JSON.parse(x.pass)) === data.pass
+      })
+      if(user && user.length>0){
+        let uuid = crypto.randomBytes(20).toString('hex')
+        let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
+
+        //emit
+        let obj = {
+          uuid: uuid, 
+          user: user[0].user, 
+          email: user[0].email, 
+          account_type: account_type, 
+          money: user_money, 
+          device: device,
+          profile_pic: user[0].profile_pic
         }
-        break
+        try{
+          io.emit('signin_read', {exists: true, obj: obj})
+        } catch(e){
+          console.log('[error]','signin_read :', e)
+        }  
+        allUsers.push({ id: socket.id, user: user[0].user, uuid: uuid})
+
+        get_extra_data().then(function(res) {
+          let uuid = crypto.randomBytes(20).toString('hex')
+          let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
+          
+          let extra_data = {}
+          if(res && res.data){
+            extra_data = {
+              city: res.data.city ? res.data.city : "",
+              country: res.data.country ? res.data.country : "",
+              ip_address: res.data.ip_address? res.data.ip_address : "",
+            }            
+          }   				
+          let timestamp = new Date().getTime() + ""
+          
+          //update
+          let objIndex = users_array.findIndex((obj => obj.id == user[0].id))
+
+          //update user for users.json   
+          users_array[objIndex].uuid = uuid
+          let payload_user = JSON.stringify(users_array)
+          fs.writeFileSync(path.resolve(__dirname, "./json/users.json"), payload_user)
+
+          //update user for users.json  
+          let login_id = login_user.length
+          let new_login = {
+            id: login_id,
+            user_id: user[0].id,
+            login_date: timestamp,
+            device: device,
+            ip_address: extra_data.ip_address,
+            city: extra_data.city,
+            country: extra_data.city,
+          }
+          login_user.push(new_login)
+          let payload_login_user = JSON.stringify(login_user)
+          fs.writeFileSync(path.resolve(__dirname, "./json/login.json"), payload_login_user)
+        })
+      } else {
+        try{
+          io.to(socket.id).emit('signin_read', {exists: false, obj: {}})
+        }catch(e){
+          console.log('[error]','signin_read2--> ', e)
+        }
       }
-    }
-    try{
-      io.to(socket.id).emit('signin_read', {exists, obj})
-    }catch(e){
-      console.log('[error]','signin_read2--> ', e)
+    } else {
+      try{
+        io.to(socket.id).emit('signin_read', {exists: false, obj: {}})
+      }catch(e){
+        console.log('[error]','signin_read2--> ', e)
+      }
     }
   })
   socket.on('signup_send', (data) => {  
     let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
     let login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
-    let exists = false
-    let obj = {}
     
     if(users_array){
       let user = users_array.filter(function(x){
-        return x.user === data.user && x.email === data.email && x.pass === data.pass
+        return x.user === data.user && x.email === data.email && decrypt(JSON.parse(x.pass)) === data.pass
       })
       if(user && user.length>0){
         //the user already exists --> old user --> he must sign in
-        exists = true
+        try{
+          io.emit('signup_read', {exists: true, obj: {}})
+        } catch(e){
+          console.log('[error]','signup_read :', e)
+        }
       } else {
         //no user was found --> new user --> he must sign up
+        let uuid = crypto.randomBytes(20).toString('hex')
+        let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
+
+        //emit
+        let obj = {
+          uuid: uuid, 
+          user: data.user, 
+          email: data.email, 
+          account_type: account_type, 
+          money: user_money, 
+          device: device,
+          profile_pic: profile_pic
+        }
+        try{
+          io.emit('signup_read', {exists: false, obj: obj})
+        } catch(e){
+          console.log('[error]','signup_read :', e)
+        } 
+
         get_extra_data().then(function(res) {
-          let id = users_array.length // if the array is empty id will be 0
-          let uuid = crypto.randomBytes(20).toString('hex')
-          let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
+          let id = users_array.length // if the array is empty id will be 0          
           let timestamp = new Date().getTime() + ""   
           let pass = JSON.stringify(encrypt(data.pass))   
 
@@ -86,7 +161,7 @@ io.on('connection', function(socket) {
             email: data.email,
             pass: pass,
             account_type: account_type,
-            profile_pic: 0,
+            profile_pic: profile_pic,
             money: user_money,
             signup: timestamp
           } 
@@ -109,35 +184,18 @@ io.on('connection', function(socket) {
             user_id: id,
             login_date: timestamp,
             device: device,
-            ip_address: extra_data.ip_address ? extra_data.ip_address : "",
-            city: extra_data.city ? extra_data.city : "",
-            country: extra_data.city ? extra_data.city : "",
-            profile_pic: 0
+            ip_address: extra_data.ip_address,
+            city: extra_data.city,
+            country: extra_data.city,
           }
           login_user.push(new_login)
           let payload_login_user = JSON.stringify(login_user)
-          fs.writeFileSync(path.resolve(__dirname, "./json/login.json"), payload_login_user)
-
-          //emit
-          obj = {
-            uuid: uuid, 
-            user: data.user, 
-            email: data.email, 
-            account_type: account_type, 
-            money: user_money, 
-            device: device,
-            profile_pic: 0
-          }
-          try{
-            io.emit('signup_read', {exists, obj})
-          } catch(e){
-            console.log('[error]','signup_read :', e)
-          }          
+          fs.writeFileSync(path.resolve(__dirname, "./json/login.json"), payload_login_user)                   
         })
       }
     } else {
       try{
-        io.emit('signup_read', {exists, obj})
+        io.emit('signup_read', {exists: false, obj: {}})
       } catch(e){
         console.log('[error]','signup_read :', e)
       }
@@ -172,10 +230,10 @@ io.on('connection', function(socket) {
   // GAMES
 	socket.on('roulette_send', function(data) {
 		if(data.uuid){
+      let room = data.room
 			let payload = roulette(data, how_lucky)
 			try{
-				//io.to(room_name).emit('roulette_read', payload)
-        io.emit('roulette_read', payload)
+				io.to(room).emit('roulette_read', payload)
 			} catch(e){
 				console.log('[error]','roulette_read--> ', e)
 			}
@@ -183,23 +241,12 @@ io.on('connection', function(socket) {
 	})
   socket.on('blackjack_send', function(data) {
 		if(data.uuid){
-			let payload = blackjack(data, how_lucky)
+      let room = data.room
+      let payload = blackjack(data, how_lucky, allUsers)
 			try{
-				//io.to(room_name).emit('blackjack_read', payload)
-        io.emit('blackjack_read', payload)
+				io.to(room).emit('blackjack_read', payload)
 			} catch(e){
 				console.log('[error]','roulette_read--> ', e)
-			}
-		}
-	})
-  socket.on('blackjack_send', function(data) {
-		if(data.uuid){
-			let payload = blackjack(data, how_lucky)
-			try{
-				//io.to(room_name).emit('blackjack_read', payload)
-        io.emit('blackjack_read', payload)
-			} catch(e){
-				console.log('[error]','blackjack_read--> ', e)
 			}
 		}
 	})
@@ -247,15 +294,19 @@ io.on('connection', function(socket) {
 			}
 		}
 	})
+
   socket.on('game_results_send', function(data) {
-    console.log('game_results_send ==> ', data)
-		if(data.uuid){
-			try{
-        io.to(socket.id).emit('game_results_read', data)
-			} catch(e){
-				console.log('[error]','game_results_read--> ', e)
-			}
-		}
+    let history_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/history.json")))
+    if(history_user){
+      console.log('game_results_send ==> ', data)
+      if(data.uuid){
+        try{
+          io.to(socket.id).emit('game_results_read', data)
+        } catch(e){
+          console.log('[error]','game_results_read--> ', e)
+        }
+      }
+    }    
 	})
 
   // DASHBOARD
@@ -280,7 +331,6 @@ io.on('connection', function(socket) {
       }
       let payload_user = JSON.stringify(users_array)
       fs.writeFileSync(path.resolve(__dirname, "./json/users.json"), payload_user)
-      console.log('payload_user--> ',payload_user)
     }   
   })
 
@@ -289,20 +339,18 @@ io.on('connection', function(socket) {
     let room = data.room
     socket.join(data.room)
 
-    allUsers.push({ id: socket.id, user: data.user, room: room })
-    let timestamp = new Date().getTime()
-    let message = {text: 'join', timestamp: timestamp, user: data.user}
-
-    let chatRoomUsers = []
     for(let i in allUsers){
-      if(allUsers[i].room === room){
-        chatRoomUsers.push({user: allUsers[i].user, timestamp: timestamp})
+      if(allUsers[i].uuid === data.uuid){
+        allUsers[i].room = room
       }
-    }
+    }    
+    let timestamp = new Date().getTime()
+    let message = {text: 'join', timestamp: timestamp, user: data.user}    
 
     try{
+      console.log('join_room--> ', room)
       io.to(room).emit('message_read', message)
-      io.to(room).emit('chatroom_users_read', chatRoomUsers)
+      io.to(room).emit('chatroom_users_read', allUsers)
     } catch(e){
       console.log('[error]','message_read--> ', e)
     }
@@ -311,12 +359,11 @@ io.on('connection', function(socket) {
     let room = data.room
     socket.leave(room)
     for( let i = 0; i < allUsers.length; i++){                                    
-      if (allUsers[i].user === data.user) { 
+      if (allUsers[i].uuid === data.uuid) { 
         allUsers.splice(i, 1)
         i--
       }
-    }
-    console.log(data, allUsers)
+    }    
 
     let timestamp = new Date().getTime()
     let message = {text: 'leave', timestamp: timestamp, user: data.user}
@@ -329,6 +376,7 @@ io.on('connection', function(socket) {
     }
 
     try{
+      console.log('leave_room--> ', room)
       io.to(room).emit('message_read', message)
       io.to(room).emit('chatroom_users_read', chatRoomUsers)
     } catch(e){
@@ -340,11 +388,111 @@ io.on('connection', function(socket) {
     let timestamp = new Date().getTime()
     let message = {text: data.text, timestamp: timestamp, user: data.user}
 		try{
+      console.log('message_send--> ', room)
       io.to(room).emit('message_read', message)
     } catch(e){
       console.log('[error]','message_read--> ', e)
     }
 	})  
+
+  // PAYMENT
+  socket.on('payment_stripe_send', function(data) {
+    let payload = data.payload
+    let gateway = data.gateway
+    if(gateway === "stripe"){
+      let amount = data.amount
+      if(amount){
+        let customer = null
+        let customerInfo = {
+          name: payload.firstname + ' ' + payload.lastname,
+          phone: '1234567890',
+          email: "customer@gmail.com",
+          address: {
+            country: payload.country,
+            city: payload.city,
+            postal_code: payload.postalZipCode,
+            line1: payload.address,
+            state: payload.country,
+          },
+          description: "stripe customer"
+        }
+
+        let card_token = null
+        let card = null
+        let cardInfo = {
+          card: {
+            number: '4242424242424242',
+            exp_month: 4,
+            exp_year: 2024,
+            cvc: '314',
+            name: payload.firstname + ' ' + payload.lastname,
+            address_city: payload.city,
+            address_country: payload.country,
+            address_line1: payload.address,
+            address_state: payload.country,
+            address_zip: payload.postalZipCode,
+          },
+        }
+
+        let chargeInfo = {
+          receipt_email: "oanapopescu93@gmail.com",
+          amount: amount * 100,
+          currency: 'usd',
+          description: 'bunnybet',
+        }
+      
+        createNewCustomer(customerInfo).then(function(res1) {
+          customer = res1
+          addNewCard(cardInfo).then(function(res2) {
+            card_token = res2          
+            createSource(customer.id, card_token.id).then(function(res3) {
+              card = res3
+              chargeInfo.source = card.id
+              chargeInfo.customer = customer.id
+              createCharge(chargeInfo).then(function(res4) {
+                let obj = res4
+                try{
+                  io.to(socket.id).emit('payment_stripe_read', obj)
+                }catch(e){
+                  console.log('[error]','payment_stripe_read--> ', e)
+                }
+              })
+            })
+          })
+        })
+      }
+    }
+	})
+
+  function createNewCustomer(data){
+    return new Promise(function(resolve, reject){
+      stripe.customers.create(data).then(function(res){
+        resolve(res)
+      }).catch(err => console.error('error-createNewCustomer--> ' + err)) 
+    })
+  }  
+  function addNewCard(data){
+    return new Promise(function(resolve, reject){
+      stripe.tokens.create(data).then(function(res){
+        resolve(res)
+      }).catch(err => console.error('error-addNewCard--> ' + err))
+    })
+  }
+  function createSource(customer_id, card_token_id){
+    return new Promise(function(resolve, reject){
+      stripe.customers.createSource(customer_id, {source: card_token_id }).then(function(res){
+        resolve(res)
+      }).catch(err => console.error('error-createSource--> ' + err)) 
+    })
+  } 
+  function createCharge(data){
+    return new Promise(function(resolve, reject){
+      stripe.charges.create(data).then(function(res){
+        resolve(res)
+      }).catch(err => console.error('error-addNewCard--> ' + err)) 
+    })
+  }  
+  
 
   socket.on('heartbeat', function(data) {
 		console.log('heartbeat', data)

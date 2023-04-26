@@ -8,7 +8,11 @@ export const encryptData = (text) => {
 }
 
 export const decryptData = (text) => {
-    const bytes = CryptoJS.AES.decrypt(text, secretPass)
-    const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
-    return data
+    if(text){
+        const bytes = CryptoJS.AES.decrypt(text, secretPass)
+        const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+        return data
+    } else {
+        return '-'
+    }
 }

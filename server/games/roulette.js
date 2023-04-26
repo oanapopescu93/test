@@ -6,7 +6,7 @@ function roulette(data, how_lucky){
         monkey_roulette = true
     }
     
-    if(monkey_roulette && data.my_click > 5){ // it means the player must lose
+    if(monkey_roulette){ // it means the player must lose
         monkey = get_monkey_for_roulette(data.bet)
     }
     

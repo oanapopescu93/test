@@ -150,7 +150,7 @@ function sendEmail(data){ //send an email with instructions to reset token
         }
       })
     })
-  }
+}
 
 module.exports = {
 	sort_array_obj,

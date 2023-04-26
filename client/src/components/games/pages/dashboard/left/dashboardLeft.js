@@ -1,14 +1,13 @@
-import React, {useState} from 'react'
+import React from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { decryptData } from '../../../../utils/crypto'
-import { translate } from '../../../../translations/translate'
-import { isEmpty } from '../../../../utils/utils'
-import profilePic from '../../../../img/profile/predators.jpg'
+import { decryptData } from '../../../../../utils/crypto'
+import { translate } from '../../../../../translations/translate'
+import profilePic from '../../../../../img/profile/predators.jpg'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faUser, faUpload} from '@fortawesome/free-solid-svg-icons'
 import { useDispatch } from 'react-redux'
-import { changePopup } from '../../../../reducers/popup'
+import { changePopup } from '../../../../../reducers/popup'
 import { Button } from 'react-bootstrap'
 
 function Picture(props){
@@ -20,7 +19,7 @@ function Picture(props){
         }
 	}	
 
-	return <div className="profile_pic_container" onClick={()=>choosePic()}>
+	return <div className="profile_pic_container shadow_convex" onClick={()=>choosePic()}>
         <div className="profile_pic_default">
             <FontAwesomeIcon icon={faUpload} />
         </div>
@@ -41,7 +40,7 @@ function Picture(props){
 }
 
 function DashboardLeft(props){ 
-    const {home, user, lang, socket} = props
+    const {home, user, lang} = props
     let dispatch = useDispatch()
 
     let name = user.user
@@ -112,13 +111,13 @@ function DashboardLeft(props){
         </Row>	
         <Row>
             <Col sm={12} className="dashboard_left_buttons">
-                <Button type="button" onClick={()=>handleChoice("change_username")} className="mybutton button_fullcolor">
+                <Button type="button" onClick={()=>handleChoice("change_username")} className="mybutton button_fullcolor shadow_convex">
                     {translate({lang: lang, info: "change_username"})}
                 </Button>	
-                <Button type="button" onClick={()=>handleChoice("change_password")} className="mybutton button_fullcolor">
+                <Button type="button" onClick={()=>handleChoice("change_password")} className="mybutton button_fullcolor shadow_convex">
                     {translate({lang: lang, info: "change_password"})}
                 </Button>	
-                <Button type="button" onClick={()=>handleChoice("buy_carrots")} className="mybutton button_fullcolor">
+                <Button type="button" onClick={()=>handleChoice("buy_carrots")} className="mybutton button_fullcolor shadow_convex">
                     {translate({lang: lang, info: "buy_carrots"})}
                 </Button>	
             </Col>

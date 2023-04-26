@@ -1,3 +1,5 @@
+import countries from './json/countries.json';
+
 export const isEmpty = function(element){
   let empty = true
   if(typeof element !== "undefined" && element !== 'null' && element !== null && element !== '' && element !== 'N/A'){
@@ -10,6 +12,11 @@ export const formatDate = function(date){
   let d = new Date(date)
   let dateString = new Date(d.getTime() - (d.getTimezoneOffset() * 60000 )).toISOString().split(".")[0].replace(/T/g, " ").replace(/-/g, "/")
   return dateString
+}
+
+export const roundNumber = function(number, precision = 1000){
+  var result = Math.round(number / precision) *  precision
+  return result
 }
 
 export const setCookie = function(cname, cvalue, hours=12){
@@ -127,3 +134,25 @@ export const postData = async function (url = "", data = {}) {
   })
   return response.json()
 }
+
+export const checkoutData = function(){	
+  const monthOptions = [
+    {ENG: "January" , RO: "Ianuarie"},
+    {ENG: "February", RO: "Februarie"},
+    {ENG: "March", RO: "Martie"},
+    {ENG: "April", RO: "Aprilie"},
+    {ENG: "May", RO: "Mai"},
+    {ENG: "June", RO: "Iunie"},
+    {ENG: "July", RO: "Iulie"},
+    {ENG: "August", RO: "August"},
+    {ENG: "September", RO: "Septembrie"},
+    {ENG: "October", RO: "Octombrie"},
+    {ENG: "November", RO: "Noiembrie"},
+    {ENG: "December", RO: "Decembrie"},
+  ]
+  let date = new Date().getFullYear()-1;
+  const yearOptions = Array.from({length: 10}, (_, i) => i + date)
+  let countries_list = Object.keys(countries.countries)
+
+  return {countries_list, countries: countries.countries, monthOptions, yearOptions}
+} 

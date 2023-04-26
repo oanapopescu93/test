@@ -13,7 +13,7 @@ import Race from './pages/race/race'
 import Keno from './pages/keno/keno'
 import Panel from './sidebar/panel'
 import Blackjack from './pages/blackjack/blackjack'
-import { getRoom } from './game_utils'
+import { getRoom } from '../../utils/games'
 
 function Game(props){
     const {lang, page, socket} = props
@@ -35,7 +35,7 @@ function Game(props){
     }
 
     useEffect(() => {
-        socket.emit('join_room', {room: getRoom(game), user: props.user.user}) 
+        socket.emit('join_room', {room: getRoom(game), user: props.user.user, uuid: props.user.uuid}) 
         socket.on('chatroom_users_read', function(res){
             setChatRoomUsers(res)
         })
@@ -45,7 +45,7 @@ function Game(props){
                 setChatRoomUsers(res)
             })
 		} 
-    }, [])      
+    }, [socket])      
 
     return <>
         <div className="content_wrap">

@@ -50,10 +50,6 @@ function Sign(props) {
 
     function checkPayload(data){        
         let error = false
-        if(typeof data.email != "undefined" && (data.email === "")){
-            error = true
-            setErrorEmail(true)
-        }
         if(typeof data.user != "undefined" && (data.user === "")){
             error = true
             setErrorUser(true)
@@ -62,9 +58,16 @@ function Sign(props) {
             error = true
             setErrorPass(true)
         }
-        if(!checkboxOne){
-            error = true
-            setErrorAgree(true)
+        if(visible === "signUp"){
+            //besides user and pass, we also check the email and the checkbox
+            if(typeof data.email != "undefined" && (data.email === "")){
+                error = true
+                setErrorEmail(true)
+            }            
+            if(!checkboxOne){
+                error = true
+                setErrorAgree(true)
+            }
         }
         return error
     }

@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch} from 'react-redux'
 import { translate } from '../../../../translations/translate'
 import { Button } from 'react-bootstrap'
 import { changePopup } from '../../../../reducers/popup'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faRotate, faCarrot} from '@fortawesome/free-solid-svg-icons'
-import { draw_dot, getDistance_between_entities } from '../../../../utils/games'
+import { draw_dot, getDistance_between_entities, getRoom } from '../../../../utils/games'
 import $ from 'jquery'
 import { decryptData } from '../../../../utils/crypto'
 import { changeRouletteLuckyBet } from '../../../../reducers/games'
@@ -605,14 +605,16 @@ function RouletteGame(props){
     let my_roulette = new roulette_game(options)
 	roulette_bets = props.bets
 
-    useEffect(() => {
-        if(my_roulette && document.getElementById("roulette_canvas")){
+	function ready(){
+		if(my_roulette && document.getElementById("roulette_canvas")){
             my_roulette.ready()
         }
+	}
+
+    useEffect(() => {
+        ready()
         $(window).resize(function(){
-			if(my_roulette && document.getElementById("roulette_canvas")){
-				my_roulette.ready()
-			}
+			ready()
 		})
 		return () => {
 			if(my_roulette){
@@ -622,22 +624,24 @@ function RouletteGame(props){
 		}
     }, [])
 
-	props.socket.on('roulette_read', function(data){
-		if(typeof data.arc !== "undefined" || typeof data.spin_time !== "undefined" || typeof data.ball_speed !== "undefined"){
-			if (window.innerWidth < 960){
-				if(window.innerHeight < window.innerWidth){
-					//landscape
-					data.speed = 0.0173
-				} else {
-					//portrait
-					data.speed = 0.018
-				}					
-			} 
-			if(my_roulette && document.getElementById("roulette_canvas")){
-				my_roulette.spin(data)
-			}
-		}				
-	})	
+	useEffect(() => {
+		props.socket.on('roulette_read', function(data){
+			if(typeof data.arc !== "undefined" || typeof data.spin_time !== "undefined" || typeof data.ball_speed !== "undefined"){
+				if (window.innerWidth < 960){
+					if(window.innerHeight < window.innerWidth){
+						//landscape
+						data.speed = 0.0173
+					} else {
+						//portrait
+						data.speed = 0.018
+					}					
+				} 
+				if(my_roulette && document.getElementById("roulette_canvas")){
+					my_roulette.spin(data)
+				}
+			}				
+		})	
+    }, [props.socket])
 
     function openTable(){
         if(my_roulette){
@@ -664,8 +668,7 @@ function RouletteGame(props){
 			if(roulette_bets && roulette_bets.length>0){
 				let roulette_payload_server = {
 					uuid: props.user.uuid,
-					user: props.user.user, 
-					game_choice: props.page.game, 
+					room: getRoom(props.page.game),
 					bet: roulette_bets,
 				}
 				props.socket.emit('roulette_send', roulette_payload_server)

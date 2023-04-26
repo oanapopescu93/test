@@ -57,7 +57,7 @@ function Panel(props){
             <User {...props}></User>
         </div>
         <div id="chat_panel_box" className={"panel_box " + panelChat }>
-            <Chat {...props} chatRoomUsers={chatRoomUsers}></Chat>
+            {/* <Chat {...props} chatRoomUsers={chatRoomUsers}></Chat> */}
         </div>
     </div>
 }

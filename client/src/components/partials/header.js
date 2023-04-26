@@ -17,8 +17,7 @@ function Header(props){
                     case "salon":
                         return <div id="header_salon" className="header">
                             <img id="logo_icon" alt="logo_icon" src={logo_icon} />
-                            {/* <h1>{title}</h1> */}
-                            <TransparentText text={title} height={50}></TransparentText>
+                            <h1>{title}</h1>
                             <h3>{translate({lang: lang, info: "salon_subtitle"})}</h3>                                    
                         </div> 
                     case "game":

@@ -12,6 +12,7 @@ function ChangeProfilePic(props) {
     let user = useSelector(state => state.auth.user)
     const [choice, setChoice] = useState(null)
     const [error, setError] = useState(false)
+    const [index, setIndex] = useState(-1)
     let dispatch = useDispatch()
     
     let profiles = home.profiles
@@ -28,7 +29,7 @@ function ChangeProfilePic(props) {
         break             
     }
 
-    function choosePic(item){
+    function choosePic(item, i){
         setError(false)
         if(!item.free && money < 1000 && account_type === 1){
             setError(true)
@@ -36,6 +37,7 @@ function ChangeProfilePic(props) {
                 setError(false)
             }, 2000)
         } else {
+            setIndex(i)
             setChoice(item.id)
             dispatch(changePic(item.id))
         }
@@ -49,7 +51,11 @@ function ChangeProfilePic(props) {
                     if(!item.free && money < 1000 && account_type === 1){
                         show = ' grey_image'
                     }
-                    return <div key={i} className="crop_profile_pic_box" onClick={() => choosePic(item)}>
+                    let selected = ''
+                    if(i === index){
+                        selected = ' selected'
+                    }
+                    return <div key={i} className={"crop_profile_pic_box"+selected} onClick={() => choosePic(item, i)}>
                         <div className="crop_profile_pic shadow_convex">
                             <img alt="profile_pic" className={"profile_pic pic_"+item.id+show} src={profilePic}/>
                         </div>										

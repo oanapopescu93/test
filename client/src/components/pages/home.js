@@ -13,6 +13,8 @@ import Career from './career'
 import { ReactComponent as Bitcoin } from '../../img/icons/bitcoin-love-heart.svg'
 import { changePage } from '../../reducers/page'
 import Donation from './donation'
+import Checkout from './checkout/checkout'
+import Orders from './order/orders'
 
 function Home(props) {
     const {home, page, user, cookies} = props
@@ -47,6 +49,10 @@ function Home(props) {
                     return <Contact {...props}></Contact>
                 case "Donation":
                     return <Donation {...props} list={home.donations}></Donation>
+                case "Checkout":
+                    return <Checkout {...props}></Checkout>
+                case "Order":
+                    return <Orders {...props}></Orders>
                 case "Salon":
                 default:
                     return <Salon {...props} user={user} home={home} page={page}></Salon>

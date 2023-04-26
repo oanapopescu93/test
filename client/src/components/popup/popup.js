@@ -48,6 +48,7 @@ function Popup(props){
 
     function dashboardChanges(x){
         socket.emit('dashboardChanges_send', x)
+        closeModal()
     }
 
     socket.on('forgotPassword_read', function(res){
