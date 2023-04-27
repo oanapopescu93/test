@@ -13,8 +13,8 @@ function Contact(props){
     let dispatch = useDispatch() 
     const [mapCenter, setsetMapCenter] = useState({lat: 44.439663, lng: 26.096306})
     const [markerPosition, setMarkerPosition] = useState([44.439663, 26.096306])    
-    const [country, setCountry] = useState('')
-    const [city, setCity] = useState('') 
+    const [country, setCountry] = useState('Romania')
+    const [city, setCity] = useState('Bucharest') 
     const [zoom, setZoom] = useState(10)  
     const [width, setWidth] = useState(getWindowDimensions().width)  
 

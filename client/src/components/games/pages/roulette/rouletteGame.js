@@ -566,10 +566,10 @@ function roulette_game(props){
 			game = props.page.game
 		}
 		let status = "lose"
+		let money_original = decryptData(props.user.money)
 		if(!leave && money_original < money_history){
 			status = "win"
-		}
-		let money_original = decryptData(props.user.money)
+		}		
 		let roulette_payload = {
 			uuid: props.user.uuid,
 			game: game,

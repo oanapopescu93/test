@@ -1486,6 +1486,9 @@ textarea {
   margin-bottom: var(--padding);
   text-align: left;
 }
+.contact_form .input_light{
+  margin-bottom: var(--padding_small)!important;
+}
 .contact_list{
   padding: var(--padding);
   height: 360px;
