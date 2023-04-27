@@ -1112,22 +1112,31 @@ textarea {
 
 /* GAME BOARD */
 .gameboard{
-  background-color: var(--color);
-  border-radius: var(--radius);
+  background-color: var(--dark_color);
+  border-top: solid var(--padding_small) var(--dark_color);
+  border-right: solid var(--padding_small) var(--color);
+  border-bottom: solid var(--padding_small) var(--dark_color);
+  border-left: solid var(--padding_small) var(--color);
+  border-radius: var(--radius_small);
   padding: var(--padding);
   color: var(--bg);
 }
 .gameboard .counter .counter_minus, .gameboard .counter .counter_plus {
+  background-color: var(--color);
+}
+.gameboard .counter .counter_minus:hover, .gameboard .counter .counter_plus:hover {
   border: solid 1px var(--bg);
 }
 .gameboard .input_light {
-  border: solid 1px var(--bg);
+  background-color: var(--color);
   color: var(--bg);
 }
-.gameboard .button_transparent {
+.gameboard .button_box {
+  padding: var(--padding_small) 0px;
+}
+.gameboard .button_fullcolor:hover{
   border: solid 1px var(--bg)!important;
   color: var(--bg)!important;
-  margin: 0px var(--padding);
 }
 
 /* DONATE */
@@ -1760,6 +1769,7 @@ textarea {
   line-height: 12px;
   text-align: center;
   display: inline-block;
+  cursor: pointer;
 }
 .counter_input{
   text-align: center;
@@ -2084,7 +2094,12 @@ textarea {
 }
 
 @media (max-height: 500px){
-	
+	.header_container.game{
+    display: none;
+  }
+  .gameboard{
+    padding: 0px var(--padding_small);
+  }
 }
 
 ::-webkit-scrollbar{

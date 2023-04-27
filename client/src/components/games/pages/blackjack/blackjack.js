@@ -1,9 +1,11 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { useDispatch } from 'react-redux'
 import { translate } from '../../../../translations/translate'
 import GameBoard from '../other/gameBoard'
 import $ from 'jquery'
 import { draw_rect, getRoom, get_blackjack_cards } from '../../../../utils/games'
+import { changePopup } from '../../../../reducers/popup'
+import { decryptData } from '../../../../utils/crypto'
 
 function Card(config){
 	let self = this
@@ -38,23 +40,24 @@ function Card(config){
 		}
 	}	
 
-	self.show_cards = function(ctx, hand){
+	self.show_cards = function(ctx, data){
 		if(self.id !== -1){
 			//player
-			let player = hand[1][self.id]			
+			let player = data.players[self.id]
 			if(player){
 				self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, player.hand)
 				self.show_cards_value(ctx, player.hand)
 			}
 		} else {
 			//dealer
-			let dealer = hand[2]
+			let dealer = data.dealer
 			if(dealer){
 				self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, dealer.hand)
 				self.show_cards_value(ctx, dealer.hand)
-			}			
-			if(hand[2].hand.length === 1){ //the dealer's card is still hidden
-				self.draw_card(ctx, self.x + 5, self.y + 5, self.card.width, self.card.height, self.card_img, "hidden")
+				if(dealer.hand.length === 1){
+					//dealer's hand is still hidden
+					self.draw_card(ctx, self.x + 5, self.y + 5, self.card.width, self.card.height, self.card_img, "hidden")
+				}
 			}
 		}		
 	}
@@ -182,9 +185,8 @@ function blackjack_game(props){
 	let card_img = {width: 237, height: 365}
 	let player_nr = [20, 20]
 	let font_bold_12 = 'bold 12px sans-serif'
-	let font_bold_14 = 'bold 14px sans-serif'	
-
-    let start_game = false
+	let font_bold_14 = 'bold 14px sans-serif'
+    
     let items = get_blackjack_cards()
     let resize = 0
 
@@ -192,7 +194,7 @@ function blackjack_game(props){
         resize++
 		card_list = []
 		self.createCanvas(canvas_width, canvas_height)
-        if(!start_game && resize === 1){
+        if(!blackjack_status && resize === 1){
             //first time entering
             let promises = []
             for(let i in items){				
@@ -218,14 +220,14 @@ function blackjack_game(props){
 			if(window.innerHeight < window.innerWidth){
 				//extra small landscape				
 				canvas.width = 400
-				canvas.height = 180
+				canvas.height = 200
 				card_base = {x: 5, y:120, width: 46, height: 70, fillStyle: 'transparent', lineWidth: 1, strokeStyle: 'white', dealer_y:20}
 				card = {width: 33, height: 50}
 				player_nr = [12, 12]
 			} else {
 				//extra small portrait
 				canvas.width = 300
-				canvas.height = 400
+				canvas.height = 200
 			}			
 			font_bold_12 = 'bold 10px sans-serif'
 			font_bold_14 = 'bold 12px sans-serif'
@@ -240,14 +242,14 @@ function blackjack_game(props){
 			} else {
 				//small portrait
 				canvas.width = 300
-				canvas.height = 400
+				canvas.height = 200
 			}			
 			font_bold_12 = 'bold 10px sans-serif'
 			font_bold_14 = 'bold 12px sans-serif'	
 		} else if (window.innerWidth <= 1200){
 			//big
 			canvas.width = 900
-			canvas.height = 500
+			canvas.height = 450
 			card_base = {x: 20, y:240, width: 100, height: 150, fillStyle: 'transparent', lineWidth: 2, strokeStyle: 'white', dealer_y:40}
 			card = {width: 80, height: 120}
 			player_nr = [20, 20]
@@ -256,7 +258,7 @@ function blackjack_game(props){
 		} else {
 			//extra big
 			canvas.width = 1200
-			canvas.height = 600
+			canvas.height = 500
 			card_base = {x: 20, y:260, width: 120, height: 180, fillStyle: 'transparent', lineWidth: 2, strokeStyle: 'white', dealer_y:40}
 			card = {width: 100, height: 150}
 			player_nr = [20, 20]
@@ -343,42 +345,91 @@ function blackjack_game(props){
 	}
 
 	this.draw_cards = function(){
-		for(let i in card_list){
-            card_list[i].draw_box(ctx)
-        }
+		if(blackjack_data){
+			for(let i in card_list){
+				card_list[i].draw_box(ctx)
+				card_list[i].show_cards(ctx, blackjack_data)
+			}
+		} else {
+			for(let i in card_list){
+				card_list[i].draw_box(ctx)
+			}
+		}
+	}    
+
+    this.action = function(data){
+		if(data.action){
+			blackjack_data = data
+			ctx.clearRect(0, 0, canvas.width, canvas.height)
+			if(data.action === "start"){
+				resize = 0
+			}		
+			self.draw_cards()
+			self.check_win_lose()
+		}
+    }
+
+	this.check_win_lose = function(){	
+		let results = false
+		let game = null	
+		if(props.page && props.page.game){
+			game = props.page.game
+		}
+		let money = decryptData(props.user.money)
+		let status = "lose"
+		console.log(blackjack_data, blackjack_bets, game, money)
+
+		let dealer = null
+		if(blackjack_data && blackjack_data.dealer){
+			dealer = blackjack_data.dealer
+		}
+		let player = null
+		if(blackjack_data && blackjack_data.players){
+			let index = blackjack_data.players.findIndex((x) => x.uuid === props.user.uuid)
+			if(index !== -1){
+				player = blackjack_data.players[index]
+			}
+		}
+
+		let blackjack_payload = {
+			uuid: props.user.uuid,
+			game: game,
+			status: status,
+			bet: blackjack_bets
+		}
+
+		if(dealer && dealer.win){
+			results = true
+			blackjack_status = false
+			blackjack_payload.money = money - blackjack_bets						
+		} else if(player && player.win){
+			results = true
+			blackjack_status = false
+			blackjack_payload.money = money + blackjack_bets
+			status = "win"
+		}	
+		
+		if(typeof props.results === "function" && results){
+			props.results(blackjack_payload)
+		}	
 	}
 
-	
-
-    this.get_status_game = function(){
-        return start_game
-    }
-
-    this.start = function(){
-        start_game = true
-        resize = 0
-        console.log('start')
-    }
-
-    this.hit = function(){
-        console.log('hit')
-    }
-
-    this.stay = function(){
-        console.log('stay')
-    }
-
     this.leave = function(){
-        console.log('leave')
+		blackjack_data = null
+		blackjack_bets = 0
+		blackjack_status = false
     }
 }
 
+var blackjack_data = null
 var blackjack_bets = 0
+var blackjack_status = false
 function Blackjack(props){
     let dispatch = useDispatch()
     let options = {...props, dispatch}
     let my_blackjack = new blackjack_game(options)
     let game = props.page.game
+	let [startGame, setStartGame]= useState(false)
 
     function ready(){
         if(my_blackjack && document.getElementById("blackjack_canvas")){
@@ -394,50 +445,101 @@ function Blackjack(props){
 		return () => {
 			if(my_blackjack){
 				my_blackjack.leave()// if the user leaves the game, if he bet, he will lose the bets
-				my_blackjack = null
+				my_blackjack = null				
 			}
 		}
     }, [])
 
     useEffect(() => {
 		props.socket.on('blackjack_read', function(data){
-			if(data){
-                console.log('blackjack_read ', data)
+			if(my_blackjack && data){
+				my_blackjack.action(data)
             }		
 		})	
     }, [props.socket])
 
-    function choice(type){
-        let status = my_blackjack.get_status_game()
-		switch (type) {
-			case "start":
-				if(my_blackjack){                    
-                    if(!status){                        
-                        let blackjack_payload_server = {
-                            uuid: props.user.uuid,
-                            room: getRoom(game),
-                            action: 'start',
+    function choice(type){		
+        if(type === "start" || type === "hit" || type === "stand" || type === "double_down"  || type === "surrender"){
+            let blackjack_payload_server = {
+                uuid: props.user.uuid,
+                room: getRoom(game),
+                action: type,
+                bet: blackjack_bets
+            }
+			let payload = null
+            switch (type) {
+                case "start":
+					if(blackjack_bets === 0){
+						payload = {
+							open: true,
+							template: "error",
+							title: translate({lang: props.lang, info: "error"}),
+							data: translate({lang: props.lang, info: "no_bets"})
+						}
+						dispatch(changePopup(payload))
+					} else {
+						if(my_blackjack){                    
+							if(!blackjack_status){
+								props.socket.emit('blackjack_send', blackjack_payload_server)
+								blackjack_status = true
+								setStartGame(true)
+							}
+						}
+					}                    
+                    break
+                case "hit":	
+                    if(my_blackjack){
+                        if(blackjack_status){
+							blackjack_payload_server.players = blackjack_data.players
+                            props.socket.emit('blackjack_send', blackjack_payload_server)
                         }
-                        props.socket.emit('blackjack_send', blackjack_payload_server)
-                        my_blackjack.start()
                     }
-				}
-				break
-			case "hit":	
-				if(my_blackjack){
-                    if(status){
-                        my_blackjack.hit()
+                    break	
+                case "stand":				
+                    if(my_blackjack){
+                        if(blackjack_status){
+							blackjack_payload_server.players = blackjack_data.players
+                            props.socket.emit('blackjack_send', blackjack_payload_server)
+                        }
                     }
-				}
-				break	
-			case "stay":				
-				if(my_blackjack){
-                    if(status){
-                        my_blackjack.stay()
+                    break
+				case "double_down":	//hits once then immediately stands after doubling the bet		
+                    if(my_blackjack){
+                        if(blackjack_status){
+							blackjack_payload_server.players = blackjack_data.players
+							blackjack_bets = blackjack_bets * 2
+							blackjack_payload_server.bet = blackjack_bets
+                            props.socket.emit('blackjack_send', blackjack_payload_server)
+                        }
                     }
-				}
-				break
-		}
+                    break
+				case "surrender":			
+                    if(my_blackjack){
+                        if(blackjack_status){	
+							blackjack_status = false
+							let game = null	
+							if(props.page && props.page.game){
+								game = props.page.game
+							}
+							let money = decryptData(props.user.money)
+                            let blackjack_payload = {
+								uuid: props.user.uuid,
+								game: game,
+								money: money - blackjack_bets,
+								status: "lose",
+								bet: blackjack_bets
+							}
+							if(typeof props.results === "function"){
+								props.results(blackjack_payload)
+							}
+                        }
+                    }
+                    break
+            }
+			if(payload){
+				dispatch(changePopup(payload))
+			}
+        }		
 	}
 
     function updateBets(x){
@@ -446,7 +548,7 @@ function Blackjack(props){
 
     return <div className="game_container blackjack_container">
         <canvas id="blackjack_canvas"></canvas>
-        <GameBoard template="blackjack" {...props} choice={(e)=>choice(e)} updateBets={(e)=>updateBets(e)}></GameBoard>
+        <GameBoard template="blackjack" {...props} startGame={startGame} choice={(e)=>choice(e)} updateBets={(e)=>updateBets(e)}></GameBoard>
     </div>
 }
 

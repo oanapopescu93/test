@@ -28,7 +28,7 @@ const profile_pic = 0
 const user_money = 100
 const how_lucky = 7
 
-var allUsers = []
+var chatroom_users = []
 
 io.on('connection', function(socket) {
   socket.on('signin_send', (data) => {    
@@ -57,8 +57,7 @@ io.on('connection', function(socket) {
           io.emit('signin_read', {exists: true, obj: obj})
         } catch(e){
           console.log('[error]','signin_read :', e)
-        }  
-        allUsers.push({ id: socket.id, user: user[0].user, uuid: uuid})
+        }
 
         get_extra_data().then(function(res) {
           let uuid = crypto.randomBytes(20).toString('hex')
@@ -242,7 +241,7 @@ io.on('connection', function(socket) {
   socket.on('blackjack_send', function(data) {
 		if(data.uuid){
       let room = data.room
-      let payload = blackjack(data, how_lucky, allUsers)
+      let payload = blackjack(data, how_lucky, chatroom_users)
 			try{
 				io.to(room).emit('blackjack_read', payload)
 			} catch(e){
@@ -339,18 +338,22 @@ io.on('connection', function(socket) {
     let room = data.room
     socket.join(data.room)
 
-    for(let i in allUsers){
-      if(allUsers[i].uuid === data.uuid){
-        allUsers[i].room = room
-      }
-    }    
     let timestamp = new Date().getTime()
-    let message = {text: 'join', timestamp: timestamp, user: data.user}    
+    let message = {text: 'join', timestamp: timestamp, user: data.user} 
+    
+    let index = chatroom_users.findIndex((x) => x.uuid === data.uuid)
+    if(index === -1){
+      //new user in the room
+      chatroom_users.push({uuid: data.uuid, user: data.user, room: room, timestamp: timestamp})
+    } else {
+      //the user exists and he just changed rooms
+      chatroom_users[index].room = room
+      chatroom_users[index].timestamp = timestamp
+    }
 
     try{
-      console.log('join_room--> ', room)
       io.to(room).emit('message_read', message)
-      io.to(room).emit('chatroom_users_read', allUsers)
+      io.to(room).emit('chatroom_users_read', chatroom_users)
     } catch(e){
       console.log('[error]','message_read--> ', e)
     }
@@ -358,27 +361,15 @@ io.on('connection', function(socket) {
   socket.on('leave_room', function(data){
     let room = data.room
     socket.leave(room)
-    for( let i = 0; i < allUsers.length; i++){                                    
-      if (allUsers[i].uuid === data.uuid) { 
-        allUsers.splice(i, 1)
-        i--
-      }
-    }    
-
     let timestamp = new Date().getTime()
     let message = {text: 'leave', timestamp: timestamp, user: data.user}
     
-    let chatRoomUsers = []
-    for(let i in allUsers){
-      if(allUsers[i].room === room){
-        chatRoomUsers.push({user: allUsers[i].user, timestamp: timestamp})
-      }
-    }
+    let new_chatroom_users = chatroom_users.filter((x) => x.uuid !== data.uuid)
+    chatroom_users = new_chatroom_users
 
     try{
-      console.log('leave_room--> ', room)
       io.to(room).emit('message_read', message)
-      io.to(room).emit('chatroom_users_read', chatRoomUsers)
+      io.to(room).emit('chatroom_users_read', chatroom_users)
     } catch(e){
       console.log('[error]','message_read--> ', e)
     }
@@ -388,7 +379,6 @@ io.on('connection', function(socket) {
     let timestamp = new Date().getTime()
     let message = {text: data.text, timestamp: timestamp, user: data.user}
 		try{
-      console.log('message_send--> ', room)
       io.to(room).emit('message_read', message)
     } catch(e){
       console.log('[error]','message_read--> ', e)

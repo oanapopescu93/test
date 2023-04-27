@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 
-function Counter(props){
-  let [num, setNum]= useState(props.num ? props.num : 1)
+function Counter(props){  
+  let [num, setNum]= useState(typeof props.num === "undefined" ? 1 : props.num)
   let max = props.max ? props.max : 100
 
   function increase(){
@@ -30,13 +30,13 @@ function Counter(props){
 
   return <div className="counter">
     <div className="counter_minus_box">
-        <div className="counter_minus" onClick={()=>decrease()}>-</div>
+        <div className="counter_minus shadow_convex" onClick={()=>decrease()}>-</div>
     </div>
     <div className="counter_input_box">
-        <input className="input_light counter_input" type="text" value={num} onChange={(e)=>{handleChange(e)}}/>
+        <input className="input_light counter_input shadow_convex" type="text" value={num} onChange={(e)=>{handleChange(e)}}/>
     </div>    
     <div className="counter_plus_box">
-        <div className="counter_plus" onClick={()=>increase()}>+</div>
+        <div className="counter_plus shadow_convex" onClick={()=>increase()}>+</div>
     </div>
   </div>
 }

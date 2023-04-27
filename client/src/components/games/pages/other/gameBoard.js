@@ -5,7 +5,7 @@ import Counter from '../../../partials/counter'
 import { decryptData } from '../../../../utils/crypto'
 
 function GameBoard(props){
-    const {template, lang, user} = props
+    const {template, lang, user, startGame} = props
     let max_bet = decryptData(user.money)
 
     function blackjackClick(e){        
@@ -23,27 +23,54 @@ function GameBoard(props){
         {(() => {
             switch(template) {
                 case "blackjack":
-                    return <div className="gameboard">
+                    return <div id={template} className="gameboard shadow_convex">
                         <Row>
-                        <Col sm={6}>
-                            <p>{translate({lang: lang, info: "bet"})}</p>
-                            <Counter max={max_bet} update={(e)=>updateQtyMarket(e)}></Counter>
-                        </Col>
-                        <Col sm={6}>
-                            <Button type="button" onClick={()=>blackjackClick('start')} className="mybutton round button_transparent shadow_convex">
-                                {translate({lang: lang, info: "start"})}
-                            </Button>
-                            <Button type="button" onClick={()=>blackjackClick('hit')} className="mybutton round button_transparent shadow_convex">
-                                {translate({lang: lang, info: "hit"})}
-                            </Button>
-                            <Button type="button" onClick={()=>blackjackClick('stay')} className="mybutton round button_transparent shadow_convex">
-                                {translate({lang: lang, info: "stay"})}
-                            </Button>
-                        </Col>                        
-                    </Row>
+                            {startGame ? <>
+                                <Col xs={3}>
+                                    <div  className="button_box">
+                                        <Button type="button" onClick={()=>blackjackClick('hit')} className="mybutton button_fullcolor shadow_convex">
+                                            {translate({lang: lang, info: "hit"})}
+                                        </Button>
+                                    </div>
+                                </Col>
+                                <Col xs={3}>
+                                    <div  className="button_box">
+                                        <Button type="button" onClick={()=>blackjackClick('stand')} className="mybutton button_fullcolor shadow_convex">
+                                            {translate({lang: lang, info: "stand"})}
+                                        </Button>
+                                    </div>
+                                </Col>
+                                <Col xs={3}>
+                                    <div  className="button_box">
+                                        <Button type="button" onClick={()=>blackjackClick('double_down')} className="mybutton button_fullcolor shadow_convex">
+                                            {translate({lang: lang, info: "double_down"})}
+                                        </Button>
+                                    </div>
+                                </Col>
+                                <Col xs={3}>
+                                    <div  className="button_box">
+                                        <Button type="button" onClick={()=>blackjackClick('surrender')} className="mybutton button_fullcolor shadow_convex">
+                                            {translate({lang: lang, info: "surrender"})}
+                                        </Button>
+                                    </div>                                    
+                                </Col>
+                            </> : <>
+                                <Col xs={4}>
+                                    <Counter num={0} max={max_bet} update={(e)=>updateQtyMarket(e)}></Counter>
+                                </Col>
+                                <Col xs={4}></Col>
+                                <Col xs={4}>
+                                    <div  className="button_box">
+                                        <Button type="button" onClick={()=>blackjackClick('start')} className="mybutton button_fullcolor shadow_convex">
+                                            {translate({lang: lang, info: "start"})}
+                                        </Button>
+                                    </div>
+                                </Col>
+                            </>}                    
+                        </Row>
                     </div>
                 default: 
-                    return <></>
+                    return null
             }
         })()}        
     </>

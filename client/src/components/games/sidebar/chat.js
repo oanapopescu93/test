@@ -62,8 +62,9 @@ function ChatList(props){
 }
 
 function Chat(props){
-    const {lang, socket, page, chatRoomUsers} = props
+    const {lang, socket, page} = props
     let game = page.game
+    let chatRoomUsers = props.chatRoomUsers ? props.chatRoomUsers : []
     const [input, setInput] = useState('')
     const [messages, setMessages] = useState([])
     const [height, setHeight] = useState(100)

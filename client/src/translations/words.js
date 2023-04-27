@@ -144,6 +144,12 @@ var word_bank = {
         order_date: "Order date",
         name: "Name",
         postal_code: "Postal code",
+
+        start: "Start",
+        hit: "Hit",
+        stand: "Stand",
+        double_down: "Double down",
+        surrender: "Surrender",
     },
     "RO":{
         salon: "Salon",
@@ -291,6 +297,12 @@ var word_bank = {
         order_date: "Data comanda",
         name: "Nume",
         postal_code: "Cod postal",
+
+        start: "Incepe",
+        hit: "Cere o carte",
+        stand: "Opreste-te",
+        double_down: "Dubleza",
+        surrender: "Preda-te",
     }
 }
 

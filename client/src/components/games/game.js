@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { Button } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import { translate } from '../../translations/translate'
-import { changePage, changeGame, changeGamePage } from '../../reducers/page'
+import { changePage, changeGame, changeGamePage, changeRoom } from '../../reducers/page'
 
 import Header from '../partials/header'
 
@@ -35,15 +35,18 @@ function Game(props){
     }
 
     useEffect(() => {
-        socket.emit('join_room', {room: getRoom(game), user: props.user.user, uuid: props.user.uuid}) 
+        let room = getRoom(game)
+        socket.emit('join_room', {room: room, uuid: props.user.uuid, user: props.user.user}) 
         socket.on('chatroom_users_read', function(res){
             setChatRoomUsers(res)
         })
+        dispatch(changeRoom(room))
         return () => {
-			socket.emit('leave_room', {room: getRoom(game), username: props.user.user}) 
+			socket.emit('leave_room', {room: room, uuid: props.user.uuid, user: props.user.user}) 
             socket.on('chatroom_users_read', function(res){
                 setChatRoomUsers(res)
             })
+            dispatch(changeRoom(null))
 		} 
     }, [socket])      
 

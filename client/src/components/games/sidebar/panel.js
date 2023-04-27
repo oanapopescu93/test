@@ -6,7 +6,7 @@ import User from './user'
 import Chat from './chat'
 
 function Panel(props){
-    const {lang, chatRoomUsers} = props
+    const {lang, page} = props
     const [open, setOpen] = useState('')
     const [panel, setPanel] = useState("user_panel_box")
     const [panelUser, setPanelUser] = useState("active")
@@ -46,19 +46,19 @@ function Panel(props){
                     <span className="panel_button_text">{translate({lang: lang, info: "Info"})}</span>
                 </p>
             </div>
-            <div id="panel_chat_button" className="panel_button shadow_convex" onClick={()=>handleToggle("chat_panel_box")}>
+            {page.game && !page.game_page ? <div id="panel_chat_button" className="panel_button shadow_convex" onClick={()=>handleToggle("chat_panel_box")}>
                 <p>
                     <FontAwesomeIcon icon={faComments} />
                     <span className="panel_button_text">{translate({lang: lang, info: "Chat"})}</span>
                 </p>                
-            </div>
+            </div> : null}            
         </div>
         <div id="user_panel_box" className={"panel_box " + panelUser}> 
             <User {...props}></User>
         </div>
-        <div id="chat_panel_box" className={"panel_box " + panelChat }>
-            {/* <Chat {...props} chatRoomUsers={chatRoomUsers}></Chat> */}
-        </div>
+        {page.game && !page.game_page ? <div id="chat_panel_box" className={"panel_box " + panelChat }>
+            <Chat {...props}></Chat>
+        </div> : null}
     </div>
 }
 

@@ -7,6 +7,7 @@ import SalonGames from './salonGames'
 import SalonSidebarLeft from './salonSidebarLeft'
 import Game from '../games/game'
 import Language from '../settings/language'
+import Panel from '../games/sidebar/panel'
 
 function Salon(props) {
     const {lang, home, page} = props 
@@ -29,6 +30,7 @@ function Salon(props) {
                 </div>
             </div>
             <SalonSidebarLeft lang={lang}></SalonSidebarLeft>
+            <Panel {...props}></Panel>
         </>}
     </>
 }

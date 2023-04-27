@@ -1,19 +1,19 @@
-function blackjack(data, how_lucky, user_join){
-    console.log(data, how_lucky, user_join)
-    let blackjack_deck = new Array()
-    let hidden_dealer = {}
-    let blackjack_current_player = 0
-    let blackjack_players = []
-    let blackjack_dealer = {}
+var blackjack_current_player = 0
+let blackjack_deck = new Array()
+let blackjack_hidden_dealer = {}
+let blackjack_players = []
+let blackjack_dealer = {}
+let blackjack_monkey_blackjack = false	
+let blackjack_monkey = []
+let blackjack_game_end = false
 
-    let monkey_blackjack = false	
-    let monkey = []
+function blackjack(data, how_lucky, user_join){
     let is_lucky = Math.floor(Math.random() * 100)
     if(is_lucky % how_lucky === 0){
-        monkey_blackjack = true
+        blackjack_monkey_blackjack = true
     }
     
-    if(monkey_blackjack){ // it means the player must lose
+    if(blackjack_monkey_blackjack){ // it means the player must lose
         
     }
 
@@ -24,23 +24,60 @@ function blackjack(data, how_lucky, user_join){
 
             blackjack_deck = createDeck(suits, values, 10000)
 
-            blackjack_players = []
             blackjack_players = user_join
             dealHands()
 
-            hidden_dealer.id = blackjack_dealer.id
-            hidden_dealer.hand = []
-            hidden_dealer.hand.push(blackjack_dealer.hand[0])
+            blackjack_hidden_dealer.id = blackjack_dealer.id
+            blackjack_hidden_dealer.hand = []
+            blackjack_hidden_dealer.hand.push(blackjack_dealer.hand[0])
 
-            return {action: data.action, blackjack_players, hidden_dealer}
+            checkBlackjack()
+
+            return {action: data.action, players: blackjack_players, dealer: blackjack_hidden_dealer, game_end: blackjack_game_end}
         case 'hit':
-            hitMe()
-        case 'stay':
-            
+            blackjack_players = data.players
+            let index_hit = blackjack_players.findIndex((x) => x.uuid === data.uuid)
+            if(index_hit === blackjack_current_player){
+                hitMe()
+                checkForEndOfGame(index_hit)
+                if(blackjack_dealer.win){
+                    blackjack_game_end = true
+                    return {action: data.action, players: blackjack_players, dealer: blackjack_dealer, game_end: blackjack_game_end}
+                } else {
+                    return {action: data.action, players: blackjack_players, dealer: blackjack_hidden_dealer, game_end: blackjack_game_end}
+                }                
+            } else {
+                return {action: 'not_current_player'} 
+            }
+           
+        case 'stand':
+            blackjack_players = data.players
+            let index_stand = blackjack_players.findIndex((x) => x.uuid === data.uuid)
+            blackjack_current_player++
+            checkForEndOfGame(index_stand)
+            if(blackjack_current_player<blackjack_players.length){                
+                return {action: data.action, players: blackjack_players, dealer: blackjack_hidden_dealer, game_end: blackjack_game_end}
+            } else {
+                blackjack_game_end = true
+                return {action: data.action, players: blackjack_players, dealer: blackjack_dealer, game_end: blackjack_game_end}
+            }
+        case 'double_down':
+            blackjack_players = data.players
+            let index_double_down = blackjack_players.findIndex((x) => x.uuid === data.uuid)
+            if(index_double_down === blackjack_current_player){
+                hitMe()
+                blackjack_current_player++
+                checkForEndOfGame(index_double_down)
+                if(blackjack_current_player<blackjack_players.length){                
+                    return {action: data.action, players: blackjack_players, dealer: blackjack_hidden_dealer, game_end: blackjack_game_end}
+                } else {
+                    blackjack_game_end = true
+                    return {action: data.action, players: blackjack_players, dealer: blackjack_dealer, game_end: blackjack_game_end}
+                }
+            }
     }
 
     function createDeck(suits, values, turns){
-        blackjack_deck = new Array()
         for (let i = 0 ; i < values.length; i++){
             for(let j = 0; j < suits.length; j++){
                 let weight = parseInt(values[i])
@@ -76,17 +113,83 @@ function blackjack(data, how_lucky, user_join){
                 if(i === 0){
                     blackjack_players[j].hand = []
                 } else {
-                    if(data[1].uuid == blackjack_players[j].uuid){
-                        blackjack_players[j].bets = data[1].bets
+                    if(data.uuid == blackjack_players[j].uuid){
+                        blackjack_players[j].bets = data.bet
                     }	
                 }	
                 blackjack_players[j].hand.push(card)
             }
         }
+        points(false)
     }	
+    function checkBlackjack(){
+        let dealerScore = points(true)
+        if(dealerScore === 21){ //blackjack
+            blackjack_dealer.win = true
+        } else {
+            for(let i in blackjack_players){
+                let playerScore = blackjack_players[i].points   
+                if(playerScore === 21){ //blackjack
+                    blackjack_players[i].win = true
+                }
+            }
+        }
+    }
 
     function hitMe(){
+        let card = blackjack_deck.pop()
+        blackjack_players[blackjack_current_player].hand.push(card)
+        points(false)
+    }
 
+    function points(dealer = false){
+        if(dealer){
+            let points = 0
+            for(let i in blackjack_dealer.hand){
+                points = points + blackjack_dealer.hand[i].Weight
+            }
+            return points
+        } else {
+            for(let i in blackjack_players){
+                let points = 0
+                for(let j in blackjack_players[i].hand){
+                    points = points + blackjack_players[i].hand[j].Weight
+                }
+                blackjack_players[i].points = points
+            }
+        }
+        
+    }
+
+    function checkForEndOfGame(index){        
+        let playerScore = blackjack_players[index].points   
+        let dealerScore = points(true)
+
+        if(playerScore === 21){ //blackjack
+            blackjack_players[index].win = true
+        } else if(dealerScore === 21){ //blackjack
+            blackjack_dealer.win = true
+        } else {
+            while (dealerScore < playerScore && playerScore <= 21 && dealerScore <= 21) {
+                let card = blackjack_deck.pop()
+                blackjack_dealer.hand.push(card)
+                dealerScore = points(true)
+            }
+    
+            if (playerScore > 21) { //busted
+                blackjack_dealer.win = true
+            } else if (dealerScore > 21) { //busted
+                blackjack_players[index].win = true
+            } else {
+                if(data.action === "stand" || data.action === "double_down"){         
+                    if (playerScore > dealerScore){
+                        blackjack_players[index].win = true
+                    } else {
+                        blackjack_dealer.win = true
+                    }
+                }
+            }
+        }
     }
     
     return {}

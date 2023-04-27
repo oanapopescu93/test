@@ -4,6 +4,7 @@ const initialState = {
     page: 'Salon',
     game: null,
     game_page: null,
+    room: null
 }
 
 const pageSlice = createSlice({
@@ -19,6 +20,9 @@ const pageSlice = createSlice({
         changeGamePage: (state, { payload }) => {
             state.game_page = payload
         },
+        changeRoom: (state, { payload }) => {
+            state.room = payload
+        },
         resetPage: () => initialState,
     }
 })
@@ -27,6 +31,7 @@ export const {
     changePage,
     changeGame,
     changeGamePage,
+    changeRoom
 } = pageSlice.actions
 
 export default pageSlice.reducer
