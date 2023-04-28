@@ -8,7 +8,7 @@ function GameBoard(props){
     const {template, lang, user, startGame} = props
     let max_bet = decryptData(user.money)
 
-    function blackjackClick(e){        
+    function handleClick(e){        
         if(typeof props.choice === "function"){
             props.choice(e)
         }
@@ -19,61 +19,73 @@ function GameBoard(props){
         }
     }
 
-    return <>
+    return <div id={template} className="gameboard shadow_convex">
         {(() => {
             switch(template) {
                 case "blackjack":
-                    return <div id={template} className="gameboard shadow_convex">
-                        <Row>
-                            {startGame ? <>
-                                <Col xs={3}>
-                                    <div  className="button_box">
-                                        <Button type="button" onClick={()=>blackjackClick('hit')} className="mybutton button_fullcolor shadow_convex">
-                                            {translate({lang: lang, info: "hit"})}
-                                        </Button>
-                                    </div>
-                                </Col>
-                                <Col xs={3}>
-                                    <div  className="button_box">
-                                        <Button type="button" onClick={()=>blackjackClick('stand')} className="mybutton button_fullcolor shadow_convex">
-                                            {translate({lang: lang, info: "stand"})}
-                                        </Button>
-                                    </div>
-                                </Col>
-                                <Col xs={3}>
-                                    <div  className="button_box">
-                                        <Button type="button" onClick={()=>blackjackClick('double_down')} className="mybutton button_fullcolor shadow_convex">
-                                            {translate({lang: lang, info: "double_down"})}
-                                        </Button>
-                                    </div>
-                                </Col>
-                                <Col xs={3}>
-                                    <div  className="button_box">
-                                        <Button type="button" onClick={()=>blackjackClick('surrender')} className="mybutton button_fullcolor shadow_convex">
-                                            {translate({lang: lang, info: "surrender"})}
-                                        </Button>
-                                    </div>                                    
-                                </Col>
-                            </> : <>
-                                <Col xs={4}>
-                                    <Counter num={0} max={max_bet} update={(e)=>updateQtyMarket(e)}></Counter>
-                                </Col>
-                                <Col xs={4}></Col>
-                                <Col xs={4}>
-                                    <div  className="button_box">
-                                        <Button type="button" onClick={()=>blackjackClick('start')} className="mybutton button_fullcolor shadow_convex">
-                                            {translate({lang: lang, info: "start"})}
-                                        </Button>
-                                    </div>
-                                </Col>
-                            </>}                    
-                        </Row>
-                    </div>
+                    return <Row>
+                        {startGame ? <>
+                            <Col xs={3}>
+                                <div  className="button_box">
+                                    <Button type="button" onClick={()=>handleClick('hit')} className="mybutton button_fullcolor shadow_convex">
+                                        {translate({lang: lang, info: "hit"})}
+                                    </Button>
+                                </div>
+                            </Col>
+                            <Col xs={3}>
+                                <div  className="button_box">
+                                    <Button type="button" onClick={()=>handleClick('stand')} className="mybutton button_fullcolor shadow_convex">
+                                        {translate({lang: lang, info: "stand"})}
+                                    </Button>
+                                </div>
+                            </Col>
+                            <Col xs={3}>
+                                <div  className="button_box">
+                                    <Button type="button" onClick={()=>handleClick('double_down')} className="mybutton button_fullcolor shadow_convex">
+                                        {translate({lang: lang, info: "double_down"})}
+                                    </Button>
+                                </div>
+                            </Col>
+                            <Col xs={3}>
+                                <div  className="button_box">
+                                    <Button type="button" onClick={()=>handleClick('surrender')} className="mybutton button_fullcolor shadow_convex">
+                                        {translate({lang: lang, info: "surrender"})}
+                                    </Button>
+                                </div>                                    
+                            </Col>
+                        </> : <>
+                            <Col xs={4}>
+                                <Counter num={0} max={max_bet} update={(e)=>updateQtyMarket(e)}></Counter>
+                            </Col>
+                            <Col xs={4}></Col>
+                            <Col xs={4}>
+                                <div  className="button_box">
+                                    <Button type="button" onClick={()=>handleClick('start')} className="mybutton button_fullcolor shadow_convex">
+                                        {translate({lang: lang, info: "start"})}
+                                    </Button>
+                                </div>
+                            </Col>
+                        </>}                    
+                    </Row>
+                case "slots":
+                    return <Row>
+                        <Col xs={4}>
+                                <Counter num={0} max={max_bet} update={(e)=>updateQtyMarket(e)}></Counter>
+                        </Col>
+                        <Col xs={4}></Col>
+                        <Col xs={4}>
+                            <div  className="button_box">
+                                <Button type="button" onClick={()=>handleClick('start')} className="mybutton button_fullcolor shadow_convex">
+                                    {translate({lang: lang, info: "start"})}
+                                </Button>
+                            </div>
+                        </Col>
+                    </Row>
                 default: 
                     return null
             }
         })()}        
-    </>
+    </div>
 }
 
 export default GameBoard

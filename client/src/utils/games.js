@@ -57,6 +57,8 @@ import card_49 from '../img/blackjack/cards/card_49.png'
 import card_50 from '../img/blackjack/cards/card_50.png'
 import card_51 from '../img/blackjack/cards/card_51.png'
 
+import slots_image from '../img/icons/vegetables_color.png'
+
 export const getMousePos = function(canvas, event) {
 	let rect = canvas.getBoundingClientRect()
 	return {
@@ -172,4 +174,16 @@ export const get_blackjack_cards = function() {
 	  {suit: 'Clubs', value: 'Q', src: card_50}, 
 	  {suit: 'Clubs', value: 'K', src: card_51}, 
 	]
-  }
+}
+
+export const get_slots_images = function(){
+	return [
+	  {id: 'carrot', src: slots_image, coord:[0, 0]},
+	  {id: 'onion', src: slots_image, coord:[300, 0]},
+	  {id: 'potato', src: slots_image, coord:[600, 0]},
+	  {id: 'radish', src: slots_image, coord:[600, 300]},
+	  {id: 'cabbage', src: slots_image, coord:[300, 600]},
+	  {id: 'garlic', src: slots_image, coord:[600, 600]},
+	  {id: 'turnip', src: slots_image, coord:[900, 900]},
+	]
+}

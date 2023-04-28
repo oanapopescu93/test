@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { Button } from 'react-bootstrap'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { translate } from '../../translations/translate'
 import { changePage, changeGame, changeGamePage, changeRoom } from '../../reducers/page'
 
@@ -21,6 +21,7 @@ function Game(props){
     let title = game.table_name ? game.table_name : ""
     let dispatch = useDispatch()
     const [chatRoomUsers, setChatRoomUsers] = useState([])
+    let room = useSelector(state => state.page.room)
 
     function results(payload){
         if(payload && payload.bet && payload.bet>0){ //send results to server only if he bet
@@ -39,8 +40,8 @@ function Game(props){
         socket.emit('join_room', {room: room, uuid: props.user.uuid, user: props.user.user}) 
         socket.on('chatroom_users_read', function(res){
             setChatRoomUsers(res)
+            dispatch(changeRoom(room))
         })
-        dispatch(changeRoom(room))
         return () => {
 			socket.emit('leave_room', {room: room, uuid: props.user.uuid, user: props.user.user}) 
             socket.on('chatroom_users_read', function(res){
@@ -56,17 +57,42 @@ function Game(props){
             {(() => {
                 switch (title) {
                     case "roulette":
-                        return <Roulette {...props} results={(e)=>results(e)}></Roulette>
+                        if(room){
+                            return <Roulette {...props} results={(e)=>results(e)}></Roulette>
+                        } else {
+                            return <p>Loading...</p>
+                        }
                     case "blackjack":
+                        if(room){
+                            return <Blackjack {...props} results={(e)=>results(e)}></Blackjack>
+                        } else {
+                            return <p>Loading...</p>
+                        }
                         return <Blackjack {...props} results={(e)=>results(e)}></Blackjack>
                     case "slots":
-                        return <Slots {...props} results={(e)=>results(e)}></Slots>
+                        if(room){
+                            return <Slots {...props} results={(e)=>results(e)}></Slots>
+                        } else {
+                            return <p>Loading...</p>
+                        }
                     case "craps":
-                        return <Craps {...props} results={(e)=>results(e)}></Craps>
+                        if(room){
+                            return <Craps {...props} results={(e)=>results(e)}></Craps>
+                        } else {
+                            return <p>Loading...</p>
+                        }                        
                     case "race":
-                        return <Race {...props} results={(e)=>results(e)}></Race>
+                        if(room){
+                            return <Race {...props} results={(e)=>results(e)}></Race>
+                        } else {
+                            return <p>Loading...</p>
+                        }                        
                     case "keno":
-                        return <Keno {...props} results={(e)=>results(e)}></Keno>
+                        if(room){
+                            return <Keno {...props} results={(e)=>results(e)}></Keno>
+                        } else {
+                            return <p>Loading...</p>
+                        }                        
                     default:
                         return <p>{translate({lang: lang, info: "error"})}</p>
                 }

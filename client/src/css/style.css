@@ -1059,7 +1059,7 @@ textarea {
 	width:100%;
 	padding:0px 50px;
 	-webkit-transition:0.7s;
-    -moz-transition:0.7s;
+  -moz-transition:0.7s;
 	-o-transition: 0.7s;
 	transition:0.7s;
 }
@@ -1120,6 +1120,8 @@ textarea {
   border-radius: var(--radius_small);
   padding: var(--padding);
   color: var(--bg);
+  display: inline-block;
+  width: 100%;
 }
 .gameboard .counter .counter_minus, .gameboard .counter .counter_plus {
   background-color: var(--color);
@@ -1852,6 +1854,51 @@ textarea {
   margin-left: var(--padding_small);
 }
 
+/* SLOTS */
+.slot_machine{
+	display: inline-block;
+  position: relative;
+  z-index: 1;
+  text-align: center;    
+  border: var(--padding) solid;    
+  border-radius: var(--padding_small);
+  background: white;
+	border-color: var(--dark_color) var(--color);
+}
+#slot_machine_lines{
+	position: absolute;
+	z-index: 1;
+	top:0px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	width:100%;
+  height: 100%;
+}
+.slot_machine .box{
+  overflow: hidden;
+	display:inline-block;
+  vertical-align: top;
+	height: 310px;
+  max-width: 110px;
+	border: var(--padding_small) solid;    
+  border-color: var(--dark_color) var(--color) var(--dark_color) var(--dark_color);
+}
+.slot_machine .box:last-child{
+	border-right: var(--padding_small) solid var(--dark_color);
+}
+.slot_machine .slot_canvas{
+  position: relative;
+}
+.slot_machine .slot_canvas{
+	background: white;
+}
+.slot_machine_board{
+  width: 570px;
+  margin: auto;
+  padding-top: var(--padding);
+}
+
 /* media */
 @media (max-width: 1024px){
 	.shop_shader{
@@ -2009,6 +2056,14 @@ textarea {
   /* ORDER */
   .order_details{
     min-height: auto;
+  }
+
+  /* SLOTS */
+  .slot_machine .box{
+    height: 160px;
+  }
+  .slot_machine_board{
+    width: 320px;
   }
 }
 @media (max-width:576px) {	

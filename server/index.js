@@ -249,12 +249,12 @@ io.on('connection', function(socket) {
 			}
 		}
 	})
-  socket.on('slots_send', function(data) {
+  socket.on('slots_send', function(data) {    
 		if(data.uuid){
+      let room = data.room
 			let payload = slots(data, how_lucky)
 			try{
-				//io.to(room_name).emit('slots_read', payload)
-        io.emit('slots_read', payload)
+				io.to(room).emit('slots_read', payload)
 			} catch(e){
 				console.log('[error]','slots_read--> ', e)
 			}
@@ -336,6 +336,7 @@ io.on('connection', function(socket) {
   // CHATROOM
   socket.on('join_room', function(data){
     let room = data.room
+    console.log('join_room ', room)
     socket.join(data.room)
 
     let timestamp = new Date().getTime()
@@ -360,6 +361,7 @@ io.on('connection', function(socket) {
   })
   socket.on('leave_room', function(data){
     let room = data.room
+    console.log('leave_room ', room)
     socket.leave(room)
     let timestamp = new Date().getTime()
     let message = {text: 'leave', timestamp: timestamp, user: data.user}
@@ -376,6 +378,7 @@ io.on('connection', function(socket) {
   })
   socket.on('message_send', function(data){
     let room = data.room
+    console.log('message_send ', room)
     let timestamp = new Date().getTime()
     let message = {text: data.text, timestamp: timestamp, user: data.user}
 		try{
