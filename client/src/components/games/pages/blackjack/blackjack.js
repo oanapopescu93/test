@@ -369,15 +369,13 @@ function blackjack_game(props){
 		}
     }
 
-	this.check_win_lose = function(){	
-		let results = false
+	this.check_win_lose = function(){
 		let game = null	
 		if(props.page && props.page.game){
 			game = props.page.game
 		}
 		let money = decryptData(props.user.money)
 		let status = "lose"
-		console.log(blackjack_data, blackjack_bets, game, money)
 
 		let dealer = null
 		if(blackjack_data && blackjack_data.dealer){
@@ -399,19 +397,21 @@ function blackjack_game(props){
 		}
 
 		if(dealer && dealer.win){
-			results = true
 			blackjack_status = false
-			blackjack_payload.money = money - blackjack_bets						
+			blackjack_payload.money = money - blackjack_bets
+			if(typeof props.results === "function"){
+				console.log('blackjack_data-lose ', blackjack_data, player)
+				props.getResults(blackjack_payload)
+			}					
 		} else if(player && player.win){
-			results = true
 			blackjack_status = false
 			blackjack_payload.money = money + blackjack_bets
 			status = "win"
-		}	
-		
-		if(typeof props.results === "function" && results){
-			props.results(blackjack_payload)
-		}	
+			if(typeof props.results === "function"){
+				console.log('blackjack_data-win ', blackjack_data, player)
+				props.getResults(blackjack_payload)
+			}
+		}
 	}
 
     this.leave = function(){
@@ -425,11 +425,17 @@ var blackjack_data = null
 var blackjack_bets = 0
 var blackjack_status = false
 function Blackjack(props){
-    let dispatch = useDispatch()
-    let options = {...props, dispatch}
-    let my_blackjack = new blackjack_game(options)
-    let game = props.page.game
+	let game = props.page.game
 	let [startGame, setStartGame]= useState(false)
+    let dispatch = useDispatch()
+
+	let getResults = function(payload){
+		props.results(payload)
+		setStartGame(false)
+	}
+    let options = {...props, dispatch, getResults}
+    let my_blackjack = new blackjack_game(options)
+    
 
     function ready(){
         if(my_blackjack && document.getElementById("blackjack_canvas")){
@@ -453,7 +459,19 @@ function Blackjack(props){
     useEffect(() => {
 		props.socket.on('blackjack_read', function(data){
 			if(my_blackjack && data){
-				my_blackjack.action(data)
+				if(data.action === "start" || data.action === "hit" || data.action === "stand" || data.action === "double_down"  || data.action === "surrender"){
+					my_blackjack.action(data)
+				} else {
+					//it means it must be an error
+					let payload = {
+						open: true,
+						template: "error",
+						title: translate({lang: props.lang, info: "error"}),
+						data: translate({lang: props.lang, info: data.action})
+					}
+					dispatch(changePopup(payload))
+				}
+				
             }		
 		})	
     }, [props.socket])

@@ -150,6 +150,7 @@ var word_bank = {
         stand: "Stand",
         double_down: "Double down",
         surrender: "Surrender",
+        not_current_player: "It is not your turn",
     },
     "RO":{
         salon: "Salon",
@@ -303,6 +304,7 @@ var word_bank = {
         stand: "Opreste-te",
         double_down: "Dubleza",
         surrender: "Preda-te",
+        not_current_player: "Nu este randul tau",
     }
 }
 

@@ -15,6 +15,13 @@ import Panel from './sidebar/panel'
 import Blackjack from './pages/blackjack/blackjack'
 import { getRoom } from '../../utils/games'
 
+import roulette_loading_icon from '../../img/icons_other/icons/yellow/roulette.png'
+import blackjack_loading_icon from '../../img/icons_other/icons/yellow/blackjack.png'
+import slots_loading_icon from '../../img/icons_other/icons/yellow/slots.png'
+import craps_loading_icon from '../../img/icons_other/icons/yellow/craps.png'
+import race_loading_icon from '../../img/icons_other/icons/yellow/race.png'
+import keno_loading_icon from '../../img/icons_other/icons/yellow/keno.png'
+
 function Game(props){
     const {lang, page, socket} = props
     let game = page.game
@@ -26,6 +33,7 @@ function Game(props){
     function results(payload){
         if(payload && payload.bet && payload.bet>0){ //send results to server only if he bet
             socket.emit('game_results_send', payload)
+            console.log('game_results_send ', payload)
         }
     }
 
@@ -60,38 +68,37 @@ function Game(props){
                         if(room){
                             return <Roulette {...props} results={(e)=>results(e)}></Roulette>
                         } else {
-                            return <p>Loading...</p>
+                            return <img src={roulette_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
                         }
                     case "blackjack":
                         if(room){
                             return <Blackjack {...props} results={(e)=>results(e)}></Blackjack>
                         } else {
-                            return <p>Loading...</p>
+                            return <img src={blackjack_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
                         }
-                        return <Blackjack {...props} results={(e)=>results(e)}></Blackjack>
                     case "slots":
                         if(room){
                             return <Slots {...props} results={(e)=>results(e)}></Slots>
                         } else {
-                            return <p>Loading...</p>
+                            return <img src={slots_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
                         }
                     case "craps":
                         if(room){
                             return <Craps {...props} results={(e)=>results(e)}></Craps>
                         } else {
-                            return <p>Loading...</p>
+                            return <img src={craps_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
                         }                        
                     case "race":
                         if(room){
                             return <Race {...props} results={(e)=>results(e)}></Race>
                         } else {
-                            return <p>Loading...</p>
+                            return <img src={race_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
                         }                        
                     case "keno":
                         if(room){
                             return <Keno {...props} results={(e)=>results(e)}></Keno>
                         } else {
-                            return <p>Loading...</p>
+                            return <img src={keno_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
                         }                        
                     default:
                         return <p>{translate({lang: lang, info: "error"})}</p>

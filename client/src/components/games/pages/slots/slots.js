@@ -322,6 +322,7 @@ function slots_game(props, id){
 
     this.drawResultsArray = function(result){
 		if(result[0]){
+			console.log(result)
 			let canvas = $('#slot_machine_lines')[0]
 			if(canvas){
 				ctx = canvas.getContext("2d")

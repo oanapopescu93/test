@@ -1,21 +1,11 @@
-var blackjack_current_player = 0
-let blackjack_deck = new Array()
-let blackjack_hidden_dealer = {}
-let blackjack_players = []
-let blackjack_dealer = {}
-let blackjack_monkey_blackjack = false	
-let blackjack_monkey = []
-let blackjack_game_end = false
+var blackjack_deck = new Array()
+var blackjack_hidden_dealer = {}
+var blackjack_players = []
+var blackjack_dealer = {}
 
 function blackjack(data, how_lucky, user_join){
-    let is_lucky = Math.floor(Math.random() * 100)
-    if(is_lucky % how_lucky === 0){
-        blackjack_monkey_blackjack = true
-    }
-    
-    if(blackjack_monkey_blackjack){ // it means the player must lose
-        
-    }
+    let blackjack_current_player = 0
+    let blackjack_game_end = false
 
     switch (data.action) {
         case 'start':
@@ -37,6 +27,7 @@ function blackjack(data, how_lucky, user_join){
         case 'hit':
             blackjack_players = data.players
             let index_hit = blackjack_players.findIndex((x) => x.uuid === data.uuid)
+            console.log(index_hit, blackjack_current_player)
             if(index_hit === blackjack_current_player){
                 hitMe()
                 checkForEndOfGame(index_hit)
