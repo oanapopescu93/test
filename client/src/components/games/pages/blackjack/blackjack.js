@@ -392,25 +392,21 @@ function blackjack_game(props){
 		let blackjack_payload = {
 			uuid: props.user.uuid,
 			game: game,
-			status: status,
+			status: 'lose',
 			bet: blackjack_bets
 		}
 
 		if(dealer && dealer.win){
 			blackjack_status = false
-			blackjack_payload.money = money - blackjack_bets
-			if(typeof props.results === "function"){
-				console.log('blackjack_data-lose ', blackjack_data, player)
-				props.getResults(blackjack_payload)
-			}					
+			blackjack_payload.money = money - blackjack_bets								
 		} else if(player && player.win){
 			blackjack_status = false
 			blackjack_payload.money = money + blackjack_bets
-			status = "win"
-			if(typeof props.results === "function"){
-				console.log('blackjack_data-win ', blackjack_data, player)
-				props.getResults(blackjack_payload)
-			}
+			blackjack_payload.status = 'win'
+		}
+
+		if(typeof props.results === "function"){
+			props.getResults(blackjack_payload)
 		}
 	}
 
@@ -545,10 +541,11 @@ function Blackjack(props){
 								game: game,
 								money: money - blackjack_bets,
 								status: "lose",
-								bet: blackjack_bets
+								bet: Math.round(blackjack_bets/2) //when you surrender you lose half your stake
 							}
 							if(typeof props.results === "function"){
 								props.results(blackjack_payload)
+								setStartGame(false)
 							}
                         }
                     }
