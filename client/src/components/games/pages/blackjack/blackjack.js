@@ -408,16 +408,10 @@ function blackjack_game(props){
 			finished = true
 		}
 
-		if(finished && typeof props.results === "function"){
+		if(finished && typeof props.getResults === "function"){
 			props.getResults(blackjack_payload)
 		}
 	}
-
-    this.leave = function(){
-		blackjack_data = null
-		blackjack_bets = 0
-		blackjack_status = false
-    }
 }
 
 var blackjack_data = null
@@ -425,14 +419,28 @@ var blackjack_bets = 0
 var blackjack_status = false
 function Blackjack(props){
 	let game = props.page.game
+	let money = decryptData(props.user.money)
 	let [startGame, setStartGame]= useState(false)
     let dispatch = useDispatch()
 
+	let clear = function(bet){
+		blackjack_bets = bet
+		if(blackjack_bets > 0){			
+			let blackjack_payload = {
+				uuid: props.user.uuid,
+				game: game,
+				status: 'lose',
+				bet: blackjack_bets,
+				money: money - blackjack_bets
+			}
+			props.results(blackjack_payload)
+		}
+	}
 	let getResults = function(payload){
 		props.results(payload)
 		setStartGame(false)
 	}
-    let options = {...props, dispatch, getResults}
+    let options = {...props, dispatch, getResults, clear}
     let my_blackjack = new blackjack_game(options)
     
 
@@ -440,7 +448,7 @@ function Blackjack(props){
         if(my_blackjack && document.getElementById("blackjack_canvas")){
             my_blackjack.ready()
         }
-    }
+    }	
 
     useEffect(() => {
         ready()
@@ -449,8 +457,11 @@ function Blackjack(props){
 		})
 		return () => {
 			if(my_blackjack){
-				my_blackjack.leave()// if the user leaves the game, if he bet, he will lose the bets
-				my_blackjack = null				
+				clear(blackjack_bets) // if the user leaves the game, if he bet, he will lose the bets
+				my_blackjack = null	
+				blackjack_data = null
+				blackjack_bets = 0
+				blackjack_status = false	
 			}
 		}
     }, [])
@@ -534,17 +545,12 @@ function Blackjack(props){
                     if(my_blackjack){
                         if(blackjack_status){	
 							blackjack_status = false
-							let game = null	
-							if(props.page && props.page.game){
-								game = props.page.game
-							}
-							let money = decryptData(props.user.money)
                             let blackjack_payload = {
 								uuid: props.user.uuid,
 								game: game,
 								money: money - blackjack_bets,
 								status: "lose",
-								bet: Math.round(blackjack_bets/2) //when you surrender you lose half your stake
+								bet: Math.round(blackjack_bets/2) //when you surrender you lose half your stake. The amount can only be interger
 							}
 							if(typeof props.results === "function"){
 								props.results(blackjack_payload)
