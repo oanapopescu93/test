@@ -252,7 +252,7 @@ io.on('connection', function(socket) {
   socket.on('slots_send', function(data) {    
 		if(data.uuid){
       let room = data.room
-			let payload = slots(data, how_lucky)
+			let payload = slots(data)
 			try{
 				io.to(room).emit('slots_read', payload)
 			} catch(e){

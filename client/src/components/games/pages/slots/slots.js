@@ -104,10 +104,11 @@ function slots_game(props, id){
 	}
 
 	this.create_slot_machine_lines = function(){
-		if(reel){
-			let width = reel.length * (image_size[0] + 10) // the img plus + the border
-			let height = 3 * (image_size[1] + 10) // the img plus + the border
-			let canvas_lines = $('#slot_machine_lines')[0]
+		if(reel){	
+			let border = 5
+			let canvas_lines = $('#slot_machine_lines')[0]			
+			let width = reel.length * (image_size[0] + 2 * border) 
+			let height = 3 * image_size[1] + 2 * border 
 			canvas_lines.width = width
 			canvas_lines.height = height
 		}	
@@ -212,18 +213,19 @@ function slots_game(props, id){
 			} else {
 				window.cancelAnimationFrame(spin_slot)
 				result = self.win_lose(self.get_results_pos())
+				console.log(result)
 				//this is just to check the winnings
-				result = [
-					true, 
-					[
-						[0, 0],
-						[0, 1],
-						[2, 2],
-						[0, 3],
-						[0, 4],
-					], 
-					"18",
-				]
+				// result = [
+				// 	true, 
+				// 	[
+				// 		[0, 0],
+				// 		[0, 1],
+				// 		[2, 2],
+				// 		[0, 3],
+				// 		[0, 4],
+				// 	], 
+				// 	"18",
+				// ]
                 self.drawResultsArray(result)
 			}
 		}
@@ -296,74 +298,106 @@ function slots_game(props, id){
 	}
 
     this.get_results_pos = function(){
-		let results = []
-		let result_offset = self.offset
-		for(let t=0; t<3; t++){
-			let result = []
-			for(let i in result_offset){
-				for(let j in images_pos[i]){
-					if(images_pos[i][j].pos === -result_offset[i]){
-						result.push(images_pos[i][j])	
+		let array = []
+		for(let i in self.offset){
+			for(let j in images_pos[i]){
+				if(images_pos[i][j].pos === -self.offset[i]){
+					let t = j-1
+					for(let k=0; k<3; k++){
+						t++
+						if(!images_pos[i][t]){
+							t = 0
+						}
+						array.push(images_pos[i][t])	
 					}
+					break
 				}
 			}
-			results.push(result)
 		}
-		return results
+		let t = -1
+		let array01 = []
+		let array02 = []
+		let array03 = []
+		for(let i in array){
+			t++
+			if(t === 3){
+				t = 0
+			}
+			switch(t) {
+				case 0:	
+					array01.push(array[i])
+					break		
+				case 1:
+					array02.push(array[i])		
+					break		
+				case 2:
+					array03.push(array[i])	
+					break		
+			}
+		}
+		return [array01, array02, array03]
 	}
 
-    this.win_lose = function(results){
+	this.win_lose = function(results){
 		let same = true
-		let win_results = []
 		let t = -1
-        let win = slots_data.matrix
-		for(let i in win){	
-			if(win[i].matrix.length !== 0){
-				let my_matrix = win[i].matrix
-				same = true
-				for(let j=0; j<my_matrix.length-1; j++){
-					let x1 = my_matrix[j][0]
-					let y1 = my_matrix[j][1]
-					let x2 = my_matrix[j+1][0]
-					let y2 = my_matrix[j+1][1]
-					//if one of the spots that is compared is a carrots
-					let my_veggy = results[x1][y1].img.id === "carrot" || results[x2][y2].img.id === "carrot" || results[x1][y1].img.id === "potato" || results[x2][y2].img.id === "potato"					
-					if(results[x1][y1].img.id === results[x2][y2].img.id || my_veggy){
-						win_results = my_matrix
-						t = i
-					} else {
-						same = false
-						win_results = []
-						break
-					}
+		let win_results = []
+        let matrix = slots_data.matrix
+		for(let i in matrix){
+			let small_matrix = matrix[i].matrix
+			for(let j=0; j<small_matrix.length-1; j++){
+				let x1 = small_matrix[j][0]
+				let y1 = small_matrix[j][1]
+				let x2 = small_matrix[j+1][0]
+				let y2 = small_matrix[j+1][1]
+				let my_veggy1 = results[x1][y1].img.id
+				let my_veggy2 = results[x2][y2].img.id				
+				if(my_veggy1===my_veggy1 || my_veggy1==="carrot" || my_veggy2==="carrot" || my_veggy1==="potato" || my_veggy2==="potato"){
+					win_results = small_matrix
+					t = i
+				} else {
+					same = false
+					win_results = []
+					t = -1
+					break
 				}
 			}
 		}
-		
 		return [same, win_results, results, t]
 	}
 
     this.drawResultsArray = function(result){		
 		if(result[0]){				
-			let canvas = $('#slot_machine_lines')[0]
+			let canvas = $('#slot_machine_lines')[0]			
 			if(canvas){
+				let border = 5
+				let width = reel.length * (image_size[0] + 2 * border) 
+				let height = 3 * image_size[1] + 2 * border 
+				let cube = [width/reel.length, height/3]
+				console.log(width, height, cube)
+
+				//draw lines
 				ctx = canvas.getContext("2d")
 				ctx.beginPath()				
-				ctx.moveTo(image_size[0]/2, image_size[1]/2)
+				ctx.moveTo(cube[0]/2, cube[1]/2)
 				ctx.strokeStyle = "red"
 				ctx.lineWidth = 5
 
-				for(let i=1; i<result[1].length; i++){				
-					ctx.lineTo(result[1][i][1] * image_size[1] + image_size[1]/2, result[1][i][0] * image_size[1] + image_size[1]/2)
+				for(let i=1; i<result[1].length; i++){		
+					let x = result[1][i][1] * cube[0] + cube[0]/2
+					let y = result[1][i][0] * cube[1] + cube[1]/2
+					ctx.lineTo(x, y)
 				}
 				ctx.stroke()
 				ctx.closePath()
-			}
 
-			for(let i=0; i<result[1].length; i++){	
-                draw_dot(ctx, result[1][i][1] * image_size[1] + image_size[1]/2, result[1][i][0] * image_size[1] + image_size[1]/2, 8, 0, 2 * Math.PI, false, 'red', 1, 'red')
+				//draw dots
+				for(let i=0; i<result[1].length; i++){	
+					let x = result[1][i][1] * cube[0] + cube[0]/2
+					let y = result[1][i][0] * cube[1] + cube[1]/2
+					draw_dot(ctx, x, y, 8, 0, 2 * Math.PI, false, 'red', 1, 'red')
+				}
 			}
-
 			self.pay(slots_bets, true)
 			
 		} else {
@@ -389,6 +423,7 @@ function slots_game(props, id){
 		if(typeof props.results === "function"){
             props.results(slots_payload)
         }
+		slots_status = true
     }
 }
 
@@ -401,7 +436,7 @@ function Slots(props){
     let lines = 5
     switch(game_type) {
         case "type1":
-            lines = 5
+            lines = 3
             break
         case "type2":
         default: 
@@ -422,11 +457,10 @@ function Slots(props){
 		})
 		return () => {
 			if(my_slots){
-				my_slots.leave()// if the user leaves the game, if he bet, he will lose the bets
+				// if the user leaves the game, if he bet, he will lose the bets
 				my_slots = null
 				slots_data = null
 				slots_bets = 0
-				slots_status = false
 			}
 		}
     }, [])
@@ -435,6 +469,7 @@ function Slots(props){
 		props.socket.on('slots_read', function(data){
 			if(my_slots && data){
                 slots_data = data
+				console.log(data)
                 my_slots.ready()
             }	
 		})	
@@ -461,7 +496,7 @@ function Slots(props){
     }
 
     return <div className="game_container">
-        <div className="slot_machine">
+        <div id="slot_machine" className="slot_machine">
             <canvas id="slot_machine_lines"></canvas>
             {(() => {
                 switch(lines) {

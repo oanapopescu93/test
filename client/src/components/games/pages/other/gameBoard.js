@@ -69,10 +69,9 @@ function GameBoard(props){
                     </Row>
                 case "slots":
                     return <Row>
-                        <Col xs={4}>
+                        <Col xs={8}>
                                 <Counter num={0} max={max_bet} update={(e)=>updateQtyMarket(e)}></Counter>
                         </Col>
-                        <Col xs={4}></Col>
                         <Col xs={4}>
                             <div  className="button_box">
                                 <Button type="button" onClick={()=>handleClick('start')} className="mybutton button_fullcolor shadow_convex">

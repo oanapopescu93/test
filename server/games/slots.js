@@ -1,24 +1,13 @@
 var constants = require('../var/home')
-function slots(data, how_lucky){
+function slots(data){
     let array_big = []
     let items = 7
     let matrix = []
     let slot_prizes = constants.SLOT_PRIZES
 
-    let monkey_slots = false	
-    let monkey = []
-    let is_lucky = Math.floor(Math.random() * 100)
-    if(is_lucky % how_lucky === 0){
-        monkey_slots = true
-    }
-    
-    if(monkey_slots){ // it means the player must lose
-        
-    }
-
     for(let i=0; i < 19; i++){
         matrix.push(slot_matrix(i, [data.lines, 3]))
-    }
+    }    
     for(let i=0; i < data.lines; i++){
         let array_small = Array.from(Array(items).keys())
         array_small = shuffleArray(array_small)
