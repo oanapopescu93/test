@@ -13,7 +13,7 @@ function blackjack(data, how_lucky, user_join){
             let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 
             blackjack_deck = createDeck(suits, values, 10000)
-
+            
             blackjack_players = user_join
             dealHands()
 
@@ -22,8 +22,12 @@ function blackjack(data, how_lucky, user_join){
             blackjack_hidden_dealer.hand.push(blackjack_dealer.hand[0])
 
             checkBlackjack()
-
-            return {action: data.action, players: blackjack_players, dealer: blackjack_hidden_dealer, game_end: blackjack_game_end}
+            if(blackjack_dealer.win){
+                blackjack_game_end = true
+                return {action: data.action, players: blackjack_players, dealer: blackjack_dealer, game_end: blackjack_game_end}
+            } else {
+                return {action: data.action, players: blackjack_players, dealer: blackjack_hidden_dealer, game_end: blackjack_game_end}
+            } 
         case 'hit':
             blackjack_players = data.players
             let index_hit = blackjack_players.findIndex((x) => x.uuid === data.uuid)

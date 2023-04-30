@@ -360,6 +360,7 @@ function blackjack_game(props){
     this.action = function(data){
 		if(data.action){
 			blackjack_data = data
+			//console.log('blackjack_data ', blackjack_data)
 			ctx.clearRect(0, 0, canvas.width, canvas.height)
 			if(data.action === "start"){
 				resize = 0
@@ -370,12 +371,12 @@ function blackjack_game(props){
     }
 
 	this.check_win_lose = function(){
+		let finished = false
 		let game = null	
 		if(props.page && props.page.game){
 			game = props.page.game
 		}
 		let money = decryptData(props.user.money)
-		let status = "lose"
 
 		let dealer = null
 		if(blackjack_data && blackjack_data.dealer){
@@ -398,14 +399,16 @@ function blackjack_game(props){
 
 		if(dealer && dealer.win){
 			blackjack_status = false
-			blackjack_payload.money = money - blackjack_bets								
+			blackjack_payload.money = money - blackjack_bets
+			finished = true								
 		} else if(player && player.win){
 			blackjack_status = false
 			blackjack_payload.money = money + blackjack_bets
 			blackjack_payload.status = 'win'
+			finished = true
 		}
 
-		if(typeof props.results === "function"){
+		if(finished && typeof props.results === "function"){
 			props.getResults(blackjack_payload)
 		}
 	}
