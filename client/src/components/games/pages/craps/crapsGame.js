@@ -59,7 +59,7 @@ function Dice(props){
 	)
 }
 
-function CrapsBoardText(props){	
+function CrapsBoardText(props){
 	return <>
 		{props.list && props.list.length>0 ? <>
 			{props.list.map(function(item, i){
@@ -192,15 +192,7 @@ function Craps(props){
 	}
 
 	function check_win_lose(result){
-		switch(result) {
-			case "win":
-				break
-			case "push":
-				break
-			case "lose":
-			default: 
-				
-		}
+		props.winLose(result)
 	}
 
 	function start_game(){
@@ -584,13 +576,14 @@ function Craps(props){
 var craps_bets = []
 function CrapsGame(props){
 	let dispatch = useDispatch()
-	const [status, setStatus] = useState(false)
+	const [start, setStart] = useState(false)
 	let money = decryptData(props.user.money)
 	craps_bets = props.bets	
+	let game = props.page.game
 
 	function gameStart(){
-		if(!status && craps_bets){
-			setStatus(true)
+		if(!start && craps_bets){
+			setStart(true)
 		} else {
 			let payload = {
 				open: true,
@@ -602,12 +595,28 @@ function CrapsGame(props){
 		}
     }
 
-	function winLose(){
-		setStatus(false)
+	function winLose(results){
+		let pay = money
+		if(results === "win"){
+			pay = pay + 1
+		} else if(results === "lose"){
+			pay = pay - 1
+		}
+		let craps_payload = {
+			uuid: props.user.uuid,
+			game: game,
+			money: pay,
+			status: results,
+			bet: 1
+		}
+		if(typeof props.results === "function"){
+			props.results(craps_payload)
+		}
+		setStart(false)
 	}
 
 	function openTable(){
-		if(!status && money && money>0){
+		if(!start && money && money>0){
 			props.openTable()
 		} else {
 			let payload = {
@@ -621,7 +630,7 @@ function CrapsGame(props){
 	}
 
     return <div className="game_container craps_container">
-		<Craps {...props} startGame={status} winLose={()=>winLose()}></Craps>
+		<Craps {...props} startGame={start} winLose={(e)=>winLose(e)}></Craps>
 		<Row>
 			<Col sm={12} className="game_start">
 				<Button 
