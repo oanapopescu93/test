@@ -21,10 +21,13 @@ import slots_loading_icon from '../../img/icons_other/icons/yellow/slots.png'
 import craps_loading_icon from '../../img/icons_other/icons/yellow/craps.png'
 import race_loading_icon from '../../img/icons_other/icons/yellow/race.png'
 import keno_loading_icon from '../../img/icons_other/icons/yellow/keno.png'
+import Dashboard from './pages/dashboard/dashboard'
+import Market from './pages/market/market'
 
 function Game(props){
     const {lang, page, socket} = props
     let game = page.game
+    let game_page = page.game_page
     let title = game.table_name ? game.table_name : ""
     let dispatch = useDispatch()
     const [chatRoomUsers, setChatRoomUsers] = useState([])
@@ -62,48 +65,61 @@ function Game(props){
     return <>
         <div className="content_wrap">
             <Header template="game" details={page} lang={lang}></Header>
-            {(() => {
-                switch (title) {
-                    case "roulette":
-                        if(room){
-                            return <Roulette {...props} results={(e)=>results(e)}></Roulette>
-                        } else {
-                            return <img src={roulette_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
-                        }
-                    case "blackjack":
-                        if(room){
-                            return <Blackjack {...props} results={(e)=>results(e)}></Blackjack>
-                        } else {
-                            return <img src={blackjack_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
-                        }
-                    case "slots":
-                        if(room){
-                            return <Slots {...props} results={(e)=>results(e)}></Slots>
-                        } else {
-                            return <img src={slots_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
-                        }
-                    case "craps":
-                        if(room){
-                            return <Craps {...props} results={(e)=>results(e)}></Craps>
-                        } else {
-                            return <img src={craps_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
-                        }                        
-                    case "race":
-                        if(room){
-                            return <Race {...props} results={(e)=>results(e)}></Race>
-                        } else {
-                            return <img src={race_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
-                        }                        
-                    case "keno":
-                        if(room){
-                            return <Keno {...props} results={(e)=>results(e)}></Keno>
-                        } else {
-                            return <img src={keno_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
-                        }                        
-                    default:
-                        return <p>{translate({lang: lang, info: "error"})}</p>
-                }
-            })()}
+            {!game_page ? <div className='game_container'>
+                {(() => {
+                    switch (title) {
+                        case "roulette":
+                            if(room){
+                                return <Roulette {...props} results={(e)=>results(e)}></Roulette>
+                            } else {
+                                return <img src={roulette_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                            }
+                        case "blackjack":
+                            if(room){
+                                return <Blackjack {...props} results={(e)=>results(e)}></Blackjack>
+                            } else {
+                                return <img src={blackjack_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                            }
+                        case "slots":
+                            if(room){
+                                return <Slots {...props} results={(e)=>results(e)}></Slots>
+                            } else {
+                                return <img src={slots_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                            }
+                        case "craps":
+                            if(room){
+                                return <Craps {...props} results={(e)=>results(e)}></Craps>
+                            } else {
+                                return <img src={craps_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                            }                        
+                        case "race":
+                            if(room){
+                                return <Race {...props} results={(e)=>results(e)}></Race>
+                            } else {
+                                return <img src={race_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                            }                        
+                        case "keno":
+                            if(room){
+                                return <Keno {...props} results={(e)=>results(e)}></Keno>
+                            } else {
+                                return <img src={keno_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                            }                        
+                        default:
+                            return <p>{translate({lang: lang, info: "error"})}</p>
+                    }
+                })()}
+            </div> : <>
+                {(() => {
+                    switch (game_page) {
+                        case "dashboard":
+                            return <Dashboard {...props}></Dashboard>
+                        case "market":
+                            return <Market {...props}></Market>
+                        default:
+                            return <p>{translate({lang: props.lang, info: "error"})}</p>
+                    }
+                })()}
+            </>}
             <div className="page_exit">
                 <Button id="exit_salon" type="button" onClick={()=>handleExit()} className="mybutton button_transparent shadow_convex">
                     {translate({lang: lang, info: "exit_game"})}

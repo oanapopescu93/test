@@ -306,17 +306,7 @@ function roulette_bets(props){
                 let mousePos = getMousePos(canvas, event)
                 self.canvas_click(mousePos)
             })
-        }
-		if($('#roulette_bets_clear')){
-			$('#roulette_bets_clear').off('click').on('click', function(event) {
-				your_last_bet = {}
-				your_bets = []
-				self.choose_roulette_bets()
-				self.create_roulette_bets()
-				self.handleClick()
-			})
-		}
-		
+        }		
     }
 
     this.canvas_click = function(mouse){ 
@@ -355,7 +345,7 @@ function RouletteTable(props){
             my_roulette_bets.ready()
         }
         $(window).resize(function(){
-			if(document.getElementById("roulette_bets_canvas")){
+			if(my_roulette_bets){
 				my_roulette_bets.ready('resize')
 			}
 		})

@@ -646,42 +646,38 @@ function RouletteGame(props){
     function openTable(){
         if(my_roulette){
             let status = my_roulette.get_status_game()
-            if(!status){
-                let money = decryptData(props.user.money)
-                if(money && money>0){
-                    props.openTable()
-                } else {
-                    let payload = {
-                        open: true,
-                        template: "error",
-                        title: translate({lang: props.lang, info: "error"}),
-                        data: translate({lang: props.lang, info: "no_money"})
-                    }
-                    dispatch(changePopup(payload))
-                }   
+			let money = decryptData(props.user.money)
+            if(!status && money && money>0){
+                props.openTable()
+            } else {
+				let payload = {
+					open: true,
+					template: "error",
+					title: translate({lang: props.lang, info: "error"}),
+					data: translate({lang: props.lang, info: "no_money"})
+				}
+				dispatch(changePopup(payload))
             } 
         }
     }
 
     function gameStart(){
-        if(my_roulette && document.getElementById("roulette_canvas")){
-			if(roulette_bets && roulette_bets.length>0){
-				let roulette_payload_server = {
-					uuid: props.user.uuid,
-					room: getRoom(props.page.game),
-					bet: roulette_bets,
-				}
-				props.socket.emit('roulette_send', roulette_payload_server)
-			} else {
-				let payload = {
-					open: true,
-					template: "error",
-					title: translate({lang: props.lang, info: "error"}),
-					data: translate({lang: props.lang, info: "no_bets"})
-				}
-				dispatch(changePopup(payload))
+        if(my_roulette && document.getElementById("roulette_canvas") && roulette_bets && roulette_bets.length>0){
+			let roulette_payload_server = {
+				uuid: props.user.uuid,
+				room: getRoom(props.page.game),
+				bet: roulette_bets,
 			}
-        }
+			props.socket.emit('roulette_send', roulette_payload_server)
+		} else {
+			let payload = {
+				open: true,
+				template: "error",
+				title: translate({lang: props.lang, info: "error"}),
+				data: translate({lang: props.lang, info: "no_bets"})
+			}
+			dispatch(changePopup(payload))
+		}
     }
 
     return <div className="roulette_container">

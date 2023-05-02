@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import RouletteTable from '../roulette/rouletteTable'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import CrapsTable from '../craps/crapsTable'
 
 function GameBets(props){
     let open = props.open ? "open" : ""
@@ -16,6 +17,7 @@ function GameBets(props){
     function handleClear(){
         t++
         setClear(t)
+        props.getData(null)
     }
 
     function getData(x){
@@ -28,6 +30,8 @@ function GameBets(props){
             <div className="game_bets_box">						
                 {(() => {
                     switch (template) {
+                        case "craps":
+                            return <CrapsTable {...props} clear={clear} getData={(e)=>getData(e)}></CrapsTable>
                         case "roulette":
                             return <RouletteTable {...props} clear={clear} getData={(e)=>getData(e)}></RouletteTable>               
                         default:

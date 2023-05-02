@@ -1079,7 +1079,7 @@ textarea {
 }
 .game_bets_box{
 	overflow: auto;
-  max-height: 400px;
+  max-height: 350px;
 }
 .game_bets_clear{
   padding-top: var(--padding_small);
@@ -1897,6 +1897,173 @@ textarea {
   padding-top: var(--padding);
 }
 
+/* CRAPS */
+.dice_box {
+	position: relative;
+	z-index: 0;
+	display: inline-block;
+	margin: 0px var(--padding);
+}
+.dice {
+	position: relative;
+	z-index: 2;
+	width: 100px;
+	height: 100px;
+	transform-style: preserve-3d;
+	transition: transform 1s; 
+}
+.dice_shadow{
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	width: 100px;
+	height: 100px;
+	border-radius: var(--radius_small);
+	background: var(--transparent_8);
+}
+.dot {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	margin: -10px 5px 5px -10px;
+	border-radius: 20px;
+	background-color: black;
+	box-shadow: inset 2px 2px #333;
+}
+.side {
+	position: absolute;
+	background-color: var(--red);
+	border-radius:5px;
+	width: 100px;
+	height: 100px;
+	border: 1px solid black;
+	text-align: center;
+	line-height: 2em;
+}
+
+.side:nth-child(1) {
+	-webkit-transform: translateZ(50px);
+  -moz-transform: translateZ(50px);
+  -ms-transform: translateZ(50px);
+  -o-transform: translateZ(50px);
+	transform: translateZ(50px); 
+}
+.side:nth-child(6) {
+	-webkit-transform: rotateY(90deg) translateZ(50px);
+  -moz-transform: rotateY(90deg) translateZ(50px);
+  -ms-transform: rotateY(90deg) translateZ(50px);
+  -o-transform: rotateY(90deg) translateZ(50px);
+	transform: rotateY(90deg) translateZ(50px); 
+}
+.side:nth-child(3) {
+	-webkit-transform: rotateY(-90deg) translateZ(50px);
+  -moz-transform: rotateY(-90deg) translateZ(50px);
+  -ms-transform: rotateY(-90deg) translateZ(50px);
+  -o-transform: rotateY(-90deg) translateZ(50px);
+	transform: rotateY(-90deg) translateZ(50px); 
+}
+.side:nth-child(4) {
+	-webkit-transform: rotateX(90deg) translateZ(50px);
+  -moz-transform: rotateX(90deg) translateZ(50px);
+  -ms-transform: rotateX(90deg) translateZ(50px);
+  -o-transform: rotateX(90deg) translateZ(50px);
+	transform: rotateX(90deg) translateZ(50px); 
+}
+.side:nth-child(5) {
+	-webkit-transform: rotateX(-90deg) translateZ(50px);
+  -moz-transform: rotateX(-90deg) translateZ(50px);
+  -ms-transform: rotateX(-90deg) translateZ(50px);
+  -o-transform: rotateX(-90deg) translateZ(50px);
+	transform: rotateX(-90deg) translateZ(50px); 
+}
+.side:nth-child(2) {
+	-webkit-transform: rotateY(-180deg) translateZ(50px);
+  -moz-transform: rotateY(-180deg) translateZ(50px);
+  -ms-transform: rotateY(-180deg) translateZ(50px);
+  -o-transform: rotateY(-180deg) translateZ(50px);
+	transform: rotateY(-180deg) translateZ(50px); 
+}
+
+.show_1 {
+	-webkit-transform: rotateX(720deg) translateZ(-720deg);
+  -moz-transform: rotateX(720deg) translateZ(-720deg);
+  -ms-transform: rotateX(720deg) translateZ(-720deg);
+  -o-transform: rotateX(720deg) translateZ(-720deg);
+	transform: rotateX(720deg) rotateZ(-720deg);  
+}
+.show_2 {
+	-webkit-transform: rotateX(-900deg) translateZ(1080deg);
+  -moz-transform: rotateX(-900deg) translateZ(1080deg);
+  -ms-transform: rotateX(-900deg) translateZ(1080deg);
+  -o-transform: rotateX(-900deg) translateZ(1080deg);
+	transform: rotateX(-900deg) rotateZ(1080deg); 
+}
+.show_3 {
+	-webkit-transform: rotateY(810deg) translateZ(720deg);
+  -moz-transform: rotateY(810deg) translateZ(720deg);
+  -ms-transform: rotateY(810deg) translateZ(720deg);
+  -o-transform: rotateY(810deg) translateZ(720deg);
+	transform: rotateY(810deg) rotateZ(720deg); 
+}
+.show_4 {
+	-webkit-transform: rotateX(-810deg) translateZ(-1080deg);
+  -moz-transform: rotateX(-810deg) translateZ(-1080deg);
+  -ms-transform: rotateX(-810deg) translateZ(-1080deg);
+  -o-transform: rotateX(-810deg) translateZ(-1080deg);
+	transform: rotateX(-810deg) rotateZ(-1080deg); 
+}
+.show_5 {
+	-webkit-transform: rotateX(450deg) translateZ(-720deg);
+  -moz-transform: rotateX(450deg) translateZ(-720deg);
+  -ms-transform: rotateX(450deg) translateZ(-720deg);
+  -o-transform: rotateX(450deg) translateZ(-720deg);
+	transform: rotateX(450deg) rotateZ(-720deg);
+}
+.show_6 {
+	-webkit-transform: rotateY(-450deg) translateZ(-1440deg);
+  -moz-transform: rotateY(-450deg) translateZ(-1440deg);
+  -ms-transform: rotateY(-450deg) translateZ(-1440deg);
+  -o-transform: rotateY(-450deg) translateZ(-1440deg);
+	transform: rotateY(-450deg) rotateZ(-1440deg); 
+}
+
+.two_1, .three_1, .four_1, .five_1, .six_1 {top: 20%;left: 20%;}
+.four_3, .five_3, .six_4 {top: 20%;left: 80%;}
+.one_1, .three_2, .five_5 {top: 50%;left: 50%;}
+.four_2, .five_2, .six_3 {top: 80%;left: 20%;}
+.two_2, .three_3, .four_4, .five_4, .six_6 {top: 80%;left: 80%;}
+.six_2 {top: 50%;left: 20%;}
+.six_5 {top: 50%;left: 80%; }
+
+.craps_board_box{
+	padding:var(--padding);
+	border:solid 1px var(--color);
+	border-radius: var(--radius);
+	color:var(--color);
+	background-color: var(--transparent_8);
+	font-family:courier new;
+}
+#craps_board {
+	resize: none;
+	width:100%;
+	height:200px;	
+	padding:var(--padding_small);
+	cursor: default;
+	overflow-y:auto;
+}
+
+.craps_board_text{
+	padding: var(--padding_small);
+	border-bottom: solid 1px var(--color);
+	margin-bottom: var(--padding_small);
+}
+.craps_board_text .text{
+	padding-right:var(--padding_small);
+}
+.craps_board_text .text01, .craps_board_text .text03, .craps_board_text .text05{
+	font-weight: bold;
+}
+
 /* media */
 @media (max-width: 1024px){
 	.shop_shader{
@@ -2063,6 +2230,34 @@ textarea {
   .slot_machine_board{
     width: 320px;
   }
+
+  /* CRAPS */
+  .dice {
+		width: 60px;
+		height: 60px;
+	}
+	.dice_shadow{
+		width: 60px;
+		height: 60px;
+	}
+	.dot {
+		width: 10px;
+		height: 10px;
+		margin: -5px 2px 2px -5px;
+	}
+	.side {
+		width: 60px;
+		height: 60px;
+	}
+	.side:nth-child(1) {transform: translateZ(30px); }
+	.side:nth-child(6) {transform: rotateY(90deg) translateZ(30px); }
+	.side:nth-child(3) {transform: rotateY(-90deg) translateZ(30px); }
+	.side:nth-child(4) {transform: rotateX(90deg) translateZ(30px); }
+	.side:nth-child(5) {transform: rotateX(-90deg) translateZ(30px); }
+	.side:nth-child(2) {transform: rotateY(-180deg) translateZ(30px); }
+  #craps_board{
+		height: 110px;
+	}
 }
 @media (max-width:576px) {	
   /* SIGN */

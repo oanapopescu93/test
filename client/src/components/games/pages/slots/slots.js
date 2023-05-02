@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useEffect} from 'react'
 import { useDispatch } from 'react-redux'
 import { translate } from '../../../../translations/translate'
 import { draw_dot, getRoom, get_slots_images } from '../../../../utils/games'
@@ -189,10 +189,6 @@ function slots_game(props, id){
 
     this.spin = function(){
 		self.reset()
-		let same = false	
-		let result
-		let matrix_result
-		let pos
 
 		window.requestAnimFrame = (function(){
 			return  window.requestAnimationFrame       ||
@@ -211,7 +207,7 @@ function slots_game(props, id){
 				slots_status = false
 				window.cancelAnimationFrame(spin_slot)
 				if(slots_data){
-					result = self.win_lose(self.get_results_pos())
+					let result = self.win_lose(self.get_results_pos())
 					self.drawResultsArray(result)			
 				}
 			}
@@ -348,7 +344,7 @@ function slots_game(props, id){
 						break
 					}
 				} else if(reel.length === 5){
-					//if it has 3 reels we check if the two are equal or if one of them is a carrot
+					//if it has 5 reels we check if the two are equal or if one of them is a carrot (5 reel slots have a wildcard)
 					if(my_veggy1===my_veggy2 || my_veggy1==="carrot" || my_veggy2==="carrot"){
 						t++
 					} else {
