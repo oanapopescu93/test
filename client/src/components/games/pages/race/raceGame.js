@@ -500,6 +500,10 @@ function race_game(props){
 			
 		}
 	}
+
+    this.leave = function(){
+        race_bets = null
+    }
 }
 
 let race_bets = null
