@@ -573,16 +573,14 @@ function Craps(props){
 	</>	
 }
 
-var craps_bets = []
 function CrapsGame(props){
 	let dispatch = useDispatch()
 	const [start, setStart] = useState(false)
 	let money = decryptData(props.user.money)
-	craps_bets = props.bets	
 	let game = props.page.game
 
 	function gameStart(){
-		if(!start && craps_bets){
+		if(!start && props.bets){
 			setStart(true)
 		} else {
 			let payload = {

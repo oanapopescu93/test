@@ -92,7 +92,7 @@ function craps_bets(props){
 				game_odds = items[i].odds
 				self.draw_craps_bets(self.images[i])
 				if(typeof props.getData === "function"){
-					props.getData({game_type, game_odds})
+					props.getData({game_type, game_odds, bet: props.bet})
 				}
 				break
 			}
@@ -107,7 +107,8 @@ function craps_bets(props){
 
 function CrapsTable(props){    
     let clear = props.clear
-	let options = {...props}
+	let bet = 1
+	let options = {...props, bet}
     let my_craps_bets = new craps_bets(options)
 
     useEffect(() => {        

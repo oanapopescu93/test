@@ -1,14 +1,43 @@
 import React, {useState} from 'react'
-import { Button } from 'react-bootstrap'
 import { translate } from '../../translations/translate'
 import Counter from '../partials/counter'
+import Stars from '../rating/stars'
+import { useDispatch } from 'react-redux'
+import { changeRaceBets } from '../../reducers/games'
+import { Button, Row, Col } from 'react-bootstrap'
+import Dropdown from 'react-bootstrap/Dropdown'
+import DropdownButton from 'react-bootstrap/DropdownButton'
 
 function Cell(props) {
-    const {lang, index, data, template, type} = props
+    const {lang, index, data, template} = props
     const [qty, setQty] = useState(1)
+    let place = translate({lang: lang, info: 'place'})
+    const [titleDropdown, setTitleDropdown] = useState(place)
+    let dispatch = useDispatch()
 
     function updateQtyMarket(x){
         setQty(x)
+    }
+
+    function updateRaceBet(x, data){
+        let payload = {...data, bet: x}
+        dispatch(changeRaceBets(payload))
+    }
+
+    function handleDropdown(x){
+        let payload = {...data, place: x}
+        dispatch(changeRaceBets(payload))
+        switch(x) {
+            case '3':
+                setTitleDropdown('place_03')
+                break
+            case '2':
+                setTitleDropdown('place_02')
+                break
+            case '1':
+            default: 
+                setTitleDropdown('place_01')
+        }
     }
 
 	return <>
@@ -59,8 +88,45 @@ function Cell(props) {
                             </div>
                         </div>
                     </div>
+                case "race":
+                    return <div className="rabbit_box_container" key={index}>
+                        <div className="rabbit_box shadow_concav">
+                            <Row>
+                                <Col sm={6}>
+                                    <div className="rabbit_box_pic">
+                                        {data.participating ? <div className={"rabbit_box_nr shadow_convex "+data.color}>{data.id}</div> : null}                                    
+                                        <div className="box_pic shadow_convex">	
+                                            <img src={data.img} alt={data.breed} />																			
+                                        </div>															
+                                    </div>
+                                    <div className="rabbit_box_name shadow_convex"><h3>{data.name}</h3></div> 
+                                </Col>
+                                <Col sm={6}>
+                                    <div className="rabbit_box_info">
+                                        <p><span>{translate({lang: lang, info: "breed"})}: </span>{data.breed}</p>
+                                        <p><span>{translate({lang: lang, info: "delay"})}: </span>{data.delay}</p>
+                                        <p><span>{translate({lang: lang, info: "health"})}: </span>{data.health}</p>
+                                        <Stars score={data.health} max={data.health_max}></Stars>
+                                    </div>
+                                    {data.participating ? <>
+                                        <div className="rabbit_box_bet">
+                                            <p>{translate({lang: lang, info: "bet"})}:</p>
+                                            <Counter num={0} update={(e)=>updateRaceBet(e, data)}></Counter>
+                                        </div>
+                                        <div className="rabbit_box_place">
+                                            <DropdownButton title={titleDropdown} id="language_button" onSelect={(e)=>handleDropdown(e, data)}>
+                                                <Dropdown.Item eventKey={1}>{translate({lang: lang, info: 'place_01'})}</Dropdown.Item>
+                                                <Dropdown.Item eventKey={2}>{translate({lang: lang, info: 'place_02'})}</Dropdown.Item>
+                                                <Dropdown.Item eventKey={3}>{translate({lang: lang, info: 'place_03'})}</Dropdown.Item>
+                                            </DropdownButton>
+                                        </div>
+                                    </> : <h3>{translate({lang: lang, info: "no_participation_today"})}</h3>}                                    
+                                </Col>
+                            </Row>
+                        </div>
+                    </div>
                 default:
-                    return <div key={index}>zzz</div>
+                    return <div key={index}>{translate({lang: lang, info: "error"})}</div>
             }
         })()}
         

@@ -49,8 +49,7 @@ var word_bank = {
         title: "Title",
         location: "Location",
         requirements: "Requirements",
-        responsabilities: "Responsabilities",
-        no_jobs: "No jobs available yet. But feel free to send us your CV.",
+        responsabilities: "Responsabilities",        
 
         under_construction: "Under construction",
 
@@ -61,6 +60,8 @@ var word_bank = {
         no_payment_methods: "No payment methods yet",
         no_cart: "Cart is empty",
         no_history: "No history",
+        no_jobs: "No jobs available yet. But feel free to send us your CV.",
+        no_participation_today: "No participation today",
 
         isMinor_title: "Age verification",
         isMinor_text: "Are you over 18?",
@@ -151,6 +152,15 @@ var word_bank = {
         double_down: "Double down",
         surrender: "Surrender",
         not_current_player: "It is not your turn",
+
+        breed: "Breed",
+        delay: "Delay",
+        health: "Health",
+        bet: "Bet",
+        place: "Place",
+        place_01: "1st place",
+        place_02: "2nd place",
+        place_03: "3rd place",
     },
     "RO":{
         salon: "Salon",
@@ -202,8 +212,7 @@ var word_bank = {
         title: "Titlu",
         location: "Locatie",
         requirements: "Requirements",
-        responsabilities: "Responsabilities",
-        no_jobs: "Nu exista job-uri disponibile. Puteti sa ne trimiteti CV-ul dumneavoastra pe mail.",
+        responsabilities: "Responsabilities",        
 
         under_construction: "In constructie",
 
@@ -214,6 +223,8 @@ var word_bank = {
         no_payment_methods: "Nu exista metoda de plata inca",
         no_cart: "Cosul este gol",
         no_history: "Nu ai istoric",
+        no_jobs: "Nu exista job-uri disponibile. Puteti sa ne trimiteti CV-ul dumneavoastra pe mail.",
+        no_participation_today: "Nu participa astazi",
         
         isMinor_title: "Verificare varsta",
         isMinor_text: "Ai peste 18 ani?",
@@ -305,6 +316,15 @@ var word_bank = {
         double_down: "Dubleza",
         surrender: "Preda-te",
         not_current_player: "Nu este randul tau",
+
+        breed: "Rasa",
+        delay: "Intarziere",
+        health: "Sanatate",
+        bet: "Pariu",
+        place: "Loc",
+        place_01: "Locul 1",
+        place_02: "Locul 2",
+        place_03: "Locul 3",
     }
 }
 

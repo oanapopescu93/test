@@ -5,7 +5,7 @@ const initialState = {
     blackjack: {bets: null, lucky_bet: null, result: null},
     slots: {bets: null, lucky_bet: null, result: null},
     craps: {bets: null, lucky_bet: null, result: null},
-    race: {bets: null, lucky_bet: null, result: null},
+    race: {bets: [], lucky_bet: null, result: null},
     keno: {bets: null, lucky_bet: null, result: null},
 }
 
@@ -26,7 +26,15 @@ const gamesSlice = createSlice({
             state.craps.bets = payload
         },
         changeRaceBets: (state, { payload }) => {
-            state.race.bets = payload
+            let bet = parseInt(payload.bet)		
+            let place = parseInt(payload.place)		
+            const item = state.race.bets.find((x) => x.id === payload.id)
+			if (item) {	
+				item.bet = bet
+                item.place = place
+			} else {                
+				state.race.bets.push({ ...payload, bet: bet, raceId: state.race.bets.length })
+			}
         },
         changeKenoBets: (state, { payload }) => {
             state.keno.bets = payload

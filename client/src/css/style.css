@@ -2064,6 +2064,114 @@ textarea {
 	font-weight: bold;
 }
 
+/* RACE LIST*/
+.rabbit_box_container{
+	padding: var(--padding);
+}
+.rabbit_box{
+	border: solid 1px var(--color);
+  border-radius: var(--radius);
+  background-color: var(--transparent_2);
+  padding: 15px;
+}
+.rabbit_box_pic{
+	position: relative;
+	z-index:1;
+}
+.rabbit_box_name{
+	display: inline-block;
+	padding:var(--padding_small);
+	background-color: var(--color);
+	color:var(--bg);
+	border-radius:50px;
+	width:100%;
+	margin-top:-10px;
+}
+.rabbit_box_nr{
+	position: absolute;
+	z-index: 1;
+	top:0px;
+	left:0px;	
+	padding:var(--padding_small);
+	border-radius:100px;
+	width:30px;
+	height:30px;
+	border:solid 1px white;
+	color:white;
+	text-align: center;
+}
+.rabbit_box_nr.red{
+	background-color: red;
+}
+.rabbit_box_nr.orange{
+	background-color: orange;
+	border:solid 1px black;
+	color:black;
+}
+.rabbit_box_nr.yellow{
+	background-color: yellow;
+	border:solid 1px black;
+	color:black;
+}
+.rabbit_box_nr.green{
+	background-color: green;
+}
+.rabbit_box_nr.blue{
+	background-color: blue;
+}
+.rabbit_box_nr.purple{
+	background-color: purple;
+}
+
+.rabbit_box_pic .box_pic{
+  width:150px;
+  height:150px;
+  overflow: hidden;
+  border-radius:100%;
+	border:solid 1px var(--color);
+	display:inline-block!important;
+  position: relative;
+  z-index: 1;
+}
+.rabbit_box_pic img{
+	width:160px!important;
+  -webkit-filter: drop-shadow(5px 5px 5px var(--transparent_8));
+  filter: drop-shadow(5px 5px 5px var(--transparent_8));
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+}
+.rabbit_box .dropdown .dropdown-toggle{
+  width: 100%;
+  height: 25px;
+  line-height: 12px;
+}
+.star{
+  width: 25px!important;
+  display:inline-block!important;
+  vertical-align: middle;
+  padding: var(--padding_small) 2px;
+}
+.rabbit_box_bet, .rabbit_box_place{
+  margin-top: var(--padding_small);
+}
+
+/* RACE */
+.race_container{
+	position:relative;
+	z-index: 1;
+}
+#race_canvas{
+	border:solid 1px var(--color);
+	border-radius:10px;
+	/* background-color: rgba(255, 215, 0, 0.5); */
+	background-image: radial-gradient(transparent, black);
+}
+
 /* media */
 @media (max-width: 1024px){
 	.shop_shader{
