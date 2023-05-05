@@ -15,6 +15,7 @@ import { changePage } from '../../reducers/page'
 import Donation from './donation'
 import Checkout from './checkout/checkout'
 import Orders from './order/orders'
+import Cart from './cart/cart'
 
 function Home(props) {
     const {home, page, user, cookies} = props
@@ -49,6 +50,8 @@ function Home(props) {
                     return <Contact {...props}></Contact>
                 case "Donation":
                     return <Donation {...props} list={home.donations}></Donation>
+                case "Cart":
+                    return <Cart {...props}></Cart>
                 case "Checkout":
                     return <Checkout {...props}></Checkout>
                 case "Order":

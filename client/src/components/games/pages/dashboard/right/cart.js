@@ -55,7 +55,7 @@ function Cart(props){
             <div className="cart_list">
                 {cart.map(function(item, i){
                     let product = market.filter(a => a.id === item.id)
-                    let cart_item_total_orice = item.qty * product[0].price
+                    let cart_item_total_price = item.qty * product[0].price
                     return <div key={i} className='cart_item'>
                         <div className="cart_image">
                             <div className="crop_vegetables">
@@ -75,7 +75,7 @@ function Cart(props){
                             <p><b>{translate({lang: lang, info: "price"})}</b>: {product[0].price}<img alt="carrot_img" className="currency_img" src={carrot_img}/></p>
                             <p><b>{translate({lang: lang, info: "qty"})}</b>: {item.qty}</p>
                             <Counter num={item.qty} max={max} update={(e)=>updateQtyProduct(e, item)}></Counter>
-                            <h4><b>{translate({lang: lang, info: "total_price"})}</b>: {cart_item_total_orice}<img alt="carrot_img" className="currency_img" src={carrot_img}/></h4>
+                            <h4><b>{translate({lang: lang, info: "total_price"})}</b>: {cart_item_total_price}<img alt="carrot_img" className="currency_img" src={carrot_img}/></h4>
                         </div>                        
                         <div className="cart_price">  
                             <Button 

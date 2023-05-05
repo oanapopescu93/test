@@ -28,6 +28,11 @@ function User(props){
                 dispatch(changeGame(null))
                 dispatch(changeGamePage(null))
                 break
+            case "cart":
+                dispatch(changePage('Cart'))
+                dispatch(changeGame(null))
+                dispatch(changeGamePage(null))
+                break
             case "settings":
                 let payload = {
                     open: true,
@@ -106,6 +111,9 @@ function User(props){
         <ul id="user_list">
             <li onClick={()=>{handleChange('salon')}}>
                 <span><FontAwesomeIcon icon={faHouse} />{translate({lang: lang, info: "salon"})}</span>
+            </li>
+            <li onClick={()=>{handleChange('cart')}}>
+                <span><FontAwesomeIcon icon={faHouse} />{translate({lang: lang, info: "cart"})}</span>
             </li>
             <li onClick={()=>{handleChange('settings')}}>
                 <span><FontAwesomeIcon icon={faGear} />{translate({lang: lang, info: "settings"})}</span>

@@ -382,6 +382,16 @@ textarea:focus, input:focus{
   color: var(--bg)!important;
 }
 
+.button_action_group button{
+  margin-bottom: var(--padding);
+}
+.button_action_group button:last-child{
+  margin-bottom: 0px;
+}
+.button_action_group .mybutton svg{
+  margin-right: var(--padding_small);
+}
+
 .close{
 	width: 30px;
   height: 30px;
@@ -1561,10 +1571,7 @@ textarea {
   text-align: left;
 }
 .cart_image{
-  width: 20%;
-}
-.cart_info{
-  width: 60%;
+  text-align: center;
 }
 .cart_price{
   width: 20%;
@@ -1613,9 +1620,6 @@ textarea {
 }
 .cart_item:last-child{
   border-bottom: solid 0px transparent;
-}
-.cart_list{
-  border-bottom: solid 1px var(--color);
 }
 .cart_footer{
   padding: var(--padding_small) 0px;
@@ -1799,6 +1803,29 @@ textarea {
   line-height: 12px;
 }
 .settings > div{
+  margin-bottom: var(--padding);
+}
+
+/* CART */
+.cart_box{
+  background-color: var(--transparent_2);
+  border: solid 1px var(--color);
+  border-radius: var(--radius);
+  padding: var(--padding);
+  margin-bottom: var(--padding);
+}
+.cart_list_items{
+  max-height: 320px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.cart_total_price{
+  margin-bottom: var(--padding_small);
+}
+#cart_promo h4{
+  margin-bottom: var(--padding_small);
+}
+#cart_promo input{
   margin-bottom: var(--padding);
 }
 
@@ -2324,6 +2351,11 @@ textarea {
   /* GAME */
   .content_wrap{
     padding: var(--padding);
+  }
+
+  /* CART */
+  .cart_list_items{
+    max-height: 150px;
   }
 
   /* ORDER */

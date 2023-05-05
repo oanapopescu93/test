@@ -107,8 +107,20 @@ var word_bank = {
         qty: "Quantity",
         total_price: "Total price",
         cart: "Cart",
+        cart_empty: "Cart is empty",
+        order_summary: "Order summary",
+        subtotal: "Subtotal",
+        shipping: "Shipping",
+        promo_code: "Promo code",
+        total: "Total",
+        checkout: "Checkout",
+        apply_coupon: "Apply coupon",
+        remove_all: "Remove all",
+        continue_shopping: "Continue shopping",
+        coupon_not_valid: "Your coupon is not valid",
 
         //checkout"
+        customer_info: "Customer info",
         fill_field: "Please fill out this field",
         firstname: "First name",
         lastname: "Last name",
@@ -130,6 +142,7 @@ var word_bank = {
         billing_info: "Billing info",   
         billing_info_same: "Billing address same as shipping", 
         error_charge: "We are sorry, but we can't charge you due to an error on our behalf. We will repair this error as soon as possible.",
+        submit: "Submit",
 
         // order
         order: "Order",
@@ -270,6 +283,17 @@ var word_bank = {
         qty: "Quantity",
         total_price: "Total price",
         cart: "Cart",
+        cart_empty: "Cosul este gol",
+        order_summary: "Sumar comanda",
+        subtotal: "Subtotal",
+        shipping: "Transport",
+        promo_code: "Cod promotional",
+        total: "Total",
+        checkout: "Finalizeaza comanda",
+        apply_coupon: "Aplica cupon",
+        remove_all: "Remove all",
+        continue_shopping: "Continue shopping",
+        coupon_not_valid: "Coupon-ul tau nu e valid",
         
         //checkout
         customer_info: "Date client",
@@ -294,6 +318,7 @@ var word_bank = {
         billing_info: "Date facturare",  
         billing_info_same: "Adresa de facturare aceeasi ca si expedierea", 
         error_charge: "Ne pare rau, dar nu putem onora comanda din motive tehnice. Vom repara eroarea cat de curand posibil.",
+        submit: "Finalizeaza comanda",
 
         // order
         order: "Comanda",

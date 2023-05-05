@@ -4,16 +4,20 @@ import { Button, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap'
 import { translate } from '../../../translations/translate'
 import { checkoutData, isEmpty } from '../../../utils/utils';
 import { validateInput, validateCard, validateCVV } from '../../../utils/validate'
+import { changePopup } from '../../../reducers/popup';
+import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import $ from "jquery"
 import Cart from './cart';
-import { changePopup } from '../../../reducers/popup';
+import carrot_img from '../../../img/icons/carrot_icon.png'
 
 function Form(props){
     const {lang, socket, home} = props   
     let market = home.market ? home.market : []
     let dispatch = useDispatch()
-	let cart = useSelector(state => state.cart.cart)  
+	let cart = useSelector(state => state.cart.cart) 
+    let list = getProducts(cart) 
     let total = totalPriceSum()
+    let total_promo = total
     
     const [country, setCountry] = useState("")    
     const [countryBilling, setCountryBilling] = useState("")    
@@ -54,7 +58,18 @@ function Form(props){
     const [postalZipCodeBillingError, setPostalZipCodeBillingError] = useState(false)
 
     const [gateway, setGateway] = useState("stripe") 
-    
+
+    function getProducts(list){
+        let array = []
+        for(let i in list){
+            let index = market.findIndex((x) => x.id === list[i].id)
+            if(index !== -1){
+                let elem = {...market[index], qty: list[index].qty, cardId: list[index].cartId}
+                array.push(elem)
+            }            
+        }
+        return array
+    }    
     function totalPriceSum(){
         let total = 0
         for(let i in cart){
@@ -254,9 +269,9 @@ function Form(props){
     }
     function sendPayload(payload){
         //socket.emit('payment_stripe_send', {gateway, payload, amount: 123})
-        if(total === 0){ // somthing is wrong and we can't charge client (ex: somehow the cart is empty, so, the total amount is 0)
+        if(total_promo === 0){ // somthing is wrong and we can't charge client (ex: somehow the cart is empty, so, the total amount is 0)
             if(gateway === "stripe"){
-                socket.emit('payment_stripe_send', {gateway, payload, amount: total})
+                socket.emit('payment_stripe_send', {gateway, payload, amount: total_promo})
             } else {
                 alert(translate({lang: lang, info: "no_payment_methods"}))
             }
@@ -278,6 +293,12 @@ function Form(props){
             }
         })
     }, [socket])
+
+    function handleBack(){
+        dispatch(changePage('Salon'))
+        dispatch(changeGame(null))
+        dispatch(changeGamePage(null))
+    }
 
     return <Row>
         <Col sm={8}>                
@@ -375,7 +396,7 @@ function Form(props){
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={8}>
+                    <Col lg={8}>
                         <Row>
                             <Col sm={12}>
                             <div className="checkbox_radio_container">
@@ -515,23 +536,34 @@ function Form(props){
             {cart && cart.length>0 ? <>
                 <Row>
                     <Col sm={12}>
-                        <h3>{translate({lang: props.lang, info: "cart"})}</h3>  
+                        <h3 className="cart_header">{translate({lang: props.lang, info: "cart"})}</h3>  
                     </Col>
-                </Row>
-                <Row>
+                    <Col sm={12}>                        
+                        <Cart {...props} list={list}></Cart>
+                    </Col>
                     <Col sm={12}>
-                        
-                        <Cart {...props} cart={cart}></Cart>
+                        <p><b>{translate({lang: lang, info: "price"})}</b>: {total}<img alt="carrot_img" className="currency_img" src={carrot_img}/></p>
+                    </Col>
+                    <Col sm={12}>
+                        <p><b>Promo: </b></p>
+                    </Col>
+                    <Col sm={12}>
+                        <h3><b>{translate({lang: lang, info: "total_price"})}</b>: {total_promo}<img alt="carrot_img" className="currency_img" src={carrot_img}/></h3>
                     </Col>
                 </Row>   
             </> : null}             
             <Row>
-                <Col sm={12}>
+                <Col sm={12} className="button_action_group">
                     <Button 
                         type="button"  
                         className="mybutton button_fullcolor shadow_convex"
                         onClick={()=>handleSubmit()}
                     >{translate({lang: props.lang, info: "submit"})}</Button>
+                    <Button 
+                        type="button"  
+                        className="mybutton button_fullcolor shadow_convex"
+                        onClick={()=>handleBack()}
+                    >{translate({lang: props.lang, info: "back"})}</Button>                    
                 </Col>
             </Row>
         </Col>

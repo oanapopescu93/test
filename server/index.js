@@ -23,6 +23,8 @@ const { craps } = require("./games/craps")
 const { race } = require("./games/race")
 const { keno } = require("./games/keno")
 
+var coupons = require('./var/home').COUPONS
+
 const account_type = 1
 const profile_pic = 0
 const user_money = 100
@@ -308,7 +310,7 @@ io.on('connection', function(socket) {
     }    
 	})
 
-  // DASHBOARD
+  // DASHBOARD, CART, CHECKOUT
   socket.on('dashboardChanges_send', function(data){
     if(data.uuid){
       let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
@@ -331,6 +333,20 @@ io.on('connection', function(socket) {
       let payload_user = JSON.stringify(users_array)
       fs.writeFileSync(path.resolve(__dirname, "./json/users.json"), payload_user)
     }   
+  })  
+  socket.on('promo_send', function(text) {
+    let coupon = {}
+    for(let i in coupons){
+      if(coupons[i].name === text){
+        coupon = coupons[i]
+        break
+      }
+    }
+    try{				
+      io.to(socket.id).emit('promo_read', coupon)
+    }catch(e){
+      console.log('[error]','homepage_read--> ', e)
+    }
   })
 
   // CHATROOM
