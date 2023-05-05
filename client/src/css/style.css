@@ -1614,6 +1614,46 @@ textarea {
 	margin-top: -80px;
   margin-left: -40px;
 }
+
+.crop_vegetables.big{
+	width: 80px;
+	height: 80px;
+	overflow: hidden;
+	display:inline-block!important;
+}
+.crop_vegetables.big .vegetable {
+	width: 320px!important;
+	height: 320px;	
+}
+.crop_vegetables.big .garlic {
+	margin-top: -160px;
+  margin-left: -160px;
+}
+.crop_vegetables.big .onion {
+	margin-top: 0px;
+  margin-left: -80px;
+}
+.crop_vegetables.big .radish {
+	margin-top: -80px;
+    margin-left: -160px;
+}
+.crop_vegetables.big .carrot {
+	margin-top: 0px;
+	margin-left: 0px;
+}
+.crop_vegetables.big .turnip {
+	margin-top: -240px;
+	margin-left: -240px;
+}
+.crop_vegetables.big .potato {
+	margin-top: 0px;
+  margin-left: -160px;
+}
+.crop_vegetables.big .cabbage {
+	margin-top: -160px;
+  margin-left: -80px;
+}
+
 .cart_header, .cart_item{
   border-bottom: solid 1px var(--color);
   padding: var(--padding_small) 0px;
@@ -1819,13 +1859,7 @@ textarea {
   overflow-x: hidden;
   overflow-y: auto;
 }
-.cart_total_price{
-  margin-bottom: var(--padding_small);
-}
-#cart_promo h4{
-  margin-bottom: var(--padding_small);
-}
-#cart_promo input{
+.cart_total_price, #cart_promo h4, #cart_promo input{
   margin-bottom: var(--padding);
 }
 

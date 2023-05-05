@@ -10,6 +10,9 @@ function Panel(props){
     console.log('promo--> ', promo)
     let total = totalPriceSum()
     let total_promo = total
+    if(promo && Object.keys(promo).length>0){
+        total_promo = total_promo - (total_promo * promo.discount)/100
+    }
 
     function totalPriceSum(){
         let total = 0
@@ -39,9 +42,11 @@ function Panel(props){
 
     return <div id="cart_panel" className="cart_box shadow_concav">
         <div className="cart_total_price">
-            <p><b>{translate({lang: lang, info: "price"})}</b>: {total}<img alt="carrot_img" className="currency_img" src={carrot_img}/></p>            
-            <p><b>Promo: </b>{promo && Object.keys(promo).length>0 ? <span>{promo.discount}</span> : <span>-</span>}</p>
-            <h3><b>{translate({lang: lang, info: "total_price"})}</b>: {total_promo}<img alt="carrot_img" className="currency_img" src={carrot_img}/></h3>
+            {promo && Object.keys(promo).length>0 ? <>
+                <p><b>{translate({lang: lang, info: "price"})}</b>: {total}<img alt="carrot_img" className="currency_img" src={carrot_img}/></p>            
+                <p><b>{translate({lang: lang, info: "promo_discount"})}: </b><span>-{promo.discount}%</span></p>
+                <h3><b>{translate({lang: lang, info: "total_price"})}</b>: {total_promo}<img alt="carrot_img" className="currency_img" src={carrot_img}/></h3>
+            </> : <h3><b>{translate({lang: lang, info: "total_price"})}</b>: {total}<img alt="carrot_img" className="currency_img" src={carrot_img}/></h3>}
         </div>
         <div className="button_action_group">
             <Button 
