@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, Button } from 'react-bootstrap'
-import { cartUpdate, cartRemove, cartRemoveAll } from '../../../reducers/cart'
+import { cartUpdate, cartRemove, cartRemoveAll, getPromo } from '../../../reducers/cart'
 import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import List from './list'
 import Promo from './promo'
@@ -13,13 +13,6 @@ function Cart(props){
     let cart = useSelector(state => state.cart.cart) 
     const [promo, setPromo] = useState(null) 
     let dispatch = useDispatch()
-
-    // let pseudoList = [ //it is just for testing
-    //     {id:"garlic",qty:1,cartId:0},
-    //     {id:"onion",qty:2,cartId:1},
-    //     {id:"radish",qty:1,cartId:2}
-    // ]
-    // let list = getProducts(pseudoList)
     let list = getProducts(cart)
 
     function getProducts(cart){
@@ -36,6 +29,7 @@ function Cart(props){
 
     function updatePromo(x){
       setPromo(x)
+      dispatch(getPromo(x))
     }
 
     function updateQtyProduct(item){

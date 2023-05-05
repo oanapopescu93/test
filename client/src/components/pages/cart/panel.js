@@ -7,7 +7,6 @@ import carrot_img from '../../../img/icons/carrot_icon.png'
 
 function Panel(props){
     const {list, lang, promo} = props
-    console.log('promo--> ', promo)
     let total = totalPriceSum()
     let total_promo = total
     if(promo && Object.keys(promo).length>0){

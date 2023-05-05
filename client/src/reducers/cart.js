@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     cart: [],
+    promo: null
 }
 
 const cartWishlistSlice = createSlice({
@@ -30,6 +31,9 @@ const cartWishlistSlice = createSlice({
         cartRemoveAll: (state) => {
             state.cart = []
         },
+        getPromo: (state, { payload }) => {
+            state.promo = payload
+        }
     }
 })
 
@@ -38,6 +42,7 @@ export const {
     cartUpdate,
     cartRemove,
     cartRemoveAll,
+    getPromo,
 } = cartWishlistSlice.actions
 
 export default cartWishlistSlice.reducer
