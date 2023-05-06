@@ -16,6 +16,9 @@ import Donation from './donation'
 import Checkout from './checkout/checkout'
 import Orders from './order/orders'
 import Cart from './cart/cart'
+import Market from '../games/pages/market/market'
+import Dashboard from '../games/pages/dashboard/dashboard'
+import Panel from '../games/sidebar/panel'
 
 function Home(props) {
     const {home, page, user, cookies} = props
@@ -24,6 +27,8 @@ function Home(props) {
     function handleCookiesClick(){
         dispatch(changeCookies())
     }
+
+    console.log(page)
 
     return <div id="page-container">        
         {(() => {
@@ -57,6 +62,24 @@ function Home(props) {
                 case "Order":
                     return <Orders {...props}></Orders>
                 case "Salon":
+                    switch (page.game_page) {
+                        case "dashboard":
+                            return <>
+                                <div className="content_wrap">
+                                    <Dashboard {...props}></Dashboard>
+                                </div>
+                                <Panel {...props}></Panel>
+                            </>
+                        case "market":
+                            return <>
+                                <div className="content_wrap">
+                                    <Market {...props}></Market>
+                                </div>
+                                <Panel {...props}></Panel>
+                            </>
+                        default:
+                            return <Salon {...props} user={user} home={home} page={page}></Salon>
+                    }                    
                 default:
                     return <Salon {...props} user={user} home={home} page={page}></Salon>
             }
