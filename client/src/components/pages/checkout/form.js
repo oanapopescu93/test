@@ -120,7 +120,7 @@ function Form(props){
 
     function handleSubmit(){
         refreshErrors()  
-        let form = $('#checkout_form').serializeArray()
+        let form = $('#payment_form').serializeArray()
         let payload = {
             firstname: getValueFromForm(form, 'firstname'),
             lastname: getValueFromForm(form, 'lastname'),
@@ -263,7 +263,7 @@ function Form(props){
 
     return <Row>
         <Col sm={8}>                
-            <form id="checkout_form">
+            <form id="payment_form">
                 <Row>
                     <Col sm={12}>
                         <h3>{translate({lang: props.lang, info: "customer_info"})}</h3>  

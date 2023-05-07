@@ -72,37 +72,55 @@ function Game(props){
                             if(room){
                                 return <Roulette {...props} results={(e)=>results(e)}></Roulette>
                             } else {
-                                return <img src={roulette_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                return <>
+                                    <img src={roulette_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                    <p>Loading...</p>
+                                </>
                             }
                         case "blackjack":
                             if(room){
                                 return <Blackjack {...props} results={(e)=>results(e)}></Blackjack>
                             } else {
-                                return <img src={blackjack_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                return <>
+                                    <img src={blackjack_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                    <p>Loading...</p>
+                                </>
                             }
                         case "slots":
                             if(room){
                                 return <Slots {...props} results={(e)=>results(e)}></Slots>
                             } else {
-                                return <img src={slots_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                return <>
+                                    <img src={slots_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                    <p>Loading...</p>
+                                </>
                             }
                         case "craps":
                             if(room){
                                 return <Craps {...props} results={(e)=>results(e)}></Craps>
                             } else {
-                                return <img src={craps_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                return <>
+                                    <img src={craps_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                    <p>Loading...</p>
+                                </>
                             }                        
                         case "race":
                             if(room){
                                 return <Race {...props} results={(e)=>results(e)}></Race>
                             } else {
-                                return <img src={race_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                return <>
+                                    <img src={race_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                    <p>Loading...</p>
+                                </>
                             }                        
                         case "keno":
                             if(room){
                                 return <Keno {...props} results={(e)=>results(e)}></Keno>
                             } else {
-                                return <img src={keno_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                return <>
+                                    <img src={keno_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                    <p>Loading...</p>
+                                </>                                
                             }                        
                         default:
                             return <p>{translate({lang: lang, info: "error"})}</p>

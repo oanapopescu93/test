@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faUser, faUpload} from '@fortawesome/free-solid-svg-icons'
 import { useDispatch } from 'react-redux'
 import { changePopup } from '../../../../../reducers/popup'
+import { changePage, changeGame, changeGamePage } from '../../../../../reducers/page'
 import { Button } from 'react-bootstrap'
 
 function Picture(props){
@@ -52,9 +53,10 @@ function DashboardLeft(props){
     })
 
     function handleChoice(choice){
-        if(choice === "buy_carrots"){
-            //this will be changed
-            alert(translate({lang: lang, info: "no_payment_methods"}))
+        if(choice === "buy_carrots"){            
+            dispatch(changePage('BuyCarrots'))
+            dispatch(changeGame(null))
+            dispatch(changeGamePage(null))
         } else {
             let title = ""
             let data = null

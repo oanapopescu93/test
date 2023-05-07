@@ -2,11 +2,12 @@ import React, {useState} from 'react'
 import { translate } from '../../translations/translate'
 import Counter from '../partials/counter'
 import Stars from '../rating/stars'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { changeRaceBets } from '../../reducers/games'
 import { Button, Row, Col } from 'react-bootstrap'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
+import { decryptData } from '../../utils/crypto'
 
 function Cell(props) {
     const {lang, index, data, template} = props
@@ -14,6 +15,8 @@ function Cell(props) {
     let place = translate({lang: lang, info: 'place'})
     const [titleDropdown, setTitleDropdown] = useState(place)
     let dispatch = useDispatch()
+    let user = useSelector(state => state.auth.user)
+    let max_bet = decryptData(user.money)
 
     function updateQtyMarket(x){
         setQty(x)
@@ -111,7 +114,7 @@ function Cell(props) {
                                     {data.participating ? <>
                                         <div className="rabbit_box_bet">
                                             <p>{translate({lang: lang, info: "bet"})}:</p>
-                                            <Counter num={0} update={(e)=>updateRaceBet(e, data)}></Counter>
+                                            <Counter num={0} max={max_bet} update={(e)=>updateRaceBet(e, data)}></Counter>
                                         </div>
                                         <div className="rabbit_box_place">
                                             <DropdownButton title={titleDropdown} id="language_button" onSelect={(e)=>handleDropdown(e, data)}>

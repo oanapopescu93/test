@@ -19,6 +19,7 @@ import Cart from './cart/cart'
 import Market from '../games/pages/market/market'
 import Dashboard from '../games/pages/dashboard/dashboard'
 import Panel from '../games/sidebar/panel'
+import BuyCarrots from './buyCarrots'
 
 function Home(props) {
     const {home, page, user, cookies} = props
@@ -27,8 +28,6 @@ function Home(props) {
     function handleCookiesClick(){
         dispatch(changeCookies())
     }
-
-    console.log(page)
 
     return <div id="page-container">        
         {(() => {
@@ -61,6 +60,8 @@ function Home(props) {
                     return <Checkout {...props}></Checkout>
                 case "Order":
                     return <Orders {...props}></Orders>
+                case "BuyCarrots":
+                    return <BuyCarrots {...props}></BuyCarrots>
                 case "Salon":
                     switch (page.game_page) {
                         case "dashboard":

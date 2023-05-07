@@ -632,6 +632,10 @@ textarea {
   justify-content: center;
   align-items: center;
 }
+.modal-content input{
+  background-color: var(--bg);
+  color: var(--color);
+}
 
 /* COOKIES */
 .cookies_msg_container {
@@ -1115,7 +1119,11 @@ textarea {
 .game_start button svg, #game_bets_clear svg{
   font-size: 24px;
 }
+.game_loading_icon{
+  width: 200px;
+}
 
+/* ROULETTE */
 #roulette_bets_canvas{
   cursor: pointer;
 }
@@ -1874,18 +1882,18 @@ textarea {
 }
 
 /* CHECKOUT */
-#checkout_form h3{
+#payment_form h3{
   padding: var(--padding_small);
   margin-bottom: var(--padding_small);
   border-bottom: solid 1px var(--color);
 }
-#checkout_form .dropdown .dropdown-toggle{
+#payment_form .dropdown .dropdown-toggle{
   height: 25px;
   width: 100%;
   font-size: 14px;
   line-height: 12px;
 }
-#checkout_form input, #checkout_form .dropdown{
+#payment_form input, #payment_form .dropdown{
   margin-bottom: var(--padding);
 }
 
@@ -2293,7 +2301,7 @@ textarea {
   .mybutton.round{
     height: 50px;
   }
-  input, textarea, #checkout_form .dropdown .dropdown-toggle{
+  input, textarea, #payment_form .dropdown .dropdown-toggle{
     font-size: 12px;
     line-height: 12px;
     height: 20px;
@@ -2398,6 +2406,9 @@ textarea {
   /* GAME */
   .content_wrap{
     padding: var(--padding);
+  }
+  .game_loading_icon{
+    width: 150px;
   }
 
   /* CART */

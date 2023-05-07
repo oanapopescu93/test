@@ -17,7 +17,7 @@ function ChangeUsername(props) {
             <input className="input_light" type="text" value={choice} onChange={(e)=>{handleChange(e)}}/>
         </div>
         <div className="changeUsername_buttons">
-            <Button type="button" id="isMinor_btn_ok" className="mybutton button_fullcolor_dark" onClick={()=>props.changeUsername({value: choice, uuid: user.uuid, type: "user"})}>
+            <Button type="button" id="changeUsername_btn_ok" className="mybutton button_fullcolor_dark" onClick={()=>props.changeUsername({value: choice, uuid: user.uuid, type: "user"})}>
                 {translate({lang: lang, info: "choose"})}
             </Button>
         </div>

@@ -17,7 +17,7 @@ function ChangePassword(props) {
             <input className="input_light" type="text" value={choice} onChange={(e)=>{handleChange(e)}}/>
         </div>
         <div className="changePassword_buttons">
-            <Button type="button" id="isMinor_btn_ok" className="mybutton button_fullcolor_dark" onClick={()=>props.changePassword({value: choice, uuid: user.uuid, type: "pass"})}>
+            <Button type="button" id="changePassword_btn_ok" className="mybutton button_fullcolor_dark" onClick={()=>props.changePassword({value: choice, uuid: user.uuid, type: "pass"})}>
                 {translate({lang: lang, info: "choose"})}
             </Button>
         </div>

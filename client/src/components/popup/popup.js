@@ -67,7 +67,7 @@ function Popup(props){
                     <span>X</span>
                 </div> : null}
                 {(() => {					
-                    switch (template) {
+                    switch (template) {                        
                         case "forgotPassword":
                             return <ForgotPassword 
                                 lang={lang} 
