@@ -36,8 +36,13 @@ function RaceTables(props){
                 items:4
             },
         },
-    }
-    let race_array = home.race_rabbits   
+    }    
+    let race_array = []
+	if(home.race_rabbits && home.race_rabbits.length>0){
+		race_array = home.race_rabbits.filter(function(x){
+			return x.participating
+		})
+	}
     
     function getIndex(e){
         setIndex(e)

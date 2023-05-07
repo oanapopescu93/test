@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import { useDispatch } from 'react-redux'
-import { draw_rect } from '../../../../utils/games'
+import { draw_dot, draw_rect } from '../../../../utils/games'
 import $ from 'jquery'
 import rabbit_sit from '../../../../img/rabbit_move/rabbit000.png'
 import rabbit_move from '../../../../img/rabbit_move/rabbit_move_colored.png'
@@ -153,18 +153,14 @@ function Rabbit(config){
 
 	self.add_text = function(ctx, text, x, y, font, color, text_align, stroke, line){
 		ctx.font = font
+		ctx.textAlign = text_align
 		if(stroke && line){
 			ctx.strokeStyle = stroke
     		ctx.lineWidth = line
 			ctx.strokeText(text, x, y)
-			ctx.fillStyle = color
-			ctx.textAlign = text_align
-			ctx.fillText(text, x, y)
-		} else {
-			ctx.fillStyle = color
-			ctx.textAlign = text_align
-			ctx.fillText(text, x, y)
 		}
+		ctx.fillStyle = color			
+		ctx.fillText(text, x, y)
 	}
 
 	self.stop = function(ctx, nr){
@@ -219,18 +215,14 @@ function Obstacle(config){
 	}
 	self.add_text = function(ctx, text, x, y, font, color, text_align, stroke, line){
 		ctx.font = font
+		ctx.textAlign = text_align
 		if(stroke && line){
 			ctx.strokeStyle = stroke
     		ctx.lineWidth = line
-			ctx.strokeText(text, x, y)
-			ctx.fillStyle = color
-			ctx.textAlign = text_align
-			ctx.fillText(text, x, y)
-		} else {
-			ctx.fillStyle = color
-			ctx.textAlign = text_align
-			ctx.fillText(text, x, y)
+			ctx.strokeText(text, x, y)			
 		}
+		ctx.fillStyle = color
+		ctx.fillText(text, x, y)
 	}
 }
 
@@ -396,22 +388,21 @@ function FinishLine(config){
 	}
 }
 
-function race_game(props){
+function race_game(props){	
 	let self = this
-	let socket = props.socket
-	let lang = props.lang
-	let dispatch = props.dispatch
-	let dispatch_nr = 0
-	let rabbit_array = props.rabbitArray	
+	let rabbit_array = []
+	if(props.home.race_rabbits && props.home.race_rabbits.length>0){
+		rabbit_array = props.home.race_rabbits.filter(function(x){
+			return x.participating
+		})
+	}
 	let lane_list = []
 	let rabbit_list = []
     
     let canvas
     let ctx
 	let canvas_width = 900
-	let canvas_height = 800
-	
-	let font_title = 'bold 30px sans-serif'
+	let canvas_height = 800		
 	let font_counter = 'bold 40px sans-serif'
 
 	let landscape = []
@@ -432,6 +423,7 @@ function race_game(props){
 
 	let finish_line
 	let finish_line_x = 0
+	let race_interval = 800
 		
 	this.ready = function(reason){
 		self.createCanvas(canvas_width, canvas_height)	
@@ -461,13 +453,11 @@ function race_game(props){
 			draw_road_height = 101
 			rabbit_size = [5, 100, 35, 35, -5]
 			obstacle_size = [10, 10]
-			font_title = 'bold 20px sans-serif'
 			font_counter = 'bold 30px sans-serif'
 		} else {
 			//big
 			canvas.width = 900
 			canvas.height = 800
-			font_title = 'bold 30px sans-serif'
 			font_counter = 'bold 40px sans-serif'
 			if (window.innerWidth >= 1200){
 				canvas.width = 1000	
@@ -495,10 +485,225 @@ function race_game(props){
 	this.start = function(reason){
 		let promises = []
 		if(reason !== "resize"){
-				
+			promises.push(self.preaload_images(rabbit_img_sit))
+			promises.push(self.preaload_images(rabbit_img_move))
+			promises.push(self.preaload_images(rabbit_img_stop))
+			promises.push(self.preaload_images(obstacle_img))
+			Promise.all(promises).then(function(result){
+				lane_list = self.create_lane(result)
+				rabbit_list = self.get_rabbits(lane_list)
+				self.background()
+				self.draw_rabbits('sit')
+				setTimeout(function(){
+				 	self.counter(3)
+				}, 500)
+			})			
 		} else {
-			
+			self.background()
+			self.draw_rabbits('sit')
+			setTimeout(function(){
+			 	self.counter(3)
+			}, 500)
 		}
+	}
+
+	this.preaload_images = function(item){
+		return new Promise(function(resolve, reject){
+			let image = new Image()
+			image.src = item.src
+			image.addEventListener("load", function() {
+				resolve(image)
+			}, false)
+		})
+	}
+	this.create_lane = function(img){
+		let lanes = []
+		for(let i in rabbit_array){
+			let rabbit_config = {
+				id: rabbit_array[i].id, 
+				name: rabbit_array[i].name, 
+				color: rabbit_array[i].color, 
+				img_sit: img[0], 
+				img_move: img[1],
+				img_stop: img[2], 
+				speed: 0,
+				delay: rabbit_array[i].delay,
+				max_speed: rabbit_array[i].max_speed,
+				min_speed: rabbit_array[i].min_speed,
+				x: rabbit_size[0],
+				y: rabbit_size[1]+i*(rabbit_size[3]+rabbit_size[4]),
+				w: rabbit_size[2],
+				h: rabbit_size[3],
+			}
+			let lane = new Lane({
+				id: i,
+				x: 0,
+				y: rabbit_size[1]+i*(rabbit_size[3]+rabbit_size[4]),
+				w: canvas.width,
+				h: rabbit_size[3],
+				rabbit_config: rabbit_config,
+				obstacle_img: img[3],
+				obstacle_size: obstacle_size,
+			})
+			lane.create_rabbit()
+			lanes.push(lane)			
+		}
+		return lanes
+	}
+	self.get_rabbits = function(lane_list){
+		let rabbits = []
+		for(let i in lane_list){
+			rabbits.push(lane_list[i].rabbit)
+		}
+		return rabbits
+	}
+
+	this.background = function(){
+		self.create_background()	
+		self.draw_background()	
+		self.create_finish_line()
+	}
+	this.create_background = function(){
+		let i = land_color.length
+		landscape = []
+		while(i--){
+			let config = {
+				layer: i,
+				y: lanscape_config.y,
+				width: {
+					min: (i + lanscape_config.width[0]) * lanscape_config.width[1],
+					max: (i + lanscape_config.width[2]) * lanscape_config.width[3]
+				},
+				height: {
+					min: lanscape_config.height[0] - (i * lanscape_config.height[1]),
+					max: lanscape_config.height[2] - (i * lanscape_config.height[3])
+				},
+				speed: (i + 1) * 0.5,
+				color: land_color[i][0],
+				color_stroke: land_color[i][1],
+				stroke: land_color[i][2]
+			}
+			let my_land = new Landscape(config)
+			my_land.populate(canvas)
+			landscape.push(my_land)
+		}	
+	}
+	this.draw_background = function(){
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		self.draw_sun(canvas, ctx)		
+		let i = landscape.length
+		while (i--) {
+			landscape[i].draw(canvas, ctx)
+		}
+		self.draw_road(canvas, ctx, -100, draw_road_height, 2*canvas.width, draw_road_height, 1, "rgba(255, 215, 0, 0.1)", "rgba(255, 215, 0, 0.5)")		
+	}
+	this.create_finish_line = function(){
+		finish_line = new FinishLine({
+			fillStyle: "rgba(255, 215, 0, 0.1)",
+			lineWidth: 1,
+			strokeStyle: "rgba(255, 215, 0, 0.1)",
+			x: finish_line_x,
+			y: draw_road_height,
+			cube: 10,
+		})
+		finish_line.draw(canvas, ctx)
+	}
+	this.draw_sun = function(canvas, ctx){
+		draw_dot(ctx, canvas.width-lanscape_config.sun[0], lanscape_config.sun[1], lanscape_config.sun[2], 0, 2 * Math.PI, false, 'rgba(255, 255, 0, 0.1)', 1, 'rgba(255, 255, 0, 0.5)')
+	}
+	this.draw_road = function(canvas, ctx, x, y, w, h, line, bg, color){
+		ctx.clearRect(0, h, canvas.width, canvas.height)
+		ctx.beginPath()
+		ctx.fillStyle = bg
+		ctx.fillRect(x, y, w, canvas.height)
+		ctx.strokeStyle = color
+		ctx.lineWidth = line
+		ctx.strokeRect(x, y, w, canvas.height)
+	}
+
+	this.draw_rabbits = function(action, nr, finish_line_x){
+		if(action==="run"){
+			for(let i in lane_list){
+				lane_list[i].action(ctx, rabbit_list, nr, finish_line_x)
+			}
+			// rabbit_list = self.order_rabbits(rabbit_list)
+			// self.post_order_rabbits(rabbit_list)
+		} else {
+			for(let i in lane_list){
+				lane_list[i].rabbit.draw(ctx)
+			}
+		}
+	}
+
+	this.counter = function(totalTime){
+		let self_counter = this
+		self_counter.totaTime = totalTime
+		self_counter.timeRemaining = self_counter.totaTime
+		let my_counter
+		
+		timerGame()
+
+		function timerGame(){	
+			my_counter = setInterval(function(){
+				self_counter.timeRemaining = self_counter.timeRemaining - 1
+				if(self_counter.timeRemaining < 0){
+					self_counter.timeRemaining = 0
+				}
+				self.draw_background()
+				self.draw_rabbits('sit')
+				self.add_text(self_counter.timeRemaining, canvas.width/2,  canvas.height/2-10, font_counter, "rgba(255, 215, 0, 0.5)", "center", "gold", "1")
+			  	if(self_counter.timeRemaining <= 0){
+					clearInterval(my_counter)
+					self.start_race()
+			  	}
+			}, 1000)
+		}
+	}
+
+	this.add_text = function(text, x, y, font, color, text_align, stroke, line){
+		ctx.font = font
+		ctx.textAlign = text_align
+		if(stroke && line){
+			ctx.strokeStyle = stroke
+			ctx.lineWidth = line
+			ctx.strokeText(text, x, y)
+		}
+		ctx.fillStyle = color
+		ctx.fillText(text, x, y)	
+	}
+	
+	this.start_race = function(){
+		let nr = 0
+		let time = race_interval
+		let move_landscape = false
+
+		window.requestAnimFrame = (function(){
+			return  window.requestAnimationFrame       ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame    ||
+			function( callback ){
+			  window.setTimeout(callback, 1000 / 60)
+			}
+	  	})()
+	  
+	  	function race() {			
+			let stop = false
+			let avg_dist = lane_list[0].rabbit.avg_dist
+
+			if (nr > time) {
+				stop = true		
+			} else{
+				nr++
+			} 	
+			
+			if(!stop){
+				window.requestAnimFrame(race)
+			} else {
+				window.cancelAnimationFrame(race)
+			}
+	  	}
+
+		race()
 	}
 
     this.leave = function(){

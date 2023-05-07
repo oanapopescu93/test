@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap'
 import {useDispatch} from 'react-redux'
 import { changePage, changeGame, changeGamePage } from '../../reducers/page'
 import { translate } from '../../translations/translate'
-// import ukraine from '../../img/icons/ukraine.svg'
+import ukraine from '../../img/icons/ukraine.svg'
 
 function Donation(props){
     const {lang, list} = props
@@ -22,15 +22,15 @@ function Donation(props){
             {(() => {
                 if(list && list.length>0){
                     return <div className="donation_container">
-                        {/* <div className="donation_ukraine">
+                        <div className="donation_ukraine">
                             <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/fundraisers/explore/search/charities/?query=ukraine">
                                 Donation for Ukraine <img id="ukraine_icon" alt="ukraine_icon" src={ukraine}></img>
                             </a>
-                        </div> */}
+                        </div>
                         <div className="deco">
                             <div className="donation_box">
                                 {donation_type.map(function(item01, i){
-                                    let style = ""
+                                    let style = "donation_body_paypal"
                                     if(item01 === "crypto"){
                                         style = "donation_body_crypto"
                                     }
@@ -43,7 +43,7 @@ function Donation(props){
                                                     </li>                                               
                                                 } else if(item01 === "paypal"){
                                                     return <li key={j} className="donation_link donation_link_paypall">
-                                                        <a id="paypal_button" className="mybutton button_transparent shadow_convex" rel="noopener noreferrer" target="_blank" href={item02.link}>{item02.title}</a>
+                                                        <a className="mybutton button_transparent shadow_convex" rel="noopener noreferrer" target="_blank" href={item02.link}>{item02.title}</a>
                                                     </li>
                                                 } else {
                                                     return null

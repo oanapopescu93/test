@@ -10,7 +10,7 @@ function Panel(props){
     let total = totalPriceSum()
     let total_promo = total
     if(promo && Object.keys(promo).length>0){
-        total_promo = total_promo - (total_promo * promo.discount)/100
+        total_promo = (total_promo - (total_promo * promo.discount)/100).toFixed(2)
     }
 
     function totalPriceSum(){
@@ -18,7 +18,7 @@ function Panel(props){
         for(let i in list){
             total = total + list[i].price * list[i].qty
         }
-        return total
+        return total.toFixed(2)
     }
 
     function removeAll(){
@@ -38,6 +38,12 @@ function Panel(props){
             props.handleBack()
         }
     }
+
+    function handleContinueShopping(){
+        if(typeof props.handleContinueShopping === "function"){
+            props.handleContinueShopping()
+        }
+    }    
 
     return <div id="cart_panel" className="cart_box shadow_concav">
         <div className="cart_total_price">
@@ -61,7 +67,7 @@ function Panel(props){
             <Button 
                 type="button"  
                 className="mybutton button_transparent shadow_convex remove"
-                onClick={()=>handleBack()}
+                onClick={()=>handleContinueShopping()}
             ><FontAwesomeIcon icon={faCartShopping}/><span>{translate({lang: lang, info: "continue_shopping"})}</span></Button>
         </div>
     </div>

@@ -28,7 +28,7 @@ function List(props){
     return <div id="cart_list" className="cart_box shadow_concav">
         <div className="cart_list_items">
             {list.map(function(item, i){
-                let cart_item_total_price = item.qty * item.price
+                let cart_item_total_price = (item.qty * item.price).toFixed(2)
                 return <div key={i} className="cart_item">
                     <Row>
                         <Col xs={8}>

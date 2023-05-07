@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap'
 import { translate } from '../../../translations/translate'
-import { checkoutData, isEmpty, postData } from '../../../utils/utils';
+import { checkoutData, isEmpty } from '../../../utils/utils';
 import { validateInput, validateCard, validateCVV } from '../../../utils/validate'
 import { changePopup } from '../../../reducers/popup';
 import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
@@ -20,18 +20,22 @@ function Form(props){
     let total = totalPriceSum()
     let total_promo = total
     if(promo && Object.keys(promo).length>0){
-        total_promo = (total_promo - (total_promo * promo.discount)/100).toFixed(2)
+        total_promo = total_promo - (total_promo * promo.discount)/100
     }
-    // total_promo = 123 //for testing
     
     const [country, setCountry] = useState("")    
+    const [countryBilling, setCountryBilling] = useState("")    
     const [month, setMonth] = useState(-1)    
     const [year, setYear] = useState("") 
     const [city, setCity] = useState("")    
-    const [cityList, setCityList] = useState([]) 
-     
-    const [radioOne, setRadioOne] = useState(true) 
+    const [cityBilling, setCityBilling] = useState("")   
+    const [cityList, setCityList] = useState([])    
+    const [cityListBilling, setCityListBilling] = useState([])   
+
+    const [checkedBillingAddress, setCheckedBillingAddress] = useState(true) 
+    const [radioOne, setRadioOne] = useState(false) 
     const [radioTwo, setRadioTwo] = useState(false)
+    const [radioThree, setRadioThree] = useState(true)
 
     const countries_json = checkoutData().countries
     const countries = checkoutData().countries_list
@@ -50,7 +54,12 @@ function Form(props){
     const [cardNumberError, setCardNumberError] = useState(false)
     const [cvvError, setCvvError] = useState(false)
     const [monthError, setMonthError] = useState(false)   
-    const [yearError, setYearError] = useState(false)  
+    const [yearError, setYearError] = useState(false)     
+    
+    const [addressBillingError, setAddressBillingError] = useState(false)
+    const [countryBillingError, setCountryBillingError] = useState(false)   
+    const [cityBillingError, setCityBillingError] = useState(false)   
+    const [postalZipCodeBillingError, setPostalZipCodeBillingError] = useState(false)
 
     const [gateway, setGateway] = useState("stripe") 
 
@@ -71,15 +80,24 @@ function Form(props){
             let product = market.filter(a => a.id === cart[i].id)
             total = total + product[0].price * cart[i].qty
         }
-        return total.toFixed(2)
+        return total
     }
 
-    function changeCountry(x){
-        setCountry(x)
-        setCityList(countries_json[x])
+    function changeCountry(x, billing=false){
+        if(billing){
+            setCountryBilling(x)
+            setCityListBilling(countries_json[x])
+        } else {
+            setCountry(x)
+            setCityList(countries_json[x])
+        }
     }
-    function changeCity(x){
-        setCity(x)
+    function changeCity(x, billing=false){
+        if(billing){
+            setCityBilling(x)
+        } else {
+            setCity(x)
+        }
     }
     function changeMonth(x){
         setMonth(x)
@@ -88,16 +106,27 @@ function Form(props){
         setYear(x)
     }
     function handleChangeCheck(x){
-        switch(x){            
+        switch(x){
+            case "billing_info_same":				
+                setCheckedBillingAddress(!checkedBillingAddress)
+                break
+                case "radio1":	
+            case "radio1":	
+                setRadioOne(true)			
+                setRadioTwo(false)
+                setRadioThree(false)
+                setGateway('paypal')
+                break
             case "radio2":	
                 setRadioOne(false)			
                 setRadioTwo(true)
-                setGateway('paypal')
+                setRadioThree(false)
+                setGateway('card')
                 break
-            case "radio1":	
-            default:
-                setRadioOne(true)			
+            case "radio3":	
+                setRadioOne(false)			
                 setRadioTwo(false)
+                setRadioThree(true)
                 setGateway('stripe')
                 break
         }  
@@ -115,7 +144,11 @@ function Form(props){
         setCardNumberError(false)
         setCvvError(false)
         setMonthError(false)
-        setYearError(false)
+        setYearError(false)        
+        setAddressBillingError(false)
+        setCountryBillingError(false)
+        setCityBillingError(false)
+        setPostalZipCodeBillingError(false)
     } 
 
     function handleSubmit(){
@@ -128,13 +161,23 @@ function Form(props){
             email: getValueFromForm(form, 'email'),
             address: getValueFromForm(form, 'address'),
             postalZipCode: getValueFromForm(form, 'postal_zip_code'),
+
             country: country,
             city: city,            
+            
             cardNumber: getValueFromForm(form, 'card_number'),
             cvv: getValueFromForm(form, 'cvv'),
             expiry_month: month,
             expiry_year: year,
-        }       
+            
+            billing_info_same: getValueFromForm(form, 'billing_info_same'),
+            address_billing: getValueFromForm(form, 'address_billing'),
+            postal_zip_code_billing: getValueFromForm(form, 'postal_zip_code_billing'),
+
+            country_billing: countryBilling,
+            city_billing: cityBilling,  
+        }
+       
         validate(payload)
     }
     function getValueFromForm(form, name){
@@ -201,40 +244,40 @@ function Form(props){
                 setYearError(true)
                 problem = true
             }
-        }        
+        }
+        
+        if(!data.billing_info_same){                
+            if(isEmpty(data.address_billing)){
+                setAddressBillingError(true)
+                problem = true
+            }
+            if(isEmpty(countryBilling)){
+                setCountryBillingError (true)
+                problem = true
+            }
+            if(isEmpty(cityBilling)){
+                setCityBillingError(true)
+                problem = true
+            } 
+            if(isEmpty(data.postal_zip_code_billing)){
+                setPostalZipCodeBillingError(true)
+                problem = true
+            }   
+        }
 
-        sendPayload(data)//for fast tests (the errors will appear but the pay will be sent)
-        // if(!problem){
-        //     let payload = data
-        //     sendPayload(payload)
-        // }
+        //sendPayload(data)
+        if(!problem){
+            let payload = data
+            sendPayload(payload)
+        }
     }
-    function sendPayload(payload){   
-        if(total_promo > 0){ // somthing is wrong and we can't charge client (ex: somehow the cart is empty, so, the total amount is 0)
+    function sendPayload(payload){
+        //socket.emit('payment_stripe_send', {gateway, payload, amount: 123})
+        if(total_promo === 0){ // somthing is wrong and we can't charge client (ex: somehow the cart is empty, so, the total amount is 0)
             if(gateway === "stripe"){
-                socket.emit('payment_stripe_send', {gateway, payload, amount: total_promo, list})
-            } if(gateway === "paypal"){
-                postData("/api/paypal", payload).then((data) => {
-                    if(data && data.forwardLink){
-                        window.location.href = data.forwardLink
-                    } else {
-                        let payload = {
-                            open: true,
-                            template: "error",
-                            title: translate({lang: props.lang, info: "error"}),
-                            data: translate({lang: props.lang, info: "error_charge"})
-                        }
-                        dispatch(changePopup(payload))
-                    }
-                })
+                socket.emit('payment_stripe_send', {gateway, payload, amount: total_promo})
             } else {
-                let payload = {
-                    open: true,
-                    template: "error",
-                    title: translate({lang: props.lang, info: "error"}),
-                    data: translate(translate({lang: lang, info: "no_payment_methods"}))
-                }
-                dispatch(changePopup(payload))
+                alert(translate({lang: lang, info: "no_payment_methods"}))
             }
         } else {
             let payload = {
@@ -270,7 +313,7 @@ function Form(props){
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={6} md={6} lg={3}>
+                    <Col sm={3}>
                         <label htmlFor="firstname">{translate({lang: props.lang, info: "firstname"})}</label>
                         <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "firstname"})} id="firstname" name="firstname"/>
                         {firstnameError ? <div className="alert alert-danger">
@@ -279,7 +322,7 @@ function Form(props){
                             </p>                            
                         </div> : null}
                     </Col>
-                    <Col sm={6} md={6} lg={3}>
+                    <Col sm={3}>
                         <label htmlFor="lastname">{translate({lang: props.lang, info: "lastname"})}</label>
                         <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "lastname"})} id="lastname" name="lastname"/>
                         {lastnameError ? <div className="alert alert-danger">
@@ -288,7 +331,7 @@ function Form(props){
                             </p>                            
                         </div> : null}
                     </Col>
-                    <Col sm={6} md={6} lg={3}>
+                    <Col sm={3}>
                         <label htmlFor="phone">{translate({lang: props.lang, info: "phone"})}</label>
                         <input className="input_light shadow_concav" type="text" placeholder="+40712312312" id="phone" name="phone"/>
                         {phoneError ? <div className="alert alert-danger">
@@ -297,7 +340,7 @@ function Form(props){
                             </p>                            
                         </div> : null}
                     </Col>
-                    <Col sm={6} md={6} lg={3}>
+                    <Col sm={3}>
                         <label htmlFor="email">{translate({lang: props.lang, info: "email"})}</label>
                         <input className="input_light shadow_concav" type="text" placeholder="text@text.text" id="email" name="email"/>
                         {emailError ? <div className="alert alert-danger">
@@ -308,7 +351,7 @@ function Form(props){
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={6} md={6} lg={3}>
+                    <Col sm={3}>
                         <label htmlFor="address">{translate({lang: props.lang, info: "address"})}</label>
                         <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "address"})} id="address" name="address"/>
                         {addressError ? <div className="alert alert-danger">
@@ -317,9 +360,9 @@ function Form(props){
                             </p>                            
                         </div> : null}
                     </Col>
-                    <Col sm={6} md={6} lg={3}>
+                    <Col sm={3}>
                         <label>{translate({lang: props.lang, info: "country"})}</label>
-                        <DropdownButton title={country} onSelect={(e)=>changeCountry(e)} className="shadow_concav">
+                        <DropdownButton title={country} onSelect={(e)=>changeCountry(e, false)} className="shadow_concav">
                             {countries.map(function(x, i){
                                 return <Dropdown.Item key={i} eventKey={x}>{x}</Dropdown.Item>
                             })}
@@ -330,7 +373,7 @@ function Form(props){
                             </p>                            
                         </div> : null}
                     </Col>
-                    <Col sm={6} md={6} lg={3}>
+                    <Col sm={3}>
                         <label>{translate({lang: props.lang, info: "town_city"})}</label>
                         <DropdownButton title={city} onSelect={(e)=>changeCity(e, false)} className="shadow_concav">
                             {cityList.map(function(x, i){
@@ -343,7 +386,7 @@ function Form(props){
                             </p>                            
                         </div> : null}
                     </Col>
-                    <Col sm={6} md={6} lg={3}>
+                    <Col sm={3}>
                         <label htmlFor="postal_zip_code">{translate({lang: props.lang, info: "postal_zip_code"})}</label>
                         <input className="input_light shadow_concav" type="text" placeholder="00000" id="postal_zip_code" name="postal_zip_code"/>
                         {postalZipCodeError ? <div className="alert alert-danger">
@@ -363,16 +406,20 @@ function Form(props){
                             <div className="checkbox_radio_container">
                                     <label>
                                         <input type="radio" name="radio1" checked={radioOne} onChange={()=>{handleChangeCheck("radio1")}}/>
-                                        {translate({lang: props.lang, info: "pay_card"})}
+                                        {translate({lang: props.lang, info: "pay_paypal"})}
                                     </label>
                                     <label>
                                         <input type="radio" name="radio2" checked={radioTwo} onChange={()=>{handleChangeCheck("radio2")}}/>
-                                        {translate({lang: props.lang, info: "pay_paypal"})}
+                                        {translate({lang: props.lang, info: "pay_card"})}
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="radio3" checked={radioThree} onChange={()=>{handleChangeCheck("radio3")}}/>
+                                        Stripe
                                     </label>
                                 </div>
                             </Col>
                         </Row>
-                        {radioOne ? <>
+                        {!radioOne ? <>
                             <Row>
                                 <Col sm={12}>
                                     <label htmlFor="card_number">{translate({lang: props.lang, info: "card_number"})}</label>
@@ -423,7 +470,70 @@ function Form(props){
                             </Row>
                         </> : null}                            
                     </Col>
-                </Row>                              
+                </Row>
+                <Row>
+                    <Col sm={12}>
+                        <h3>{translate({lang: props.lang, info: "billing_info"})}</h3>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm={12}>
+                        <div className="checkbox_radio_container">
+                            <label>
+                                <input type="checkbox" name="billing_info_same" checked={checkedBillingAddress} onChange={()=>{handleChangeCheck("billing_info_same")}}/>
+                                {translate({lang: props.lang, info: "billing_info_same"})}
+                            </label>
+                        </div>
+                    </Col>
+                </Row>
+                {!checkedBillingAddress ? <div id="billing_info_container">
+                    <Row>
+                        <Col sm={3}>
+                            <label htmlFor="address_billing">{translate({lang: props.lang, info: "address"})}</label>
+                            <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "address"})} id="address_billing" name="address_billing"/>
+                            {addressBillingError ? <div className="alert alert-danger">
+                                <p className="text_red">
+                                    {translate({lang: props.lang, info: "fill_field"})}
+                                </p>                            
+                            </div> : null}
+                        </Col>
+                        <Col sm={3}>
+                            <label>{translate({lang: props.lang, info: "country"})}</label>
+                            <DropdownButton title={countryBilling} onSelect={(e)=>changeCountry(e, true)} className="shadow_concav">
+                                {countries.map(function(x, i){
+                                    return <Dropdown.Item key={i} eventKey={x}>{x}</Dropdown.Item>
+                                })}
+                            </DropdownButton>
+                            {countryBillingError ? <div className="alert alert-danger">
+                                <p className="text_red">
+                                    {translate({lang: props.lang, info: "fill_field"})}
+                                </p>                            
+                            </div> : null}
+                        </Col>
+                        <Col sm={3}>
+                            <label>{translate({lang: props.lang, info: "town_city"})}</label>
+                            <DropdownButton title={cityBilling} onSelect={(e)=>changeCity(e, true)} className="shadow_concav">
+                                {cityListBilling.map(function(x, i){
+                                    return <Dropdown.Item key={i} eventKey={x}>{x}</Dropdown.Item>
+                                })}
+                            </DropdownButton>
+                            {cityBillingError ? <div className="alert alert-danger">
+                                <p className="text_red">
+                                    {translate({lang: props.lang, info: "fill_field"})}
+                                </p>                            
+                            </div> : null}
+                        </Col>
+                        <Col sm={3}>
+                            <label htmlFor="postal_zip_code_billing">{translate({lang: props.lang, info: "postal_zip_code"})}</label>
+                            <input type="number" className="input_light shadow_concav" placeholder="00000" id="postal_zip_code_billing" name="postal_zip_code_billing"/>
+                            {postalZipCodeBillingError ? <div className="alert alert-danger">
+                                <p className="text_red">
+                                    {translate({lang: props.lang, info: "fill_field"})}
+                                </p>                            
+                            </div> : null}
+                        </Col>
+                    </Row>
+                </div> : null}                
             </form>
         </Col>        
         <Col sm={4}>
@@ -434,20 +544,18 @@ function Form(props){
                     </Col>
                     <Col sm={12}>                        
                         <Cart {...props} list={list}></Cart>
-                    </Col>                    
+                    </Col>
+                    <Col sm={12}>
+                        <p><b>{translate({lang: lang, info: "price"})}</b>: {total}<img alt="carrot_img" className="currency_img" src={carrot_img}/></p>
+                    </Col>
+                    <Col sm={12}>
+                        <p><b>Promo: </b></p>
+                    </Col>
+                    <Col sm={12}>
+                        <h3><b>{translate({lang: lang, info: "total_price"})}</b>: {total_promo}<img alt="carrot_img" className="currency_img" src={carrot_img}/></h3>
+                    </Col>
                 </Row>   
-            </> : null}   
-            <Row>
-                <Col sm={12}>
-                    <div className="cart_total_price">
-                        {promo && Object.keys(promo).length>0 ? <>
-                            <p><b>{translate({lang: lang, info: "price"})}</b>: {total}<img alt="carrot_img" className="currency_img" src={carrot_img}/></p>            
-                            <p><b>{translate({lang: lang, info: "promo_discount"})}: </b><span>-{promo.discount}%</span></p>
-                            <h3><b>{translate({lang: lang, info: "total_price"})}</b>: {total_promo}<img alt="carrot_img" className="currency_img" src={carrot_img}/></h3>
-                        </> : <h3><b>{translate({lang: lang, info: "total_price"})}</b>: {total}<img alt="carrot_img" className="currency_img" src={carrot_img}/></h3>}
-                    </div>
-                </Col>
-            </Row>          
+            </> : null}             
             <Row>
                 <Col sm={12} className="button_action_group">
                     <Button 

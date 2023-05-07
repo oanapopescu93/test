@@ -7,6 +7,10 @@ var io = require('socket.io')(http)
 
 var routes = require("./routes")
 app.use(routes) 
+var stripePayment = require("./stripePayment")
+app.use(stripePayment)
+var paypalPayment = require("./paypalPayment")
+app.use(paypalPayment) 
 
 const path = require("path");
 const fs = require('fs')
@@ -407,9 +411,7 @@ io.on('connection', function(socket) {
   // PAYMENT
   socket.on('payment_stripe_send', function(data) {
     let payload = data.payload
-    let gateway = data.gateway
-    if(gateway === "stripe"){
-      let amount = data.amount
+    let amount = data.amount
       if(amount){
         let customer = null
         let customerInfo = {
@@ -470,9 +472,7 @@ io.on('connection', function(socket) {
           })
         })
       }
-    }
 	})
-
   function createNewCustomer(data){
     return new Promise(function(resolve, reject){
       stripe.customers.create(data).then(function(res){
@@ -501,7 +501,6 @@ io.on('connection', function(socket) {
       }).catch(err => console.error('error-addNewCard--> ' + err)) 
     })
   }  
-  
 
   socket.on('heartbeat', function(data) {
 		console.log('heartbeat', data)

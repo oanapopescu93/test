@@ -33,6 +33,7 @@
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.22",
     "path": "^0.12.7",
+    "paypal-rest-sdk": "^1.8.1",
     "socket.io": "^2.5.0",
     "stripe": "^12.2.0"
   },

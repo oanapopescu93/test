@@ -1179,6 +1179,9 @@ textarea {
   display: inline-block;
   width: 100%;
   max-width: 600px;
+  padding: var(--padding);
+  background-color: var(--transparent_5);
+  margin-bottom: var(--padding);
 }
 .donation_box{
   padding: var(--padding);
@@ -1186,8 +1189,15 @@ textarea {
 .donation_link_crypto{
   margin-bottom: var(--padding);
 }
-#paypal_button {
-  width: 100px;
+.donation_body_paypal li{
+  width: 100%;
+  max-width: 150px;
+  display: inline-block;
+  vertical-align: middle;
+  padding: var(--padding_small);
+}
+.donation_body_paypal li a{
+  width: 100%;
   display: inline-block;
 }
 
@@ -1659,7 +1669,7 @@ textarea {
   padding: var(--padding_small) 0px;
 }
 .cart_item:last-child{
-  border-bottom: solid 0px transparent;
+  margin-bottom: var(--padding);
 }
 .cart_footer{
   padding: var(--padding_small) 0px;
@@ -1874,6 +1884,9 @@ textarea {
   width: 100%;
   font-size: 14px;
   line-height: 12px;
+}
+#checkout_form input, #checkout_form .dropdown{
+  margin-bottom: var(--padding);
 }
 
 /* ORDERS */
@@ -2280,7 +2293,7 @@ textarea {
   .mybutton.round{
     height: 50px;
   }
-  input, textarea{
+  input, textarea, #checkout_form .dropdown .dropdown-toggle{
     font-size: 12px;
     line-height: 12px;
     height: 20px;

@@ -50,6 +50,12 @@ function Cart(props){
         dispatch(changeGamePage(null))
     }
 
+    function handleContinueShopping(){
+        dispatch(changePage('Salon'))
+		dispatch(changeGame(null))
+        dispatch(changeGamePage('market'))
+    }
+
     function handleCheckout(){
 		dispatch(changePage('Checkout'))
 		dispatch(changeGame(null))
@@ -76,6 +82,7 @@ function Cart(props){
                         removeAll={()=>removeAll()}
                         handleBack={()=>handleBack()}
                         handleCheckout={()=>handleCheckout()}
+                        handleContinueShopping={()=>handleContinueShopping()}
                     ></Panel>
                     <Promo 
                         {...props} 

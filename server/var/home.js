@@ -50,7 +50,8 @@ module.exports = Object.freeze({
         {type: "crypto", title: "Litecoin", text: "-"},
         {type: "crypto", title: "Bitcoin Cash", text: "-"},
         {type: "crypto", title: "Dogecoin", text: "-"},
-        {type: "paypal", title: "Paypal", link: "https://paypal.me/oanapopescu93?country.x=RO&locale.x=en_US"},
+        {type: "paypal", title: "PaypalMe", link: "https://paypal.me/oanapopescu93?country.x=RO&locale.x=en_US"},
+        {type: "paypal", title: "Paypal Donate", link: "https://www.paypal.com/donate/?hosted_button_id=FBUHUHZCKWZRA"}
     ],
     SLOT_PRIZES: [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3],
     RACE_RABBITS: [        

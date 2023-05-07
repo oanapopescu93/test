@@ -11,7 +11,7 @@ import { decryptData } from '../../../../../utils/crypto'
 function Cart(props){
     const {lang, cart, home, user} = props
     let market = home.market ? home.market : []
-    let total = totalPriceSum()
+    let total = totalPriceSum().toFixed(2)
     let max = decryptData(user.money)
 
     function cartRemoveAllProduct(){
@@ -55,7 +55,7 @@ function Cart(props){
             <div className="cart_list">
                 {cart.map(function(item, i){
                     let product = market.filter(a => a.id === item.id)
-                    let cart_item_total_price = item.qty * product[0].price
+                    let cart_item_total_price = (item.qty * product[0].price).toFixed(2)
                     return <div key={i} className='cart_item'>
                         <div className="cart_image">
                             <div className="crop_vegetables">
