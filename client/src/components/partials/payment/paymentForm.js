@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React, { useState } from 'react'
 import { translate } from '../../../translations/translate'
 import { Col, Row, Dropdown, DropdownButton } from 'react-bootstrap'
-import { checkoutData, isEmpty, postData } from '../../../utils/utils';
-import { validateInput, validateCard, validateCVV } from '../../../utils/validate'
+import { checkoutData } from '../../../utils/utils';
 
 function PaymentForm(props){
     const {lang, firstnameError, lastnameError, phoneError, emailError, addressError, countryError, cityError,  postalZipCodeError, cardNumberError, cvvError, monthError, yearError} = props 

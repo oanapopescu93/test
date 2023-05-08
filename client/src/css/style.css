@@ -1806,10 +1806,10 @@ textarea {
 	background-position: center;
 	background-size: 100% auto;
 	background-repeat: no-repeat;
-	height:115px;
+	height:130px;
 	margin-bottom: -20px;
 	position: relative;
-	z-index:1;
+	z-index:2;
 }
 .cell_market{
   height: auto;
@@ -2255,15 +2255,25 @@ textarea {
 }
 
 /* media */
+@media (max-width: 1200px){
+	.shop_shader{
+		height:100px;
+	}
+}
 @media (max-width: 1024px){
 	.shop_shader{
 		height:80px;
 	}
 }
 @media (max-width: 960px){
-	
+	.shop_shader{
+		height:60px;
+	}
 }
 @media (max-width: 767px) {	
+  .shop_shader {
+    height: 45px;
+  }
   #logo_icon{
     width: 30px;
   }

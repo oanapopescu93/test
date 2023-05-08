@@ -7,15 +7,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import $ from "jquery"
 import { decryptData } from '../../../utils/crypto'
-import { isEmpty } from '../../../utils/utils'
+import { isEmpty, postData } from '../../../utils/utils'
 import { validateCVV, validateCard, validateInput } from '../../../utils/validate'
 import { changePopup } from '../../../reducers/popup'
-import Cart from '../../pages/checkout/cart'
 import PaymentCart from './paymentCart'
 
 function Payment(props){
     const {lang, user, socket, template} = props
-    let cart = useSelector(state => state.cart.cart) 
 
     const [qty, setQty] = useState(1)
     let dispatch = useDispatch()
@@ -49,14 +47,19 @@ function Payment(props){
         switch(type){
             case "country":
                 setCountry(value)
+                break
             case "city":
                 setCity(value)
+                break
             case "month":
                 setMonth(value)
+                break
             case "year":
                 setYear(value)
+                break
             case "gateway":
                 setGateway(value)
+                break
             default:
         }
     }

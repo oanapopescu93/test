@@ -10,24 +10,11 @@ function PaymentCart(props){
     let market = home.market ? home.market : []
     let cart = useSelector(state => state.cart.cart) 
     let promo = useSelector(state => state.cart.promo) 
-    let list = getProducts(cart) 
     let total = totalPriceSum()
     let total_promo = total
     if(promo && Object.keys(promo).length>0){
         total_promo = (total_promo - (total_promo * promo.discount)/100).toFixed(2)
     }
-
-    function getProducts(cart){
-        let array = []
-        for(let i in cart){
-            let index = market.findIndex((x) => x.id === cart[i].id)
-            if(index !== -1){
-                let elem = {...market[index], qty: cart[i].qty, cardId: cart[i].cartId}
-                array.push(elem)
-            }            
-        }
-        return array
-    }    
     function totalPriceSum(){
         let total = 0
         for(let i in cart){
