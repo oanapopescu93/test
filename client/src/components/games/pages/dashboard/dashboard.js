@@ -10,7 +10,7 @@ import { changePage, changeGame, changeGamePage } from '../../../../reducers/pag
 function Dashboard(props){
 	let dispatch = useDispatch()
 	let cart = useSelector(state => state.cart.cart)
-	let history = []	
+	let order = useSelector(state => state.order.order)
 
 	function cartRemoveAllProduct(){
 		dispatch(cartRemoveAll())
@@ -43,7 +43,7 @@ function Dashboard(props){
 						<DashboardRight 
 							{...props} 
 							cart={cart} 
-							history={history}
+							order={order}
 							cartRemoveAllProduct={()=>cartRemoveAllProduct()}
 							cartRemoveProduct={(e)=>cartRemoveProduct(e)}
 							updateQtyProduct={(e)=>updateQtyProduct(e)}

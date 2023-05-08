@@ -2204,6 +2204,32 @@ textarea {
 .rabbit_box_nr.purple{
 	background-color: purple;
 }
+.race_game_container{
+  position: relative;
+  z-index: 1;
+}
+.race_order_container{
+  position: absolute;
+  z-index: 1;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  width: 100%;
+  text-align: center;  
+}
+#race_order{
+  display: inline-block;
+  padding: var(--padding_small) var(--padding) var(--padding) var(--padding);
+  background-color: var(--transparent_color);
+  border: solid 1px var(--color);
+  border-radius: 0px 0px var(--radius_big) var(--radius_big);
+}
+#race_order .rabbit_box_nr{
+  position: static;
+  margin: 0px var(--padding_small);
+  display: inline-block;
+  vertical-align: middle;
+}
 
 .rabbit_box_pic .box_pic{
   width:150px;

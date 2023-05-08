@@ -11,7 +11,7 @@ function List(props) {
                 return <>
                     {itemList.map(function(item, i){
                         return <div key={i} className='item'>
-                            <Cell lang={lang} data={item} template={template} type={type}></Cell>
+                            <Cell index={i+1} lang={lang} data={item} template={template} type={type}></Cell>
                         </div>
                     })}
                 </>

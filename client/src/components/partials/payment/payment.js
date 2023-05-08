@@ -160,19 +160,17 @@ function Payment(props){
                 setYearError(true)
                 problem = true
             }
-        }        
+        }
 
-        console.log(data)
-
-        sendPayload(data)//for fast tests (the errors will appear but the pay will be sent)
-        // if(!problem){
-        //     let payload = data
-        //     sendPayload(payload)
-        // }
+        //sendPayload(data)//for fast tests (the errors will appear but the pay will be sent)
+        if(!problem){
+            let payload = data
+            sendPayload(payload)
+        }
     }
 
     function sendPayload(payload){
-        console.log(gateway, payload, amount)   
+        //console.log(gateway, payload, amount)   
         if(amount > 0){ // something is wrong and we can't charge client (ex: somehow the cart is empty, so, the total amount is 0)
             if(gateway === "stripe"){
                 socket.emit('payment_stripe_send', {gateway, payload, amount, list: [{name: "bunnybet carrots", qty: qty, price: price_per_carrot}]})

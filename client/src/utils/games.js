@@ -100,27 +100,31 @@ export const isInside = function(mousePos, obj){
 	return mousePos.x > obj.x && mousePos.x < obj.x + obj.width && mousePos.y < obj.y + obj.height && mousePos.y > obj.y
 }
 export const draw_dot = function(ctx, x, y, r,sAngle,eAngle,counterclockwise, fillStyle, lineWidth, strokeStyle){
-    ctx.beginPath()
-    ctx.arc(x, y, r, sAngle, eAngle, counterclockwise)
-    ctx.fillStyle = fillStyle
-    if(strokeStyle !== ""){
-        ctx.lineWidth = lineWidth
-        ctx.strokeStyle = strokeStyle
-        ctx.stroke()
-    }		
-    ctx.fill()
-    ctx.closePath()
+	if(ctx){
+		ctx.beginPath()
+		ctx.arc(x, y, r, sAngle, eAngle, counterclockwise)
+		ctx.fillStyle = fillStyle
+		if(strokeStyle !== ""){
+			ctx.lineWidth = lineWidth
+			ctx.strokeStyle = strokeStyle
+			ctx.stroke()
+		}		
+		ctx.fill()
+		ctx.closePath()
+	}
 }
 export const draw_rect = function(ctx, x, y, width, height, fillStyle, lineWidth, strokeStyle){
-	ctx.beginPath()
-	ctx.rect(x, y, width, height)
-	ctx.fillStyle = fillStyle
-	if(strokeStyle !== ""){
-		ctx.lineWidth = lineWidth
-		ctx.strokeStyle = strokeStyle
-		ctx.stroke()
-	}		
-	ctx.fill()
+	if(ctx){
+		ctx.beginPath()
+		ctx.rect(x, y, width, height)
+		ctx.fillStyle = fillStyle
+		if(strokeStyle !== ""){
+			ctx.lineWidth = lineWidth
+			ctx.strokeStyle = strokeStyle
+			ctx.stroke()
+		}		
+		ctx.fill()
+	}
 }
 export const getDistance_between_entities = function(entity01, entity02){
     let distance_x = entity01.x - entity02.x

@@ -22,14 +22,12 @@ function Cell(props) {
         setQty(x)
     }
 
-    function updateRaceBet(x, data){
-        let payload = {...data, bet: x}
-        dispatch(changeRaceBets(payload))
+    function updateRaceBet(x){
+        dispatch(changeRaceBets({id: data.id, bet: x}))
     }
 
     function handleDropdown(x){
-        let payload = {...data, place: x}
-        dispatch(changeRaceBets(payload))
+        dispatch(changeRaceBets({id: data.id, place: x}))
         switch(x) {
             case '3':
                 setTitleDropdown('place_03')
@@ -97,7 +95,7 @@ function Cell(props) {
                             <Row>
                                 <Col sm={6}>
                                     <div className="rabbit_box_pic">
-                                        {data.participating ? <div className={"rabbit_box_nr shadow_convex "+data.color}>{data.id}</div> : null}                                    
+                                        <div className={"rabbit_box_nr shadow_convex "+data.color}>{index}</div>                                   
                                         <div className="box_pic shadow_convex">	
                                             <img src={data.img} alt={data.breed} />																			
                                         </div>															
@@ -111,19 +109,17 @@ function Cell(props) {
                                         <p><span>{translate({lang: lang, info: "health"})}: </span>{data.health}</p>
                                         <Stars score={data.health} max={data.health_max}></Stars>
                                     </div>
-                                    {data.participating ? <>
-                                        <div className="rabbit_box_bet">
-                                            <p>{translate({lang: lang, info: "bet"})}:</p>
-                                            <Counter num={0} max={max_bet} update={(e)=>updateRaceBet(e, data)}></Counter>
-                                        </div>
-                                        <div className="rabbit_box_place">
-                                            <DropdownButton title={titleDropdown} id="language_button" onSelect={(e)=>handleDropdown(e, data)}>
-                                                <Dropdown.Item eventKey={1}>{translate({lang: lang, info: 'place_01'})}</Dropdown.Item>
-                                                <Dropdown.Item eventKey={2}>{translate({lang: lang, info: 'place_02'})}</Dropdown.Item>
-                                                <Dropdown.Item eventKey={3}>{translate({lang: lang, info: 'place_03'})}</Dropdown.Item>
-                                            </DropdownButton>
-                                        </div>
-                                    </> : <h3>{translate({lang: lang, info: "no_participation_today"})}</h3>}                                    
+                                    <div className="rabbit_box_bet">
+                                        <p>{translate({lang: lang, info: "bet"})}:</p>
+                                        <Counter num={0} max={max_bet} update={(e)=>updateRaceBet(e)}></Counter>
+                                    </div>
+                                    <div className="rabbit_box_place">
+                                        <DropdownButton title={titleDropdown} id="language_button" onSelect={(e)=>handleDropdown(e)}>
+                                            <Dropdown.Item eventKey={1}>{translate({lang: lang, info: 'place_01'})}</Dropdown.Item>
+                                            <Dropdown.Item eventKey={2}>{translate({lang: lang, info: 'place_02'})}</Dropdown.Item>
+                                            <Dropdown.Item eventKey={3}>{translate({lang: lang, info: 'place_03'})}</Dropdown.Item>
+                                        </DropdownButton>
+                                    </div>                                
                                 </Col>
                             </Row>
                         </div>

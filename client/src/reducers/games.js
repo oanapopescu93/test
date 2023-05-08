@@ -30,8 +30,12 @@ const gamesSlice = createSlice({
             let place = parseInt(payload.place)		
             const item = state.race.bets.find((x) => x.id === payload.id)
 			if (item) {	
-				item.bet = bet
-                item.place = place
+                if(bet){
+                    item.bet = bet  
+                }
+                if(place){
+                    item.place = place  
+                }
 			} else {                
 				state.race.bets.push({ ...payload, bet: bet, raceId: state.race.bets.length })
 			}

@@ -62,6 +62,7 @@ var word_bank = {
         no_history: "No history",
         no_jobs: "No jobs available yet. But feel free to send us your CV.",
         no_participation_today: "No participation today",
+        no_order: "No orders",
 
         isMinor_title: "Age verification",
         isMinor_text: "Are you over 18?",
@@ -239,6 +240,7 @@ var word_bank = {
         no_history: "Nu ai istoric",
         no_jobs: "Nu exista job-uri disponibile. Puteti sa ne trimiteti CV-ul dumneavoastra pe mail.",
         no_participation_today: "Nu participa astazi",
+        no_order: "Nu exista comenzi",
         
         isMinor_title: "Verificare varsta",
         isMinor_text: "Ai peste 18 ani?",
