@@ -268,10 +268,10 @@ io.on('connection', function(socket) {
 	})
   socket.on('craps_send', function(data) {
 		if(data.uuid){
+      let room = data.room
 			let payload = craps(data, how_lucky)
 			try{
-				//io.to(room_name).emit('craps_read', payload)
-        io.emit('craps_read', payload)
+				io.to(room).emit('craps_read', payload)
 			} catch(e){
 				console.log('[error]','craps_read--> ', e)
 			}
@@ -281,7 +281,6 @@ io.on('connection', function(socket) {
 		if(data.uuid){
 			let payload = race(data, how_lucky)
 			try{
-				//io.to(room_name).emit('race_read', payload)
         io.emit('race_read', payload)
 			} catch(e){
 				console.log('[error]','race_read--> ', e)
@@ -292,7 +291,6 @@ io.on('connection', function(socket) {
 		if(data.uuid){
 			let payload = keno(data, how_lucky)
 			try{
-				//io.to(room_name).emit('keno_read', payload)
         io.emit('keno_read', payload)
 			} catch(e){
 				console.log('[error]','keno_read--> ', e)

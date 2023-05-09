@@ -4,36 +4,19 @@ import { Col, Row, Dropdown, DropdownButton } from 'react-bootstrap'
 import { checkoutData } from '../../../utils/utils';
 
 function PaymentForm(props){
-    const {lang, firstnameError, lastnameError, phoneError, emailError, addressError, countryError, cityError,  postalZipCodeError, cardNumberError, cvvError, monthError, yearError} = props 
-
-    const [country, setCountry] = useState("")    
+    const {lang, nameError, emailError, cardNumberError, cvvError, monthError, yearError} = props 
+    
     const [month, setMonth] = useState(-1)    
-    const [year, setYear] = useState("") 
-    const [city, setCity] = useState("")    
-    const [cityList, setCityList] = useState([]) 
+    const [year, setYear] = useState("")
      
     const [radioOne, setRadioOne] = useState(true) 
     const [radioTwo, setRadioTwo] = useState(false)
-
-    const countries_json = checkoutData().countries
-    const countries = checkoutData().countries_list
+    const [radioThree, setRadioThree] = useState(false)
+    
     const monthOptions = checkoutData().monthOptions
     const yearOptions = checkoutData().yearOptions
     const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-
-    function changeCountry(x){
-        setCountry(x)
-        setCityList(countries_json[x])
-        if(typeof props.getChanges === "function"){
-            props.getChanges({type: 'country', value: x})
-        }
-    }
-    function changeCity(x){
-        setCity(x)
-        if(typeof props.getChanges === "function"){
-            props.getChanges({type: 'city', value: x})
-        }
-    }
+    
     function changeMonth(x){
         setMonth(x)
         if(typeof props.getChanges === "function"){
@@ -48,9 +31,18 @@ function PaymentForm(props){
     }
     function handleChangeCheck(x){
         switch(x){            
+            case "radio3":	
+                setRadioOne(false)			
+                setRadioTwo(false)
+                setRadioThree(true)		
+                if(typeof props.getChanges === "function"){
+                    props.getChanges({type: 'gateway', value: 'crypto'})
+                }
+                break
             case "radio2":	
                 setRadioOne(false)			
                 setRadioTwo(true)
+                setRadioThree(false)		
                 if(typeof props.getChanges === "function"){
                     props.getChanges({type: 'gateway', value: 'paypal'})
                 }
@@ -59,6 +51,7 @@ function PaymentForm(props){
             default:
                 setRadioOne(true)			
                 setRadioTwo(false)
+                setRadioThree(false)		
                 if(typeof props.getChanges === "function"){
                     props.getChanges({type: 'gateway', value: 'stripe'})
                 }
@@ -73,34 +66,16 @@ function PaymentForm(props){
             </Col>
         </Row>
         <Row>
-            <Col sm={6} md={6} lg={3}>
-                <label htmlFor="firstname">{translate({lang: props.lang, info: "firstname"})}</label>
-                <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "firstname"})} id="firstname" name="firstname"/>
-                {firstnameError ? <div className="alert alert-danger">
+            <Col sm={6}>
+                <label htmlFor="firstname">{translate({lang: props.lang, info: "name"})}</label>
+                <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "name"})} id="name" name="name"/>
+                {nameError ? <div className="alert alert-danger">
                     <p className="text_red">
                         {translate({lang: props.lang, info: "fill_field"})}
                     </p>                            
                 </div> : null}
             </Col>
-            <Col sm={6} md={6} lg={3}>
-                <label htmlFor="lastname">{translate({lang: props.lang, info: "lastname"})}</label>
-                <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "lastname"})} id="lastname" name="lastname"/>
-                {lastnameError ? <div className="alert alert-danger">
-                    <p className="text_red">
-                        {translate({lang: props.lang, info: "fill_field"})}
-                    </p>                            
-                </div> : null}
-            </Col>
-            <Col sm={6} md={6} lg={3}>
-                <label htmlFor="phone">{translate({lang: props.lang, info: "phone"})}</label>
-                <input className="input_light shadow_concav" type="text" placeholder="+40712312312" id="phone" name="phone"/>
-                {phoneError ? <div className="alert alert-danger">
-                    <p className="text_red">
-                        {translate({lang: props.lang, info: "fill_field"})}
-                    </p>                            
-                </div> : null}
-            </Col>
-            <Col sm={6} md={6} lg={3}>
+            <Col sm={6}>
                 <label htmlFor="email">{translate({lang: props.lang, info: "email"})}</label>
                 <input className="input_light shadow_concav" type="text" placeholder="text@text.text" id="email" name="email"/>
                 {emailError ? <div className="alert alert-danger">
@@ -109,51 +84,7 @@ function PaymentForm(props){
                     </p>                            
                 </div> : null}
             </Col>
-        </Row>
-        <Row>
-            <Col sm={6} md={6} lg={3}>
-                <label htmlFor="address">{translate({lang: props.lang, info: "address"})}</label>
-                <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "address"})} id="address" name="address"/>
-                {addressError ? <div className="alert alert-danger">
-                    <p className="text_red">
-                        {translate({lang: props.lang, info: "fill_field"})}
-                    </p>                            
-                </div> : null}
-            </Col>
-            <Col sm={6} md={6} lg={3}>
-                <label>{translate({lang: props.lang, info: "country"})}</label>
-                <DropdownButton title={country} onSelect={(e)=>changeCountry(e)} className="shadow_concav">
-                    {countries.map(function(x, i){
-                        return <Dropdown.Item key={i} eventKey={x}>{x}</Dropdown.Item>
-                    })}
-                </DropdownButton>
-                {countryError ? <div className="alert alert-danger">
-                    <p className="text_red">
-                        {translate({lang: props.lang, info: "fill_field"})}
-                    </p>                            
-                </div> : null}
-            </Col>
-            <Col sm={6} md={6} lg={3}>
-                <label>{translate({lang: props.lang, info: "town_city"})}</label>
-                <DropdownButton title={city} onSelect={(e)=>changeCity(e, false)} className="shadow_concav">
-                    {cityList.map(function(x, i){
-                        return <Dropdown.Item key={i} eventKey={x}>{x}</Dropdown.Item>
-                    })}
-                </DropdownButton>                        
-                {cityError ? <div className="alert alert-danger">
-                    <p className="text_red">
-                        {translate({lang: props.lang, info: "fill_field"})}
-                    </p>                            
-                </div> : null}
-            </Col>
-            <Col sm={6} md={6} lg={3}>
-                <label htmlFor="postal_zip_code">{translate({lang: props.lang, info: "postal_zip_code"})}</label>
-                <input className="input_light shadow_concav" type="text" placeholder="00000" id="postal_zip_code" name="postal_zip_code"/>
-                {postalZipCodeError ? <div className="alert alert-danger">
-                    <p className="text_red">{translate({lang: props.lang, info: "fill_field"})}</p>
-                </div> : null}
-            </Col>
-        </Row>
+        </Row>        
         <Row>
             <Col sm={12}>
                 <h3>{translate({lang: props.lang, info: "payment_info"})}</h3>
@@ -171,6 +102,10 @@ function PaymentForm(props){
                             <label>
                                 <input type="radio" name="radio2" checked={radioTwo} onChange={()=>{handleChangeCheck("radio2")}}/>
                                 {translate({lang: props.lang, info: "pay_paypal"})}
+                            </label>
+                            <label>
+                                <input type="radio" name="radio3" checked={radioThree} onChange={()=>{handleChangeCheck("radio3")}}/>
+                                {translate({lang: props.lang, info: "pay_crypto"})}
                             </label>
                         </div>
                     </Col>

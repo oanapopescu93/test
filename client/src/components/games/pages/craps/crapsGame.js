@@ -92,12 +92,14 @@ function CrapsBoardText(props){
 	</>
 }
 
-function Craps(props){	
-	const {startGame, lang, socket, bets} = props
+function Craps(props){
+	const {startGame, lang, socket, bets, page} = props
     const [crapsBoardText, setCrapsBoardText] = useState(null)
 	const [crapsBoardList, setCrapsBoardList] = useState([])
 	let game_type = bets ? bets.game_type : "pass line"
 	let game_odds = bets ? bets.game_odds : 2
+	let game = page.game
+	let room = getRoom(game)
 
     let craps_board = useRef(null)
 	const dice1 = useRef(null)
@@ -142,7 +144,7 @@ function Craps(props){
 		return new Promise(function(resolve, reject){
 			let dice_number1 = getDiceNumber(dice_array[0])
 			let dice_number2 = getDiceNumber(dice_array[1])
-			let payload={uuid:props.user.uuid, how_many_dices:2, point:point, before: [dice_number1, dice_number2]}
+			let payload={uuid: props.user.uuid, room: room, how_many_dices: 2, point: point, before: [dice_number1, dice_number2]}
 			socket.emit('craps_send', payload)
 			socket.on('craps_read', function(data){
 				if(data){

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { translate } from '../../../translations/translate'
 import PaymentForm from './paymentForm'
 import { Col, Row, Button } from 'react-bootstrap'
 import Counter from '../counter'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import $ from "jquery"
 import { decryptData } from '../../../utils/crypto'
@@ -13,44 +13,26 @@ import { changePopup } from '../../../reducers/popup'
 import PaymentCart from './paymentCart'
 
 function Payment(props){
-    const {lang, user, socket, template} = props
-
-    const [qty, setQty] = useState(1)
+    const {lang, user, template} = props
     let dispatch = useDispatch()
     let max_bet = decryptData(user.money)
     let price_per_carrot = 1
-    const [amount, setAmount] = useState(price_per_carrot)    
-
-    const [country, setCountry] = useState("")    
+    const [qty, setQty] = useState(1)
+    const [amount, setAmount] = useState(price_per_carrot)       
     const [month, setMonth] = useState(-1)    
-    const [year, setYear] = useState("") 
-    const [city, setCity] = useState("")   
-    
-    const [firstnameError, setFirstnameError] = useState(false)
-    const [lastnameError, setLastnameError] = useState(false)
-    const [phoneError, setPhoneError] = useState(false)
+    const [year, setYear] = useState("")    
+    const [nameError, setNameError] = useState(false)
     const [emailError, setEmailError] = useState(false)
-    const [addressError, setAddressError] = useState(false)
-    const [countryError, setCountryError] = useState(false)   
-    const [cityError, setCityError] = useState(false)   
-    const [postalZipCodeError, setPostalZipCodeError] = useState(false)
     const [cardNumberError, setCardNumberError] = useState(false)
     const [cvvError, setCvvError] = useState(false)
     const [monthError, setMonthError] = useState(false)   
-    const [yearError, setYearError] = useState(false)  
-
+    const [yearError, setYearError] = useState(false)
     const [gateway, setGateway] = useState("stripe")
 
     function getChanges(data){
         let type = data.type
         let value = data.value
         switch(type){
-            case "country":
-                setCountry(value)
-                break
-            case "city":
-                setCity(value)
-                break
             case "month":
                 setMonth(value)
                 break
@@ -79,14 +61,8 @@ function Payment(props){
         if($('#payment_form') && qty > 0){
             let form = $('#payment_form').serializeArray()
             let payload = {
-                firstname: getValueFromForm(form, 'firstname'),
-                lastname: getValueFromForm(form, 'lastname'),
-                phone: getValueFromForm(form, 'phone'),
+                firstname: getValueFromForm(form, 'name'),
                 email: getValueFromForm(form, 'email'),
-                address: getValueFromForm(form, 'address'),
-                postalZipCode: getValueFromForm(form, 'postal_zip_code'),
-                country: country,
-                city: city,            
                 cardNumber: getValueFromForm(form, 'card_number'),
                 cvv: getValueFromForm(form, 'cvv'),
                 expiry_month: month,
@@ -105,36 +81,12 @@ function Payment(props){
     }
     function validate(data){
         let problem = false
-        if(isEmpty(data.firstname)){
-            setFirstnameError(true)
-            problem = true
-        }
-        if(isEmpty(data.lastname)){
-            setLastnameError(true)
-            problem = true
-        }
-        if(isEmpty(data.phone)){
-            setPhoneError(true)
+        if(isEmpty(data.name)){
+            setNameError(true)
             problem = true
         }
         if(isEmpty(data.email) || !validateInput(data.email, "email")){
             setEmailError(true)
-            problem = true
-        }        
-        if(isEmpty(data.address)){
-            setAddressError(true)
-            problem = true
-        }    
-        if(isEmpty(data.country)){
-            setCountryError(true)
-            problem = true
-        }
-        if(isEmpty(data.city)){
-            setCityError(true)
-            problem = true
-        } 
-        if(isEmpty(data.postal_zip_code)){
-            setPostalZipCodeError(true)
             problem = true
         }
         if(!data.radio1){
@@ -169,20 +121,31 @@ function Payment(props){
         }
     }
 
-    function sendPayload(payload){
-        //console.log(gateway, payload, amount)   
+    function sendPayload(payload){        
         if(amount > 0){ // something is wrong and we can't charge client (ex: somehow the cart is empty, so, the total amount is 0)
-            if(gateway === "stripe"){
-                socket.emit('payment_stripe_send', {gateway, payload, amount, list: [{name: "bunnybet carrots", qty: qty, price: price_per_carrot}]})
-            } else if(gateway === "paypal"){
-                postData("/api/paypal", payload).then((data) => {
+            let url = ""
+            switch(gateway){
+                case "stripe":
+                    url = "/api/stripe"
+                    break
+                case "paypal":
+                    url = "/api/paypal"                    
+                    break
+                case "crypto":
+                    url = "/api/crypto"
+                    break
+                default:                    
+            }
+            console.log(gateway, payload, amount, url)   
+            if(!isEmpty(url)){
+                postData(url, payload).then((data) => {
                     if(data && data.forwardLink){
                         window.location.href = data.forwardLink
                     } else {
                         let payload = {
                             open: true,
                             template: "error",
-                            title: translate({lang: props.lang, info: "error1"}),
+                            title: translate({lang: props.lang, info: "error"}),
                             data: translate({lang: props.lang, info: "error_charge"})
                         }
                         dispatch(changePopup(payload))
@@ -192,7 +155,7 @@ function Payment(props){
                 let payload = {
                     open: true,
                     template: "error",
-                    title: translate({lang: props.lang, info: "error2"}),
+                    title: translate({lang: props.lang, info: "error"}),
                     data: translate(translate({lang: lang, info: "no_payment_methods"}))
                 }
                 dispatch(changePopup(payload))
@@ -208,27 +171,13 @@ function Payment(props){
         }
     }
 
-    useEffect(() => {
-        socket.on('payment_stripe_read', function(res){
-            if(res && typeof props.getOrder === "function"){
-                props.getOrder(res)
-            }
-        })
-    }, [socket])
-
     return<Row>
         <Col sm={8}>
             <PaymentForm 
                 {...props} 
                 getChanges={(e)=>getChanges(e)}
-                firstnameError={firstnameError} 
-                lastnameError={lastnameError} 
-                phoneError={phoneError} 
+                nameError={nameError} 
                 emailError={emailError} 
-                addressError={addressError} 
-                countryError={countryError}  
-                cityError={cityError}  
-                postalZipCodeError={postalZipCodeError} 
                 cardNumberError={cardNumberError} 
                 cvvError={cvvError} 
                 monthError={monthError}  

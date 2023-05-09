@@ -2280,6 +2280,54 @@ textarea {
 	background-image: radial-gradient(transparent, black);
 }
 
+/* KENO */
+.keno_board{
+  background-color: var(--transparent_5);
+  border: solid 1px var(--color);
+  border-radius: var(--radius_small);
+  padding: 2px;
+  display: inline-block;
+}
+.keno_spot{
+  padding: 2px;
+  display: inline-block;
+  vertical-align: middle;  
+}
+.keno_spot .keno_spot_box{
+  border: solid 1px var(--color);
+  border-radius: var(--radius_small);
+  padding: var(--padding);
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+  line-height: 40px;
+}
+.keno_spot .keno_spot_box:hover{
+  background-color: var(--transparent_color);
+}
+.keno_spot.selected .keno_spot_box{
+  background-color: rgba(0, 128, 0, 0.3);
+  border: solid 1px var(--green);
+  color: var(--green);
+}
+.keno_spot.selected_red .keno_spot_box{
+  background-color: rgba(255, 0, 0, 0.3);
+  border: solid 1px var(--red);
+  color: var(--red);
+}
+.keno_form, .keno_options{
+  margin: var(--padding) 0px;
+}
+.keno_options .dropdown .dropdown-toggle{
+  width: 100%;
+  height: 25px;
+  line-height: 12px;
+  margin: var(--padding) 0px;
+}
+.keno_form .mybutton{
+  margin-top: 6px;
+}
+
 /* media */
 @media (max-width: 1200px){
 	.shop_shader{
@@ -2332,10 +2380,11 @@ textarea {
   }
   .mybutton{
     height: 20px;
-    line-height: 10px;
+    line-height: 8px;
   }
   .mybutton.round{
     height: 50px;
+    line-height: 12px;
   }
   input, textarea, #payment_form .dropdown .dropdown-toggle{
     font-size: 12px;
@@ -2492,8 +2541,15 @@ textarea {
   #craps_board{
 		height: 110px;
 	}
+
+  /* KENO */
+  .keno_spot .keno_spot_box{
+    width: 40px;
+    height: 40px;
+    line-height: 20px;
+  }
 }
-@media (max-width:576px) {	
+@media (max-width:600px) {	
   /* SIGN */
   .sign_container_box{
     height: 460px;
@@ -2568,7 +2624,24 @@ textarea {
   #splash_screen .small-diamond-right-bottom {
     top: 118px;
     right:-36px;
-  }   
+  } 
+
+  /* KENO */
+  .keno_spot .keno_spot_box{
+    width: 30px;
+    height: 30px;
+    line-height: 28px;
+    padding: 0px;
+  }
+}
+@media (max-width:480px) {
+  /* KENO */
+  .keno_spot .keno_spot_box{
+    width: 25px;
+    height: 25px;
+    font-size: 12px;
+    line-height: 24px;
+  }
 }
 
 @media (max-width: 960px) and (orientation: landscape) {

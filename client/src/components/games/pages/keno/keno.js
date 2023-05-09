@@ -1,37 +1,43 @@
-import React, {useEffect} from 'react'
+import React, {useState} from 'react'
 import { useDispatch } from 'react-redux'
 import { translate } from '../../../../translations/translate'
+import KenoAnimation from './kenoAnimation'
+import KenoBoard from './kenoBoard'
+import { changePopup } from '../../../../reducers/popup'
 
-function keno_game(props){
-    console.log(props)
-    let self = this	
-
-    this.ready = function(){
-        console.log('ready')
-    }
-
-    this.leave = function(){
-        console.log('leave')
-    }
-}
-
-function Keno(props){
+function Keno(props){    
     let dispatch = useDispatch()
-    let options = {...props, dispatch}
+    const [start, setStart] = useState(false)
+    const [data, setData] = useState(null)
 
-    useEffect(() => {
-        let my_keno = new keno_game(options)
-        return () => {
-            if(my_keno){
-                my_keno.leave()
-                my_keno = null
+    function startGame(){
+        if(data && data.list && data.list.length>0){
+            setStart(true)
+        } else {
+            let payload = {
+                open: true,
+                template: "error",
+                title: translate({lang: props.lang, info: "error"}),
+                data: translate({lang: props.lang, info: "no_selections"})
             }
-        }
-    }, [])
+            dispatch(changePopup(payload))
+        }        
+    }
 
-    return <div className="game_container keno_container">
-        <canvas id="keno_canvas" className="shadow_convex"></canvas>
-    </div>
+    function getData(x){
+        setData(x)
+    }
+
+    return <>
+        {start ? <KenoAnimation 
+            {...props} 
+            data={data}
+        ></KenoAnimation> : <KenoBoard 
+            {...props} 
+            startGame={()=>startGame()}
+            getData={(e)=>getData(e)}
+        ></KenoBoard>}
+    </>
 }
 
 export default Keno

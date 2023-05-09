@@ -63,6 +63,7 @@ var word_bank = {
         no_jobs: "No jobs available yet. But feel free to send us your CV.",
         no_participation_today: "No participation today",
         no_order: "No orders",
+        no_selections: "Select at least a Keno Spot to start the game",
 
         isMinor_title: "Age verification",
         isMinor_text: "Are you over 18?",
@@ -137,6 +138,7 @@ var word_bank = {
         cash_on_delivery: "cash on delivery",
         pay_card: "Credit or Debit card",
         pay_paypal: "Paypal",
+        pay_crypto: "Crypto",
         card_number: "Card number",
         month: "Month",
         year: "Year",  
@@ -176,6 +178,11 @@ var word_bank = {
         place_01: "1st place",
         place_02: "2nd place",
         place_03: "3rd place",
+
+        keno_instructions: "Pick up to 10 Keno Spots or choose Quick Pick (it will randomly choose max. 10 Keno Spots for you)",
+        price_per_game: "Price per game",
+        no_of_games: "No. of games",
+        quick_pick: "Quick pick",
     },
     "RO":{
         salon: "Salon",
@@ -241,6 +248,7 @@ var word_bank = {
         no_jobs: "Nu exista job-uri disponibile. Puteti sa ne trimiteti CV-ul dumneavoastra pe mail.",
         no_participation_today: "Nu participa astazi",
         no_order: "Nu exista comenzi",
+        no_selections: "Selecteaza macar un Keno Spot pentru a incepe jocul",
         
         isMinor_title: "Verificare varsta",
         isMinor_text: "Ai peste 18 ani?",
@@ -315,6 +323,7 @@ var word_bank = {
         cash_on_delivery: "plata ramburs",
         pay_card: "card credit/debit",
         pay_paypal: "Paypal",
+        pay_crypto: "Crypto",
         card_number: "Numar card",
         month: "Luna",
         year: "An",
@@ -354,6 +363,11 @@ var word_bank = {
         place_01: "Locul 1",
         place_02: "Locul 2",
         place_03: "Locul 3",
+
+        keno_instructions: "Alege pana la 10 Keno Spots sau alege Quick Pick (va alege maxim 10 Keno Spots aleatoare)",
+        price_per_game: "Pret per joc",
+        no_of_games: "Nr. de jocuri",
+        quick_pick: "Quick pick",
     }
 }
 
