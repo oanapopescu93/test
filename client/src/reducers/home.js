@@ -10,6 +10,7 @@ const initialState = {
     questions: [],
     slot_prises: [],
     race_rabbits: [],
+    keno_prizes: [],
     contact: [],
     loaded: false
 }
@@ -54,7 +55,7 @@ const homeSlice = createSlice({
         bringPayload: () => {
             //console.log("bringThemAll!!!")
         },
-        showPayload: (state, { payload }) => {
+        showPayload: (state, { payload }) => {            
             state.products = payload.products
             state.market = payload.market
             state.currencies = payload.currencies
@@ -64,6 +65,7 @@ const homeSlice = createSlice({
             state.questions = payload.questions
             state.slot_prises = payload.slot_prises
             state.race_rabbits = getRaceRabbits(payload.race_rabbits)
+            state.keno_prizes = payload.keno_prizes
             state.contact = payload.contact
             state.loaded = true
         },

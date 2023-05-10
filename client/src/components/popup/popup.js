@@ -14,6 +14,7 @@ import Settings from "./settings"
 import ChangeProfilePic from "./changeProfilePic"
 import ChangeUsername from "./changeUsername"
 import ChangePassword from "./changePassword"
+import KenoPrizeTable from "./kenoPrizeTable"
 
 function Popup(props){
     const {lang, date, currency, socket, home} = props
@@ -85,9 +86,16 @@ function Popup(props){
                             return <ChangeUsername changeUsername={(e)=>dashboardChanges(e)}></ChangeUsername>
                         case "change_password":
                             return <ChangePassword changePassword={(e)=>dashboardChanges(e)}></ChangePassword>
+                        case "keno_prizes":
+                            return <KenoPrizeTable lang={lang} kenoPrizes={data}></KenoPrizeTable>
                         case "error":
                         default:
-                            return <Default lang={lang} text={data}></Default>
+                            if(typeof data === "string"){
+                                return <Default lang={lang} text={data}></Default>
+                            } else {
+                                return null
+                            }
+                            
                     }
                 })()}
             </Modal.Body>

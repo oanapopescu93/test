@@ -17,7 +17,7 @@ function Page(props) {
     let uuid = user.uuid ? user.uuid : ''
     const [loaded, setLoaded] = useState(false)
     const [progressNumber, setProgressNumber] = useState(0)
-    let dispatch = useDispatch()
+    let dispatch = useDispatch()    
 
     useEffect(() => {
 		dispatch(bringPayload())	
@@ -59,7 +59,7 @@ function Page(props) {
                     return <Splash {...props} progressNumber={progressNumber}></Splash>
                 }                
             } else {
-                if(home.loaded){                    
+                if(home.loaded){              
                     return <Home {...props} home={home} page={page} user={user} cookies={cookies}></Home>
                 } else {
                     return <Loader></Loader>

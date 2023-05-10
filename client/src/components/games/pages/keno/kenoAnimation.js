@@ -1,8 +1,10 @@
-import React, {useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useDispatch } from 'react-redux'
-import { translate } from '../../../../translations/translate'
 import $ from 'jquery'
 import { draw_dot, getDistance_between_entities } from '../../../../utils/games'
+import { Row, Col, Button } from 'react-bootstrap'
+import { translate } from '../../../../translations/translate'
+import KenoResults from './kenoResults'
 
 function keno_game(props){
     let self = this	
@@ -12,7 +14,7 @@ function keno_game(props){
 	let canvas_height = 700
     let radiusBall = 20
     let radiusBig = 300
-    let ballsArray = new Array()
+    let ballsArray = []
     let howManyBalls = 80
     let font_obstacle = '12px sans-serif'
 
@@ -120,8 +122,6 @@ function keno_game(props){
 			  window.setTimeout(callback, 1000 / 60)
 			}
 	    })()
-
-        
 	  
 	    function run() {
 			if(ctx){
@@ -129,7 +129,9 @@ function keno_game(props){
 				if (spin_nr > spin_time) {
 					stop = true
                     self.drawBigCircle()
-                    self.win_lose()
+                    if(typeof props.results !== "undefined"){
+                        props.results()
+                    }
 				} else {
 					spin_nr++					
 					stop = false            
@@ -178,18 +180,36 @@ function keno_game(props){
 	  	run()  
 	}
 
-    this.win_lose = function(){
-        console.log(props)
-    }
-
     this.leave = function(){
         console.log('leave')
     }
 }
 
 function KenoAnimation(props){
+    let list = props.data.list
+    let no_of_games = props.data.no_of_games
+    let price_per_game = props.data.price_per_game
+    let howManyBalls = 80
     let dispatch = useDispatch()
-    let options = {...props, dispatch}
+    const [resultsPayload, setResultsPayload] = useState(null)
+
+    let results = function(){        
+        generatePick()
+	}
+
+    function generatePick(){
+		return new Promise(function(resolve, reject){
+			let keno_payload_server = {
+                uuid: props.user.uuid,
+                length: list.length, 
+                max: howManyBalls,
+                no_of_games: no_of_games
+            }
+            props.socket.emit('keno_send', keno_payload_server)            
+		})
+	}
+
+    let options = {...props, dispatch, results}
     let my_keno = new keno_game(options)
 
     function ready(){
@@ -211,7 +231,48 @@ function KenoAnimation(props){
 		}
     }, [])
 
-    return <canvas id="keno_canvas"></canvas>
+    useEffect(() => {
+        props.socket.on('keno_read', function(data){
+            if(data){
+                win_lose(data)
+            }
+        })
+    }, [props.socket])
+
+    function win_lose(matrix){
+        let list_results = []
+        for(let i in matrix){
+            let filteredArray = matrix[i].filter(value => list.includes(value)) //array intersections
+            list_results.push(filteredArray)
+        }
+        setResultsPayload({list, price_per_game, no_of_games, results: list_results})
+    }
+
+    function handleShowPrizes(){
+        if(typeof props.handleShowPrizes !== "undefined"){
+            props.handleShowPrizes()
+        }
+    }
+
+    return <>
+        <Row>
+            <Col sm={8}>
+                <canvas id="keno_canvas"></canvas>
+            </Col>
+            <Col sm={4}>
+                <Row>
+                    <Col sm={12}>
+                        <KenoResults {...props} results={resultsPayload}></KenoResults>
+                    </Col>
+                    <Col sm={12} className="dashboard_left_buttons">
+                        <Button type="button" onClick={()=>handleShowPrizes()} className="mybutton button_transparent shadow_convex">
+                            {translate({lang: props.lang, info: "keno_prizes"})}
+                        </Button>	
+                    </Col>
+                </Row>
+            </Col>            
+        </Row>
+    </>
 }
 
 export default KenoAnimation

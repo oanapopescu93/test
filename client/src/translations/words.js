@@ -183,6 +183,10 @@ var word_bank = {
         price_per_game: "Price per game",
         no_of_games: "No. of games",
         quick_pick: "Quick pick",
+        keno_prizes: "Keno Prizes",
+        keno_numbers_played: "How many no. played", 
+        keno_numbers_matched: "How many no. guessed",
+        keno_win: "Win",
     },
     "RO":{
         salon: "Salon",
@@ -368,6 +372,10 @@ var word_bank = {
         price_per_game: "Pret per joc",
         no_of_games: "Nr. de jocuri",
         quick_pick: "Quick pick",
+        keno_prizes: "Premii Keno",
+        keno_numbers_played: "Cate nr. ai jucat", 
+        keno_numbers_matched: "Cate nr. ai ghicit",
+        keno_win: "Premiu",
     }
 }
 

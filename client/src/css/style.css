@@ -2327,6 +2327,40 @@ textarea {
 .keno_form .mybutton{
   margin-top: 6px;
 }
+.keno_rules{
+  padding: var(--padding_small);
+  max-height: 600px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.keno_rules_box{
+  margin-bottom: var(--padding_small);
+}
+.keno_rules_box_header{
+  background-color: var(--bg);
+  border: solid 1px var(--bg);
+  padding: var(--padding_small);
+  color: var(--color);
+  border-radius: var(--radius) var(--radius) 0px 0px;
+}
+.keno_rules_box_body{
+  border: solid 1px var(--bg);
+  border-top: solid 0px transparent;
+  border-radius: 0px 0px var(--radius) var(--radius);
+}
+.keno_rules_item{
+  display: inline-block;
+  vertical-align: top;
+  padding: var(--padding_small);
+  border-right: solid 1px var(--bg);
+  width: 50%;
+}
+.keno_rules_item:last-child{
+  border-right: solid 0px transparent;
+}
+.keno_rules_items:first-child .keno_rules_item{
+  border-bottom: solid 1px var(--bg);
+}
 
 /* media */
 @media (max-width: 1200px){
@@ -2490,7 +2524,7 @@ textarea {
 
   /* GAME */
   .content_wrap{
-    padding: var(--padding);
+    padding: var(--padding) 40px;
   }
   .game_loading_icon{
     width: 150px;
@@ -2547,6 +2581,9 @@ textarea {
     width: 40px;
     height: 40px;
     line-height: 20px;
+  }
+  .keno_rules{
+    max-height: 400px;
   }
 }
 @media (max-width:600px) {	
@@ -2632,6 +2669,9 @@ textarea {
     height: 30px;
     line-height: 28px;
     padding: 0px;
+  }
+  .keno_rules{
+    max-height: 200px;
   }
 }
 @media (max-width:480px) {

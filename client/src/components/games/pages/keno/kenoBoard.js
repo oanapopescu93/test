@@ -26,12 +26,12 @@ function KenoSpot(config){
 	}
 }
 
-function KenoBoard(props){    
-    const {lang, socket} = props
+function KenoBoard(props){
     const [kenoSpots, setKenoSpots] = useState([])
     const [titleDropdown1, setTitleDropdown1] = useState(1)
     const [titleDropdown2, setTitleDropdown2] = useState(1)  
-    const [quickPickLength, setQuickPickLength] = useState(1)    
+    const [quickPickLength, setQuickPickLength] = useState(1)
+    let howManySpots = 80 
 
     useEffect(() => {
         let array = []
@@ -80,20 +80,19 @@ function KenoBoard(props){
     function handleQuickPick(){
         resetKenoSpots()
         let array = [...kenoSpots]
-        generatePick(quickPickLength).then(function(data){
-            for(let i in array){  
-                for(let j in data){  
-                    if(array[i].get_number() === data[j]){
-                        array[i].change_status()
-                        break
-                    }
+        let arr = generatePick(quickPickLength, howManySpots)        
+        for(let i in array){  
+            for(let j in arr){  
+                if(array[i].get_number() === arr[j]){
+                    array[i].change_status()
+                    break
                 }
             }
-            setKenoSpots(array)
-            if(typeof props.getData === "function"){
-                props.getData({list: data, price_per_game: titleDropdown1, no_of_games: titleDropdown2})
-            }
-        })
+        }
+        setKenoSpots(array)
+        if(typeof props.getData === "function"){
+            props.getData({list: arr, price_per_game: parseInt(titleDropdown1), no_of_games: parseInt(titleDropdown2)})
+        }
     }
 
     function resetKenoSpots(){
@@ -104,24 +103,14 @@ function KenoBoard(props){
         return array
     }
 
-    function generatePick(length){
-		return new Promise(function(resolve, reject){
-			let keno_payload_server = {
-				uuid: props.user.uuid,
-				length: length, 
-				max: 80,
-                reason: "quick_pick"
-			}
-			socket.emit('keno_send', keno_payload_server)
-			socket.on('keno_read', function(data){
-				if(data){
-					resolve(data)
-				} else {
-					resolve([])
-				}
-			})
-		})
-	}
+    function generatePick(length, max){
+        let arr = []
+        while(arr.length < length){
+            let r = Math.floor(Math.random() * max) + 1
+            if(arr.indexOf(r) === -1) arr.push(r)
+        }
+        return arr
+    }
 
     function updateQuickPickLength(e){
         setQuickPickLength(e)
@@ -129,13 +118,16 @@ function KenoBoard(props){
 
     function handleStart(){
         if(typeof props.startGame !== "undefined"){
+            if(typeof props.getData === "function"){
+                props.getData({list: getSelections(kenoSpots), price_per_game: parseInt(titleDropdown1), no_of_games: parseInt(titleDropdown2)})
+            }
             props.startGame()
         }
     }
     
     return <div className="keno_board_container">        
         {kenoSpots && kenoSpots.length>0 ? <>
-            <p>{translate({lang: lang, info: "keno_instructions"})}</p>
+            <p>{translate({lang: props.lang, info: "keno_instructions"})}</p>
             <Row id="keno_form" className="keno_form">
                 <Col sm={2}></Col>
                 <Col sm={8}>
@@ -148,7 +140,7 @@ function KenoBoard(props){
                                 type="button"  
                                 className="mybutton button_transparent shadow_convex remove"
                                 onClick={()=>{handleQuickPick()}}
-                            ><span>{translate({lang: lang, info: "quick_pick"})}</span></Button>  
+                            ><span>{translate({lang: props.lang, info: "quick_pick"})}</span></Button>  
                         </Col>
                     </Row>
                     
@@ -162,18 +154,12 @@ function KenoBoard(props){
                     if(item.get_status()){
                         selected = " selected"
                     }
-                    if(number % 10 === 0){
-                        return <>                        
-                            <div key={i} className={"keno_spot" + selected} onClick={()=>handleClick(item)}>
-                                <div className="keno_spot_box">{number}</div>
-                            </div>
-                            <br></br>
-                        </>
-                    } else {
-                        return <div key={i} className={"keno_spot" + selected} onClick={()=>handleClick(item)}>
+                    return <>                        
+                        <div key={i} className={"keno_spot" + selected} onClick={()=>handleClick(item)}>
                             <div className="keno_spot_box">{number}</div>
                         </div>
-                    }
+                        {number % 10 === 0 ? <br></br> : null}                        
+                    </>
                 })}
             </div>
             <Row className="keno_options">
@@ -181,7 +167,7 @@ function KenoBoard(props){
                 <Col sm={8}>
                     <Row>
                         <Col xs={4} md={4} lg={5}>
-                            <p>{translate({lang: lang, info: "price_per_game"})}</p>
+                            <p>{translate({lang: props.lang, info: "price_per_game"})}</p>
                             <DropdownButton title={titleDropdown1} id="keno_price_per_game" onSelect={(e)=>handleDropdown("price_per_game", e)}>
                                 <Dropdown.Item eventKey={1}>1</Dropdown.Item>
                                 <Dropdown.Item eventKey={2}>2</Dropdown.Item>
@@ -191,7 +177,7 @@ function KenoBoard(props){
                             </DropdownButton>
                         </Col>
                         <Col xs={4} md={4} lg={5}>
-                            <p>{translate({lang: lang, info: "no_of_games"})}</p>
+                            <p>{translate({lang: props.lang, info: "no_of_games"})}</p>
                             <DropdownButton title={titleDropdown2} id="keno_no_of_games" onSelect={(e)=>handleDropdown("no_of_games", e)}>
                                 <Dropdown.Item eventKey={1}>1</Dropdown.Item>
                                 <Dropdown.Item eventKey={2}>2</Dropdown.Item>
@@ -205,7 +191,7 @@ function KenoBoard(props){
                                 type="button"  
                                 className="mybutton round button_transparent shadow_convex remove"
                                 onClick={()=>{handleStart()}}
-                            ><span>{translate({lang: lang, info: "start"})}</span></Button>  
+                            ><span>{translate({lang: props.lang, info: "start"})}</span></Button>  
                         </Col>
                     </Row>
                 </Col>

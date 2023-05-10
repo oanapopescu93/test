@@ -76,6 +76,18 @@ module.exports = Object.freeze({
         {id: 19, participating: false, name: "Bunny_19", breed: "Mini Rex", img: "/img/rabbit_list/mini_rex.png"},
         {id: 20, participating: false, name: "Bunny_20", breed: "Neatherland", img: "/img/rabbit_list/neatherland.png"},
     ],
+    KENO_PRIZES: [
+        [{numbers_matched: 1, win: 3}],
+        [{numbers_matched: 2, win: 12}],
+        [{numbers_matched: 2, win: 1}, {numbers_matched: 3, win: 44}],
+        [{numbers_matched: 2, win: 1}, {numbers_matched: 3, win: 4}, {numbers_matched: 4, win: 122}],
+        [{numbers_matched: 3, win: 2}, {numbers_matched: 4, win: 14}, {numbers_matched: 5, win: 640}],
+        [{numbers_matched: 3, win: 1}, {numbers_matched: 4, win: 5}, {numbers_matched: 5, win: 80}, {numbers_matched: 6, win: 1800}],
+        [{numbers_matched: 3, win: 1}, {numbers_matched: 4, win: 3}, {numbers_matched: 5, win: 12}, {numbers_matched: 6, win: 125}, {numbers_matched: 7, win: 5000}],
+        [{numbers_matched: 4, win: 2}, {numbers_matched: 5, win: 7}, {numbers_matched: 6, win: 60}, {numbers_matched: 7, win: 675}, {numbers_matched: 8, win: 25000}],
+        [{numbers_matched: 4, win: 1}, {numbers_matched: 5, win: 5}, {numbers_matched: 6, win: 20}, {numbers_matched: 7, win: 210}, {numbers_matched: 8, win: 2500}, {numbers_matched: 9, win: 30000}],
+        [{numbers_matched: 4, win: 1}, {numbers_matched: 5, win: 2}, {numbers_matched: 6, win: 6}, {numbers_matched: 7, win: 50}, {numbers_matched: 8, win: 580}, {numbers_matched: 9, win: 30000}, {numbers_matched: 10, win: 50000}],
+    ],
     CONTACT: [
         {country: "Romania", city: "Bucharest", email: "oanapopescu93@gmail.com", phone: "+40 711 111 111"},
         {country: "USA", city: "New York", email: "oanapopescu93@gmail.com", phone: "+1 111-111-1111"},
