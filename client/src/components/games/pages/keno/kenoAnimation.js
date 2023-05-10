@@ -2,15 +2,15 @@ import React, {useEffect} from 'react'
 import { useDispatch } from 'react-redux'
 import { translate } from '../../../../translations/translate'
 import $ from 'jquery'
-import { draw_dot } from '../../../../utils/games'
+import { draw_dot, getDistance_between_entities } from '../../../../utils/games'
 
 function keno_game(props){
-    console.log(props)
     let self = this	
     let canvas
     let ctx
     let canvas_width = 700
 	let canvas_height = 700
+    let radiusBall = 20
     let radiusBig = 300
     let ballsArray = new Array()
     let howManyBalls = 80
@@ -30,20 +30,24 @@ function keno_game(props){
 		if (window.innerWidth < 960){
 			if(window.innerHeight < window.innerWidth){
 				//small landscape
-				canvas.width = 300
-				canvas.height = 300
-                radiusBig = 300
+				canvas.width = 250
+				canvas.height = 250
+                radiusBall = 10
+                radiusBig = 100
 			} else {
 				//small portrait
-				canvas.width = 300
-				canvas.height = 300
-                radiusBig = 300
+				canvas.width = 250
+				canvas.height = 250
+                radiusBall = 10
+                radiusBig = 100
 			}
 		} else {
-			//big
-			canvas.width = 700
-			canvas.height = 700
+            //big
+            canvas.width = 610
+            canvas.height = 610
+            radiusBall = 20
             radiusBig = 300
+			
 		}
         canvas_width = canvas.width
 		canvas_height = canvas.height	
@@ -53,23 +57,24 @@ function keno_game(props){
     this.createBallArray = function(){
         for (let i=0; i<howManyBalls; i++){
             ballsArray[i] = {
-                radius: 25,
+                radius: radiusBall,
                 xspeed: 0,
                 yspeed: 0,
                 xpos: canvas.width/2,
                 ypos: canvas.height/2,
                 changeDir: false,
+                dir: (Math.random() * 2) + 0.5,
             }
-            let speed = 1
+            let dir = (Math.random() * 1) + 0
             if(Math.round(Math.random())>0.5){
-                speed = -1
+                dir = -dir
             }
-            ballsArray[i].xspeed = speed * Math.floor((Math.random()*2000)+1000)            
-            speed = 1
+            ballsArray[i].xspeed = dir * Math.floor((Math.random()*3000)+1000)            
+            dir = (Math.random() * 1) + 0
             if(Math.round(Math.random())>0.5){
-                speed = -1
+                dir = -dir
             }
-            ballsArray[i].yspeed = speed * Math.floor((Math.random()*2000)+1000)
+            ballsArray[i].yspeed = dir * Math.floor((Math.random()*3000)+1000)
             ballsArray[i].number = parseInt(i)+1
        }
     }
@@ -95,29 +100,17 @@ function keno_game(props){
     this.drawBigCircle = function() {
         ctx.clearRect(0,0,canvas.height, canvas.width)
         draw_dot(ctx, canvas.width/2, canvas.height/2, radiusBig, 0, 2 * Math.PI, false, 'rgba(255, 255, 0, 0.1)', 1, "gold")	
-	}
-
-    this.lineDistance = function(positionx, positiony){
-		let xs = 0
-		let ys = 0
-		xs = positionx - canvas.width/2
-		xs = xs * xs
-		ys = positiony - canvas.width/2
-		ys = ys * ys
-		return Math.sqrt( xs + ys )
-	}	
+	}    	
 
     this.move = function(){
         setTimeout(function(){
-            self.spin(2200)
+            self.animation(1000)
        }, 1000)  
     }
 
-    this.spin = function(time){ 
+    this.animation = function(time){ 
 		let spin_nr = 0
 		let spin_time = time
-        let tprev = 0 // this is used to calculate the time step between two successive calls of run
-        let t = 0
 
 		window.requestAnimFrame = (function(){
 			return  window.requestAnimationFrame	||
@@ -127,37 +120,38 @@ function keno_game(props){
 			  window.setTimeout(callback, 1000 / 60)
 			}
 	    })()
+
+        
 	  
-	    function run(t) {
+	    function run() {
 			if(ctx){
 				let stop = false
 				if (spin_nr > spin_time) {
 					stop = true
+                    self.drawBigCircle()
+                    self.win_lose()
 				} else {
 					spin_nr++					
-					stop = false
-                    
-                    if (t === undefined){
-                        t=0
-                    }
-                    let h = t - tprev   // time step 
-                    tprev = t                    
+					stop = false            
 
                     for(let i in ballsArray){
-                        ballsArray[i].xpos += ballsArray[i].xspeed * 0.5/1000  // update position according to constant speed
-                        ballsArray[i].ypos += ballsArray[i].yspeed * 1/1000  // update position according to constant speed
+                        ballsArray[i].xpos += ballsArray[i].xspeed * ballsArray[i].dir/1000  // update position according to constant speed
+                        ballsArray[i].ypos += ballsArray[i].yspeed * ballsArray[i].dir/1000  // update position according to constant speed
                     }
 
                     // change speed direction
                     for(let i in ballsArray){
-                        if (self.lineDistance(ballsArray[i].xpos, ballsArray[i].ypos) + ballsArray[i].radius > radiusBig) { 
-                            ballsArray[i].changeDir = true
+                        let point01 = {x: ballsArray[i].xpos, y: ballsArray[i].ypos}
+                        let point02 = {x: canvas.width/2, y: canvas.height/2}
+                        if (getDistance_between_entities(point01, point02) + ballsArray[i].radius >= radiusBig) { 
+                            //ballsArray[i].changeDir = true
                             
                             let nx_o = canvas.width/2 -  ballsArray[i].xpos
                             let ny_o = canvas.width/2 -  ballsArray[i].ypos
                     
                             let nx = nx_o / (Math.sqrt(nx_o * nx_o + ny_o * ny_o))
                             let ny = ny_o / (Math.sqrt(nx_o * nx_o + ny_o * ny_o))
+                            // r = v − [2 (n · v) n]
                             let v_newx = ballsArray[i].xspeed - (2 *( nx * ballsArray[i].xspeed + ny * ballsArray[i].yspeed ) ) * nx
                             let v_newy = ballsArray[i].yspeed - (2 *( nx * ballsArray[i].xspeed + ny * ballsArray[i].yspeed ) ) * ny
             
@@ -181,8 +175,12 @@ function keno_game(props){
             }
 	  	}
 
-	  	run(11)  
+	  	run()  
 	}
+
+    this.win_lose = function(){
+        console.log(props)
+    }
 
     this.leave = function(){
         console.log('leave')
