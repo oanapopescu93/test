@@ -23,6 +23,7 @@ import race_loading_icon from '../../img/icons_other/icons/yellow/race.png'
 import keno_loading_icon from '../../img/icons_other/icons/yellow/keno.png'
 import Dashboard from './pages/dashboard/dashboard'
 import Market from './pages/market/market'
+import { changePopup } from '../../reducers/popup'
 
 function Game(props){
     const {lang, page, socket} = props
@@ -34,10 +35,16 @@ function Game(props){
     const [streak, setStreak] = useState(1)
     let room = useSelector(state => state.page.room)
 
-    function results(payload){
-        if(payload && payload.bet && payload.bet>0){ //send results to server only if he bet
-            socket.emit('game_results_send', payload)
-            console.log('game_results_send ', payload)
+    function results(res){
+        if(res && res.bet && res.bet>0){ //send results to server only if he bet
+            socket.emit('game_results_send', res)
+            let payload = {
+                open: true,
+                template: "game_results",
+                title: translate({lang: props.lang, info: "results"}),
+                data: res
+            }
+            dispatch(changePopup(payload))
         }
     }
 

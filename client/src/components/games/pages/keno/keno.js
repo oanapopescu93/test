@@ -11,20 +11,15 @@ function Keno(props){
     const [start, setStart] = useState(false)
     const [data, setData] = useState(null)
     const [resultsPayload, setResultsPayload] = useState(null)
-    let keno_prizes = props.home.keno_prizes
     let money = decryptData(props.user.money)
     let game = props.page.game
+    let dataUpdate = null
 
     useEffect(() => {
         if(data){
-            let list = data.list
-            let numbers_chosen = data.list.length
-            let price_per_game = data.price_per_game
-            let no_of_games = data.no_of_games
             let keno_bets = data.no_of_games * data.price_per_game
             let status = 'lose'
             let pay = money
-            let prizes = keno_prizes[numbers_chosen-1]
             let numbers_matched = 0
             if(resultsPayload && resultsPayload.list_filtered && resultsPayload.list_filtered.length>0){
                 numbers_matched = resultsPayload.list_filtered.length
@@ -60,8 +55,18 @@ function Keno(props){
     }, [resultsPayload])
 
     function startGame(){
-        if(data && data.list && data.list.length>0){
-            setStart(true)
+        if(dataUpdate && dataUpdate.list && dataUpdate.list.length>0){ 
+            if(dataUpdate.price_per_game>0){
+                setStart(true)
+            } else {
+                let payload = {
+                    open: true,
+                    template: "error",
+                    title: translate({lang: props.lang, info: "error"}),
+                    data: translate({lang: props.lang, info: "no_bets"})
+                }
+                dispatch(changePopup(payload))
+            }
         } else {
             let payload = {
                 open: true,
@@ -75,6 +80,7 @@ function Keno(props){
 
     function getData(x){
         setData(x)
+        dataUpdate = x
     }    
 
     function handleShowPrizes(){

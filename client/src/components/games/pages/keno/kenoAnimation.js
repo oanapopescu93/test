@@ -106,9 +106,9 @@ function keno_game(props){
 
     this.move = function(){
         setTimeout(function(){
-            duration = 100
+            //duration = 100
             self.animation(duration)
-       }, 1000)  
+       }, 500)  
     }
 
     this.animation = function(time){ 

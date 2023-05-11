@@ -6,7 +6,7 @@ function KenoResults(props){
     let list_results = results ? results.list_results : []
     let list_filtered = results ? results.list_filtered : []    
 
-    return <div className="KenoResults_container">
+    return <div className="KenoResults_container shadow_convex">
         <div className="KenoResults">
             <div className="KenoResults_box">
                 <h4>{translate({lang: lang, info: "no_of_games"})}: <span>{no_of_games}</span></h4>

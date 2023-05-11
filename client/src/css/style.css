@@ -2306,14 +2306,7 @@ textarea {
   background-color: var(--transparent_color);
 }
 .keno_spot.selected .keno_spot_box{
-  background-color: rgba(0, 128, 0, 0.3);
-  border: solid 1px var(--green);
-  color: var(--green);
-}
-.keno_spot.selected_red .keno_spot_box{
-  background-color: rgba(255, 0, 0, 0.3);
-  border: solid 1px var(--red);
-  color: var(--red);
+  background-color: var(--transparent_color);
 }
 .keno_form, .keno_options{
   margin: var(--padding) 0px;
@@ -2367,6 +2360,7 @@ textarea {
   border: solid 1px var(--color);
   border-radius: var(--radius);
   text-align: left;
+  margin-bottom: var(--padding);
 }
 .KenoResults{  
   max-height: 400px;
@@ -2375,7 +2369,7 @@ textarea {
   padding: var(--padding);
 }
 .KenoResults_box{
-  margin-bottom: var(--padding_small);
+  margin-bottom: var(--padding);
 }
 .KenoResults_box:last-child{
   margin-bottom: 0px;

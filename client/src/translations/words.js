@@ -64,6 +64,7 @@ var word_bank = {
         no_participation_today: "No participation today",
         no_order: "No orders",
         no_selections: "Select at least a Keno Spot to start the game",
+        no_match: "No match",
 
         isMinor_title: "Age verification",
         isMinor_text: "Are you over 18?",
@@ -182,8 +183,14 @@ var word_bank = {
         keno_win: "Win",
         your_numbers: "Your numbers",
         lucky_numbers: "Lucky numbers", 
+
+        // results
         results: "Results",
         result: "Result",
+        game: "Joc",
+        game_type: "Tip joc",
+        you_win: "Ai castigat",
+        you_lose: "Ai pierdut",
     },
     "RO":{
         salon: "Salon",
@@ -250,6 +257,7 @@ var word_bank = {
         no_participation_today: "Nu participa astazi",
         no_order: "Nu exista comenzi",
         no_selections: "Selecteaza macar un Keno Spot pentru a incepe jocul",
+        no_match: "Nicio potrivire",
         
         isMinor_title: "Verificare varsta",
         isMinor_text: "Ai peste 18 ani?",
@@ -368,8 +376,15 @@ var word_bank = {
         keno_win: "Premiu",
         your_numbers: "Numerele tale",
         lucky_numbers: "Numerele norocoase", 
+        
+
+        // results
         results: "Rezultate",
         result: "Rezultat",
+        game: "Joc",
+        game_type: "Tip joc",
+        you_win: "Ai castigat",
+        you_lose: "Ai pierdut",
     }
 }
 

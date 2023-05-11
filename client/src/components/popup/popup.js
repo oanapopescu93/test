@@ -15,6 +15,7 @@ import ChangeProfilePic from "./changeProfilePic"
 import ChangeUsername from "./changeUsername"
 import ChangePassword from "./changePassword"
 import KenoPrizeTable from "./kenoPrizeTable"
+import GameResults from "./gameResults"
 
 function Popup(props){
     const {lang, date, currency, socket, home} = props
@@ -88,6 +89,8 @@ function Popup(props){
                             return <ChangePassword changePassword={(e)=>dashboardChanges(e)}></ChangePassword>
                         case "keno_prizes":
                             return <KenoPrizeTable lang={lang} kenoPrizes={data}></KenoPrizeTable>
+                        case "game_results":
+                            return <GameResults lang={lang} results={data}></GameResults>
                         case "error":
                         default:
                             if(typeof data === "string"){

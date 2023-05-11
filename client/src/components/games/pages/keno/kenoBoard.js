@@ -31,7 +31,7 @@ function KenoSpot(config){
 
 function KenoBoard(props){
     const [kenoSpots, setKenoSpots] = useState([])
-    const [titleDropdown1, setTitleDropdown1] = useState(1)
+    const [titleDropdown1, setTitleDropdown1] = useState(0)
     const [titleDropdown2, setTitleDropdown2] = useState(1)  
     const [quickPickLength, setQuickPickLength] = useState(1)
     let howManySpots = 80 
@@ -131,7 +131,7 @@ function KenoBoard(props){
         setQuickPickLength(e)
     }
 
-    function handleStart(){
+    function handleStart(){        
         if(typeof props.startGame !== "undefined"){
             if(typeof props.getData === "function"){
                 props.getData({list: getSelections(kenoSpots), price_per_game: parseInt(titleDropdown1), no_of_games: parseInt(titleDropdown2)})

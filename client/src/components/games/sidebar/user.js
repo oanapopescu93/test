@@ -17,8 +17,6 @@ function User(props){
     const [buttonUser, setButtonUser] = useState('active')
     const [buttonMarket, setButtonMarket] = useState('')
 
-    console.log('streak--> ', streak)
-
     function handleChange(choice){
         switch (choice) {           
 			case "dashboard":
