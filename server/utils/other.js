@@ -42,20 +42,6 @@ function sort_array_obj(array, sort_by){
 	}
   	
 }
-function get_room_name(data, x){
-	let room_name = 'room'	
-	return room_name
-}
-function get_user_from_uuid(uuid, users_array){
-	let user_found
-	for(let i in users_array){
-		if(users_array[i].uuid == uuid){
-			user_found = users_array[i]									
-			break
-		}
-	}
-	return user_found
-}
 function get_device(headers){
 	let device = 0 // 0 = computer, 1 = mobile, 2 = other
 	if(headers){
@@ -93,9 +79,6 @@ function check_streak(result){
 		}
 	}
 	return streak
-}
-function chatMessage(from, text){
-	return {from: from, text:text, time: new Date().getTime()} 
 }
 
 function get_geolocation(apiKey) {
@@ -154,11 +137,8 @@ function sendEmail(data){ //send an email with instructions to reset token
 
 module.exports = {
 	sort_array_obj,
-	get_room_name,
-	get_user_from_uuid,
 	get_device,
 	check_streak,
-	chatMessage,
 	get_extra_data,
 	sendEmail,
 }

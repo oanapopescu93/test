@@ -2,9 +2,9 @@ var express = require("express")
 var bodyParser = require('body-parser')
 var paypalPayment = express.Router()
 
-var paypal_mode = require('./var/constants').PAYPAL_MODE
-var paypal_client_id = require('./var/constants').PAYPAL_CLIENT_ID
-var paypal_client_secret = require('./var/constants').PAYPAL_CLIENT_SECRET
+var paypal_mode = require('../var/constants').PAYPAL_MODE
+var paypal_client_id = require('../var/constants').PAYPAL_CLIENT_ID
+var paypal_client_secret = require('../var/constants').PAYPAL_CLIENT_SECRET
 
 var jsonParser = bodyParser.json() 
 const paypal = require('paypal-rest-sdk')

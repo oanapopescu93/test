@@ -31,6 +31,7 @@ function Game(props){
     let title = game.table_name ? game.table_name : ""
     let dispatch = useDispatch()
     const [chatRoomUsers, setChatRoomUsers] = useState([])
+    const [streak, setStreak] = useState(1)
     let room = useSelector(state => state.page.room)
 
     function results(payload){
@@ -47,6 +48,13 @@ function Game(props){
     }
 
     useEffect(() => {
+        socket.emit('game_send', {uuid: props.user.uuid}) 
+        socket.on('game_read', function(res){
+            if(res && res.streak){
+                setStreak(res.streak)
+            }
+        })
+
         let room = getRoom(game)
         socket.emit('join_room', {room: room, uuid: props.user.uuid, user: props.user.user}) 
         socket.on('chatroom_users_read', function(res){
@@ -70,7 +78,7 @@ function Game(props){
                     switch (title) {
                         case "roulette":
                             if(room){
-                                return <Roulette {...props} results={(e)=>results(e)}></Roulette>
+                                return <Roulette {...props} streak={streak} results={(e)=>results(e)}></Roulette>
                             } else {
                                 return <>
                                     <img src={roulette_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
@@ -144,7 +152,7 @@ function Game(props){
                 </Button>
             </div>
         </div>
-        <Panel {...props} chatRoomUsers={chatRoomUsers}></Panel>
+        <Panel {...props} streak={streak} chatRoomUsers={chatRoomUsers}></Panel>
     </>
 }
 

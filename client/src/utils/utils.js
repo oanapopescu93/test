@@ -1,5 +1,3 @@
-import countries from './json/countries.json';
-
 export const isEmpty = function(element){
   let empty = true
   if(typeof element !== "undefined" && element !== 'null' && element !== null && element !== '' && element !== 'N/A'){
@@ -150,9 +148,8 @@ export const checkoutData = function(){
     {ENG: "November", RO: "Noiembrie"},
     {ENG: "December", RO: "Decembrie"},
   ]
-  let date = new Date().getFullYear()-1;
+  let date = new Date().getFullYear()-1
   const yearOptions = Array.from({length: 10}, (_, i) => i + date)
-  let countries_list = Object.keys(countries.countries)
 
-  return {countries_list, countries: countries.countries, monthOptions, yearOptions}
+  return {monthOptions, yearOptions}
 } 

@@ -12,10 +12,12 @@ import {faHouse, faGear, faPaperPlane, faPowerOff} from '@fortawesome/free-solid
 import { setCookie } from '../../../utils/utils'
 
 function User(props){
-    const {lang, user} = props
+    const {lang, user, streak} = props
     let dispatch = useDispatch()
     const [buttonUser, setButtonUser] = useState('active')
     const [buttonMarket, setButtonMarket] = useState('')
+
+    console.log('streak--> ', streak)
 
     function handleChange(choice){
         switch (choice) {           
@@ -79,7 +81,7 @@ function User(props){
                     <img alt="carrot_img" className="currency_img" src={carrot_img}/>
                 </span>
                 <span id="user_streak">
-                    <span>1</span>
+                    <span>{streak}</span>
                     <div className="my_tooltip">
                         <FontAwesomeIcon icon={faCalendarDays} />
                         {(() => {

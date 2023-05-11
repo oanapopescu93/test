@@ -7,16 +7,16 @@ var io = require('socket.io')(http)
 
 var routes = require("./routes")
 app.use(routes) 
-var stripePayment = require("./stripePayment")
+var stripePayment = require("./payments/stripePayment")
 app.use(stripePayment)
-var paypalPayment = require("./paypalPayment")
+var paypalPayment = require("./payments/paypalPayment")
 app.use(paypalPayment) 
 
-const path = require("path");
+const path = require("path")
 const fs = require('fs')
 
 const { encrypt, decrypt } = require('./utils/crypto')
-const { get_device, get_extra_data, sendEmail, check_streak, chatMessage} = require("./utils/other")
+const { get_device, get_extra_data, sendEmail, check_streak} = require("./utils/other")
 const crypto = require('crypto')
 const stripe = require('stripe')("sk_test_51Mdvu1CWq9uV6YuM2iH4wZdBXlSMfexDymB6hHwpmH3J9Dm7owHNBhq4l4wawzFV9dXL3xrYGbhO74oc8OeQn5uJ00It2XDg9U")
 
@@ -34,12 +34,14 @@ const profile_pic = 0
 const user_money = 100
 const how_lucky = 7
 
+var users_array = null
+var login_user = null
 var chatroom_users = []
 
 io.on('connection', function(socket) {
   socket.on('signin_send', (data) => {    
-    let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
-    let login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
+    users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
+    login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
 
     if(users_array){
       let user = users_array.filter(function(x){
@@ -60,15 +62,12 @@ io.on('connection', function(socket) {
           profile_pic: user[0].profile_pic
         }
         try{
-          io.emit('signin_read', {exists: true, obj: obj})
+          io.to(socket.id).emit('signin_read', {exists: true, obj: obj})
         } catch(e){
           console.log('[error]','signin_read :', e)
         }
 
-        get_extra_data().then(function(res) {
-          let uuid = crypto.randomBytes(20).toString('hex')
-          let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
-          
+        get_extra_data().then(function(res) {          
           let extra_data = {}
           if(res && res.data){
             extra_data = {
@@ -118,8 +117,8 @@ io.on('connection', function(socket) {
     }
   })
   socket.on('signup_send', (data) => {  
-    let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
-    let login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
+    users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
+    login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
     
     if(users_array){
       let user = users_array.filter(function(x){
@@ -128,7 +127,7 @@ io.on('connection', function(socket) {
       if(user && user.length>0){
         //the user already exists --> old user --> he must sign in
         try{
-          io.emit('signup_read', {exists: true, obj: {}})
+          io.to(socket.id).emit('signup_read', {exists: true, obj: {}})
         } catch(e){
           console.log('[error]','signup_read :', e)
         }
@@ -148,7 +147,7 @@ io.on('connection', function(socket) {
           profile_pic: profile_pic
         }
         try{
-          io.emit('signup_read', {exists: false, obj: obj})
+          io.to(socket.id).emit('signup_read', {exists: false, obj: obj})
         } catch(e){
           console.log('[error]','signup_read :', e)
         } 
@@ -207,7 +206,7 @@ io.on('connection', function(socket) {
     }   
   })  
   socket.on('forgotPassword_send', (data) => {    
-    let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
+    users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
     let user = null    
     for(let i in users_array){
       if(users_array[i].email === data.email){
@@ -232,7 +231,41 @@ io.on('connection', function(socket) {
     } 
   })
 
+  function updateStreak(uuid, users_array, login_user){
+    let streak = 1
+    let user_found = users_array.filter((x) => x.uuid === uuid) 
+    if(user_found[0]){
+      let logs = login_user.filter((x) => x.user_id === user_found[0].id)   
+      streak = check_streak(logs)
+    }
+    return streak
+  }
+
   // GAMES
+  socket.on('game_send', function(data) {
+		if(data.uuid){
+      //get users_array only if the user didn't go through sign in or up
+      if((typeof users_array !== "undefined" && users_array !== "null" && users_array !== null && users_array !== "")
+        && (typeof login_user !== "undefined" && login_user !== "null" && login_user !== null && login_user !== "")){
+          let streak = updateStreak(data.uuid, users_array, login_user)    
+          try{
+            io.to(socket.id).emit('game_read', {streak})
+          } catch(e){
+            console.log('[error]','roulette_read--> ', e)
+          }
+      } else {
+        users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
+        login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
+        let streak = updateStreak(data.uuid, users_array, login_user)    
+        try{
+          io.to(socket.id).emit('game_read', {streak})
+        } catch(e){
+          console.log('[error]','roulette_read--> ', e)
+        }
+      }
+		}
+	})
+
 	socket.on('roulette_send', function(data) {
 		if(data.uuid){
       let room = data.room
