@@ -7,6 +7,7 @@ import List from './list'
 import Promo from './promo'
 import Panel from './panel'
 import { translate } from '../../../translations/translate'
+import Header from '../../partials/header'
 
 function Cart(props){
     let market = props.home.market
@@ -63,7 +64,7 @@ function Cart(props){
     }
 
     return <div className="content_wrap">
-        <h2 className="title">{translate({lang: props.lang, info: "cart"})}</h2>        
+        <Header template="cart" title={translate({lang: props.lang, info: "cart"})}></Header>    
         <div className="page_content">
             {list && list.length>0 ? <Row>
                 <Col sm={8}>

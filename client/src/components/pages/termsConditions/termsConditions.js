@@ -5,6 +5,7 @@ import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { translate } from '../../../translations/translate'
 import TermsConditionsEng from './termsConditionsEng'
 import TermsConditionsRo from './termsConditionsRo'
+import Header from '../../partials/header'
 
 function TermsConditions(props){
     let dispatch = useDispatch()
@@ -14,7 +15,7 @@ function TermsConditions(props){
         dispatch(changeGamePage(null))
     }
     return <div className="content_wrap">
-        <h2 className="title">{translate({lang: props.lang, info: "terms_cond"})}</h2>
+        <Header template="terms_cond" title={translate({lang: props.lang, info: "terms_cond"})}></Header>     
         <div className="page_content">
             {(() => {
                 switch (props.lang) {

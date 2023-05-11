@@ -27,7 +27,7 @@ function Home(props) {
     
     function handleCookiesClick(){
         dispatch(changeCookies())
-    }
+    }    
 
     return <div id="page-container">        
         {(() => {

@@ -2361,6 +2361,33 @@ textarea {
 .keno_rules_items:first-child .keno_rules_item{
   border-bottom: solid 1px var(--bg);
 }
+.KenoResults_container{
+  background-color: var(--transparent_5);
+  padding: var(--padding);
+  border: solid 1px var(--color);
+  border-radius: var(--radius);
+  text-align: left;
+}
+.KenoResults{  
+  max-height: 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: var(--padding);
+}
+.KenoResults_box{
+  margin-bottom: var(--padding_small);
+}
+.KenoResults_box:last-child{
+  margin-bottom: 0px;
+}
+.KenoResults_box ul li{
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: var(--padding_small);
+}
+.KenoResults_box ul li:last-child{
+  margin-right: 0px;
+}
 
 /* media */
 @media (max-width: 1200px){

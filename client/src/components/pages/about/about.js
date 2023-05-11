@@ -5,6 +5,7 @@ import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { translate } from '../../../translations/translate'
 import AboutEng from './aboutEng'
 import AboutRo from './aboutRo'
+import Header from '../../partials/header'
 
 function About(props){
     let dispatch = useDispatch()
@@ -14,7 +15,7 @@ function About(props){
         dispatch(changeGamePage(null))
     }
     return <div className="content_wrap">
-        <h2 className="title">{translate({lang: props.lang, info: "about"})}</h2>
+        <Header template="about" title={translate({lang: props.lang, info: "about"})}></Header>
         <div className="page_content">
             {(() => {
                 switch (props.lang) {

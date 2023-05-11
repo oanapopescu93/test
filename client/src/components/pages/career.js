@@ -6,6 +6,7 @@ import { translate } from '../../translations/translate'
 import { sortList } from '../../utils/utils'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
+import Header from '../partials/header'
 
 function CareerList(props){
     const {lang} = props
@@ -132,7 +133,7 @@ function Career(props){
     }
 
     return <div className="content_wrap">
-        <h2 className="title">{translate({lang: props.lang, info: "career"})}</h2>
+        <Header template="career" title={translate({lang: props.lang, info: "career"})}></Header>
         <div className="page_content">
             {(() => {
                 if(props.list){

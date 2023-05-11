@@ -125,15 +125,8 @@ var word_bank = {
         //checkout"
         customer_info: "Customer info",
         fill_field: "Please fill out this field",
-        firstname: "First name",
-        lastname: "Last name",
-        phone: "Phone",
+        name: "Name",
         email: "Email",
-        address: "Address",
-        country: "Country",
-        town_city: "Town/City",
-        county_state: "State",
-        postal_zip_code: "Zip/Postal",
         payment_info: "Payment info",
         cash_on_delivery: "cash on delivery",
         pay_card: "Credit or Debit card",
@@ -143,8 +136,6 @@ var word_bank = {
         month: "Month",
         year: "Year",  
         cvv: "cvv",
-        billing_info: "Billing info",   
-        billing_info_same: "Billing address same as shipping", 
         error_charge: "We are sorry, but we can't charge you due to an error on our behalf. We will repair this error as soon as possible.",
         submit: "Submit",
 
@@ -160,9 +151,9 @@ var word_bank = {
         order_link: "Link receipt",
         order_description: "Order description",
         order_date: "Order date",
-        name: "Name",
         postal_code: "Postal code",
 
+        // blackjack
         start: "Start",
         hit: "Hit",
         stand: "Stand",
@@ -170,6 +161,7 @@ var word_bank = {
         surrender: "Surrender",
         not_current_player: "It is not your turn",
 
+        // race
         breed: "Breed",
         delay: "Delay",
         health: "Health",
@@ -179,6 +171,7 @@ var word_bank = {
         place_02: "2nd place",
         place_03: "3rd place",
 
+        // Keno
         keno_instructions: "Pick up to 10 Keno Spots or choose Quick Pick (it will randomly choose max. 10 Keno Spots for you)",
         price_per_game: "Price per game",
         no_of_games: "No. of games",
@@ -187,6 +180,10 @@ var word_bank = {
         keno_numbers_played: "How many no. played", 
         keno_numbers_matched: "How many no. guessed",
         keno_win: "Win",
+        your_numbers: "Your numbers",
+        lucky_numbers: "Lucky numbers", 
+        results: "Results",
+        result: "Result",
     },
     "RO":{
         salon: "Salon",
@@ -314,15 +311,8 @@ var word_bank = {
         //checkout
         customer_info: "Date client",
         fill_field: "Va rog sa completati campul",
-        firstname: "Prenume",
-        lastname: "Nume",
-        phone: "Telefon",
+        name: "Nume",
         email: "Email",
-        address: "Adresa",
-        country: "Tara",
-        town_city: "Oras",
-        county_state: "Judet",
-        postal_zip_code: "Cod Postal",
         payment_info: "Plata",
         cash_on_delivery: "plata ramburs",
         pay_card: "card credit/debit",
@@ -332,8 +322,6 @@ var word_bank = {
         month: "Luna",
         year: "An",
         cvv: "cvv",
-        billing_info: "Date facturare",  
-        billing_info_same: "Adresa de facturare aceeasi ca si expedierea", 
         error_charge: "Ne pare rau, dar nu putem onora comanda din motive tehnice. Vom repara eroarea cat de curand posibil.",
         submit: "Finalizeaza comanda",
 
@@ -349,9 +337,9 @@ var word_bank = {
         order_link: "Link chitanta",
         order_description: "Descriere comanda",
         order_date: "Data comanda",
-        name: "Nume",
         postal_code: "Cod postal",
 
+        // blackjack
         start: "Incepe",
         hit: "Cere o carte",
         stand: "Opreste-te",
@@ -359,6 +347,7 @@ var word_bank = {
         surrender: "Preda-te",
         not_current_player: "Nu este randul tau",
 
+        // race
         breed: "Rasa",
         delay: "Intarziere",
         health: "Sanatate",
@@ -368,6 +357,7 @@ var word_bank = {
         place_02: "Locul 2",
         place_03: "Locul 3",
 
+        // keno
         keno_instructions: "Alege pana la 10 Keno Spots sau alege Quick Pick (va alege maxim 10 Keno Spots aleatoare)",
         price_per_game: "Pret per joc",
         no_of_games: "Nr. de jocuri",
@@ -376,6 +366,10 @@ var word_bank = {
         keno_numbers_played: "Cate nr. ai jucat", 
         keno_numbers_matched: "Cate nr. ai ghicit",
         keno_win: "Premiu",
+        your_numbers: "Numerele tale",
+        lucky_numbers: "Numerele norocoase", 
+        results: "Rezultate",
+        result: "Rezultat",
     }
 }
 

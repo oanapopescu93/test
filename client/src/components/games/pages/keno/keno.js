@@ -1,14 +1,63 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useDispatch } from 'react-redux'
 import { translate } from '../../../../translations/translate'
 import KenoAnimation from './kenoAnimation'
 import KenoBoard from './kenoBoard'
 import { changePopup } from '../../../../reducers/popup'
+import { decryptData } from '../../../../utils/crypto'
 
 function Keno(props){    
     let dispatch = useDispatch()
     const [start, setStart] = useState(false)
     const [data, setData] = useState(null)
+    const [resultsPayload, setResultsPayload] = useState(null)
+    let keno_prizes = props.home.keno_prizes
+    let money = decryptData(props.user.money)
+    let game = props.page.game
+
+    useEffect(() => {
+        if(data){
+            let list = data.list
+            let numbers_chosen = data.list.length
+            let price_per_game = data.price_per_game
+            let no_of_games = data.no_of_games
+            let keno_bets = data.no_of_games * data.price_per_game
+            let status = 'lose'
+            let pay = money
+            let prizes = keno_prizes[numbers_chosen-1]
+            let numbers_matched = 0
+            if(resultsPayload && resultsPayload.list_filtered && resultsPayload.list_filtered.length>0){
+                numbers_matched = resultsPayload.list_filtered.length
+            }
+            
+            if(numbers_matched>0){
+                let win = 0
+                for(let i in resultsPayload.list_filtered){
+                    if(resultsPayload.list_filtered[i].numbers_matched === numbers_matched){
+                        win = resultsPayload.list_filtered[i].win
+                        break
+                    }
+                }
+                if(win>0){
+                    pay = pay + win
+                    status = 'win'
+                } else {
+                    pay = pay - keno_bets
+                }
+            } else {
+                pay = pay - keno_bets
+            }       
+            
+            let keno_payload = {
+                uuid: props.user.uuid,
+                game: game,
+                status: status,
+                bet: keno_bets,
+                money: pay
+            }
+            props.results(keno_payload)
+        }
+    }, [resultsPayload])
 
     function startGame(){
         if(data && data.list && data.list.length>0){
@@ -39,11 +88,17 @@ function Keno(props){
         dispatch(changePopup(payload))
     }
 
+    function getResults(x){
+        setResultsPayload(x)
+    } 
+
     return <>
         {start ? <KenoAnimation 
             {...props} 
             data={data}            
             handleShowPrizes={()=>handleShowPrizes()}
+            getResults={(e)=>getResults(e)}
+            resultsPayload={resultsPayload}
         ></KenoAnimation> : <KenoBoard 
             {...props} 
             startGame={()=>startGame()}

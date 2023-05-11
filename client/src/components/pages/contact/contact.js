@@ -7,6 +7,7 @@ import ContactForm from './contactForm'
 import ContactList from './contactList'
 import ContactMap from './contactMap'
 import { getWindowDimensions } from '../../../utils/utils'
+import Header from '../../partials/header'
 
 function Contact(props){
     const [contactElement, setContactElement] = useState(null)
@@ -67,7 +68,7 @@ function Contact(props){
     }, []) 
 
     return <div className="content_wrap">
-        <h2 className="title">{translate({lang: props.lang, info: "contact"})}</h2>        
+        <Header template="contact" title={translate({lang: props.lang, info: "contact"})}></Header>        
         <div className="page_content">
             <Row>
                 <Col sm={4} md={4} lg={4}>

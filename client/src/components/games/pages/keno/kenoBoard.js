@@ -4,6 +4,9 @@ import { Button, Row, Col } from 'react-bootstrap'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Counter from '../../../partials/counter'
+import { decryptData } from '../../../../utils/crypto'
+import { useDispatch } from 'react-redux'
+import { changePopup } from '../../../../reducers/popup'
 
 function KenoSpot(config){
 	let self = this
@@ -32,6 +35,8 @@ function KenoBoard(props){
     const [titleDropdown2, setTitleDropdown2] = useState(1)  
     const [quickPickLength, setQuickPickLength] = useState(1)
     let howManySpots = 80 
+    let money = decryptData(props.user.money)
+    let dispatch = useDispatch()
 
     useEffect(() => {
         let array = []
@@ -50,8 +55,18 @@ function KenoBoard(props){
             }
         }
         setKenoSpots(array)
-        if(typeof props.getData === "function"){
-            props.getData({list: getSelections(array), price_per_game: titleDropdown1, no_of_games: titleDropdown2})
+        if(money < parseInt(titleDropdown1) * parseInt(titleDropdown2)){
+            let payload = {
+				open: true,
+				template: "error",
+				title: translate({lang: props.lang, info: "error"}),
+				data: translate({lang: props.lang, info: "no_money_enough"})
+			}
+			dispatch(changePopup(payload))
+        } else {
+            if(typeof props.getData === "function"){
+                props.getData({list: getSelections(array), price_per_game: titleDropdown1, no_of_games: titleDropdown2})
+            }
         }
     }
 

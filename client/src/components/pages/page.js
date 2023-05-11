@@ -8,6 +8,9 @@ import { bringPayload } from '../../reducers/home'
 import Splash from '../partials/splashScreen'
 import Loader from '../partials/loader'
 import {randomIntFromInterval} from '../../utils/utils'
+import { checkWinterMonths, checkOccasion } from '../../utils/special_occasions'
+import Snowflakes from '../partials/special_occasions/winter/snowflakes'
+import Lights from '../partials/special_occasions/christmas/lights'
 
 function Page(props) {
     let home = useSelector(state => state.home)
@@ -17,13 +20,25 @@ function Page(props) {
     let uuid = user.uuid ? user.uuid : ''
     const [loaded, setLoaded] = useState(false)
     const [progressNumber, setProgressNumber] = useState(0)
-    let dispatch = useDispatch()    
+    let dispatch = useDispatch() 
+    const [showWinter, setShowWinter] = useState(false)
+	const [showChristmas, setShowChristmas] = useState(false)   
 
     useEffect(() => {
 		dispatch(bringPayload())	
         if(isEmpty(uuid)){
             splash_screen()
         }
+
+        // special occasions
+        let winter = checkWinterMonths()
+		let christmas = checkOccasion('christmas')
+		if(winter){ // will appear only on winter months
+			setShowWinter(true)
+		}
+		if(christmas){ // will appear only one week before and after christmas
+			setShowChristmas(true)
+		}
 	}, [])
 
     function splash_screen(){	
@@ -64,6 +79,16 @@ function Page(props) {
                 } else {
                     return <Loader></Loader>
                 }
+            }
+        })()} 
+        {(() => {
+            if((isEmpty(uuid) && loaded) || (!isEmpty(uuid) && home.loaded)){ //this is only for Sign or Home
+                return <>
+                    {showWinter ? <Snowflakes></Snowflakes> : null}
+                    {showChristmas ? <Lights></Lights> : null}
+                </>
+            } else {
+                return null
             }
         })()} 
         <Popup {...props} home={home}></Popup>

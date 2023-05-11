@@ -4,6 +4,7 @@ import {useDispatch} from 'react-redux'
 import { changePage, changeGame, changeGamePage } from '../../reducers/page'
 import { translate } from '../../translations/translate'
 import ukraine from '../../img/icons/ukraine.svg'
+import Header from '../partials/header'
 
 function Donation(props){
     const {lang, list} = props
@@ -17,7 +18,7 @@ function Donation(props){
     }
 
     return <div className="content_wrap">
-        <h2 className="title">{translate({lang: props.lang, info: "donation"})}</h2>
+        <Header template="donation" title={translate({lang: props.lang, info: "donation"})}></Header>
         <div className="page_content">
             {(() => {
                 if(list && list.length>0){

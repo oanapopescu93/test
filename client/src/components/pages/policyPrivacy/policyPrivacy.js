@@ -5,6 +5,7 @@ import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { translate } from '../../../translations/translate'
 import PolicyPrivacyEng from './policyPrivacyEng'
 import PolicyPrivacyRo from './policyPrivacyRo'
+import Header from '../../partials/header'
 
 function PolicyPrivacy(props){
     let dispatch = useDispatch()
@@ -16,7 +17,7 @@ function PolicyPrivacy(props){
     }
 
     return <div className="content_wrap">
-        <h2 className="title">{translate({lang: props.lang, info: "policy_privacy"})}</h2>
+        <Header template="policy_privacy" title={translate({lang: props.lang, info: "policy_privacy"})}></Header>        
         <div className="page_content">
             {(() => {
                 switch (props.lang) {
