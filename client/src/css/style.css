@@ -17,6 +17,8 @@
 	--transparent_5: rgba(0, 0, 0, 0.5);
 	--transparent_8: rgba(0, 0, 0, 0.8);
 	--transparent_color: rgba(255, 215, 0, 0.2);
+
+  --firework_color: red;
 }
 
 body{
@@ -2383,6 +2385,96 @@ textarea {
   margin-right: 0px;
 }
 
+/* FIREWORKS */
+@keyframes firework {
+  0% { 
+    /* transform: translate(-50%, 60vh);
+    width: 0.5vmin;
+    opacity: 1; */
+    width: 0.5vmin;
+    opacity: 0;
+  }
+  10% { 
+    width: 0.5vmin;
+    opacity: 1;
+  }
+  100% { 
+    width: 45vmin; 
+    opacity: 0; 
+  }
+}
+
+.firework,
+.firework::before,
+.firework::after {
+  --top: 60vh;
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.5vmin;
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle, var(--firework_color) 0.2vmin, #000 0) 50% 00%,
+    radial-gradient(circle, var(--firework_color) 0.3vmin, #000 0) 00% 50%,
+    radial-gradient(circle, var(--firework_color) 0.5vmin, #000 0) 50% 99%,
+    radial-gradient(circle, var(--firework_color) 0.2vmin, #000 0) 99% 50%,
+    radial-gradient(circle, var(--firework_color) 0.3vmin, #000 0) 80% 90%,
+    radial-gradient(circle, var(--firework_color) 0.5vmin, #000 0) 95% 90%,
+    radial-gradient(circle, var(--firework_color) 0.5vmin, #000 0) 10% 60%,
+    radial-gradient(circle, var(--firework_color) 0.2vmin, #000 0) 31% 80%,
+    radial-gradient(circle, var(--firework_color) 0.3vmin, #000 0) 80% 10%,
+    radial-gradient(circle, var(--firework_color) 0.2vmin, #000 0) 90% 23%,
+    radial-gradient(circle, var(--firework_color) 0.3vmin, #000 0) 45% 20%,
+    radial-gradient(circle, var(--firework_color) 0.5vmin, #000 0) 13% 24%;
+  background-size: 0.5vmin 0.5vmin;
+  background-repeat: no-repeat;
+  animation: firework 2s infinite;
+}
+.firework::before {
+  transform: translate(-50%, -50%) rotate(25deg) !important; 
+}
+.firework::after {
+  transform: translate(-50%, -50%) rotate(-37deg) !important;
+}
+
+/* POPUP WELCOME */
+.welcome_popup p{
+  font-size: 30px;
+  line-height: 30px;
+}
+.welcome_popup img{
+	width:200px;
+}
+
+/* POPUP STREAK */
+.progress_bubble_container{
+  width: 100%;
+  max-width: 600px;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0px auto var(--padding) auto;
+}
+.bubble{
+  background: var(--color);
+  color: var(--bg);
+  border-radius: 100%;
+  height: 30px;
+  width: 30px;
+  display: inline-block;
+  border: 1px solid var(--bg);
+  margin: 2px;
+  font-size: 14px;
+  line-height: 28px;
+}
+.bubble.active{
+  background: var(--bg);
+  color: var(--color);
+}
+
 /* media */
 @media (max-width: 1200px){
 	.shop_shader{
@@ -2398,6 +2490,9 @@ textarea {
 	.shop_shader{
 		height:60px;
 	}
+  .progress_bubble_container{
+    max-height: 205px;
+  }
 }
 @media (max-width: 767px) {	
   .shop_shader {
@@ -2702,6 +2797,9 @@ textarea {
     height: 25px;
     font-size: 12px;
     line-height: 24px;
+  }
+  .welcome_popup img{
+    width:150px;
   }
 }
 

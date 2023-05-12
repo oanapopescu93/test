@@ -30,7 +30,6 @@ function SignIn(props) {
 
     useEffect(() => {
         socket.on('signin_read', function(data){	
-            console.log('signin_read ', data)
             if(data){
                 if(!data.exists){
                     dispatch(changePopup({

@@ -16,6 +16,8 @@ import ChangeUsername from "./changeUsername"
 import ChangePassword from "./changePassword"
 import KenoPrizeTable from "./kenoPrizeTable"
 import GameResults from "./gameResults"
+import Welcome from "./welcome"
+import Streak from "./streak"
 
 function Popup(props){
     const {lang, date, currency, socket, home} = props
@@ -57,7 +59,7 @@ function Popup(props){
         setForgotPasswordResult(translate({lang: lang, info: res.send}))      
     })
    
-    return <Modal id="myModal" className={"mymodal " + template} show={open} onHide={closeModal} size={size} centered>
+    return <Modal id="myModal" className={"mymodal " + template} show={open} onHide={closeModal} size={size} centered> 
             {title !== "" ? <Modal.Header>
                 {!sticky ? <div className="closeButton closeButtonHeader" onClick={closeModal}>
                     <span>X</span>
@@ -91,6 +93,10 @@ function Popup(props){
                             return <KenoPrizeTable lang={lang} kenoPrizes={data}></KenoPrizeTable>
                         case "game_results":
                             return <GameResults lang={lang} results={data}></GameResults>
+                        case "welcome":
+                                return <Welcome lang={lang}></Welcome>
+                        case "streak":
+                                return <Streak lang={lang} data={data}></Streak>
                         case "error":
                         default:
                             if(typeof data === "string"){
@@ -102,6 +108,13 @@ function Popup(props){
                     }
                 })()}
             </Modal.Body>
+            {(() => {
+                if((template === "game_results" && data.status === "win") || (template === "streak" && data > 0)){
+                    return <div className="firework"></div>
+                } else {
+                    return null
+                }
+            })()}
         </Modal>
 }
 export default Popup

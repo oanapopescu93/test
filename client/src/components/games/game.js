@@ -24,6 +24,8 @@ import keno_loading_icon from '../../img/icons_other/icons/yellow/keno.png'
 import Dashboard from './pages/dashboard/dashboard'
 import Market from './pages/market/market'
 import { changePopup } from '../../reducers/popup'
+import { getCookie, isEmpty, setCookie } from '../../utils/utils'
+import { changeMoney } from '../../reducers/auth'
 
 function Game(props){
     const {lang, page, socket} = props
@@ -45,6 +47,7 @@ function Game(props){
                 data: res
             }
             dispatch(changePopup(payload))
+            dispatch(changeMoney(res))
         }
     }
 
@@ -55,12 +58,28 @@ function Game(props){
     }
 
     useEffect(() => {
-        socket.emit('game_send', {uuid: props.user.uuid}) 
-        socket.on('game_read', function(res){
-            if(res && res.streak){
-                setStreak(res.streak)
-            }
-        })
+        let streak = getCookie("casino_streak")
+        if(isEmpty(streak)){ // check if popup streak has already been shown
+            socket.emit('game_send', {uuid: props.user.uuid}) 
+            socket.on('game_read', function(res){
+                if(res && res.streak){
+                    setStreak(res.streak)
+                    if(!isEmpty(streak)){
+                        if(res.streak>1){
+                            let payload = {
+                                open: true,
+                                template: "streak",
+                                title: "Streak",
+                                data: res,
+                                size: 'lg',
+                            }
+                            dispatch(changePopup(payload))
+                        }
+                        setCookie('casino_streak', true)
+                    }
+                }
+            })
+        }
 
         let room = getRoom(game)
         socket.emit('join_room', {room: room, uuid: props.user.uuid, user: props.user.user}) 

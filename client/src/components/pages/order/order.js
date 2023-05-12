@@ -40,21 +40,6 @@ function Order(props){
                         <p><b>{translate({lang: lang, info: "email"})}</b>: <span>
                             {isEmpty(order.billing_details.email) ? order.billing_details.email : "-"}
                         </span></p>
-                        <p><b>{translate({lang: lang, info: "phone"})}</b>: <span>
-                            {isEmpty(order.billing_details.phone) ? order.billing_details.phone : "-"}
-                        </span></p>
-                        <p><b>{translate({lang: lang, info: "country"})}</b>: <span>
-                            {isEmpty(order.billing_details.address.country) ? order.billing_details.address.country : "-"}
-                        </span></p>
-                        <p><b>{translate({lang: lang, info: "city"})}</b>: <span>
-                            {isEmpty(order.billing_details.address.city) ? order.billing_details.address.city : "-"}
-                        </span></p>
-                        <p><b>{translate({lang: lang, info: "address"})}</b>: <span>
-                            {isEmpty(order.billing_details.address.line1) ? order.billing_details.address.line1: "-"}
-                        </span></p>
-                        <p><b>{translate({lang: lang, info: "postal_code"})}</b>: <span>
-                            {isEmpty(order.billing_details.address.postal_code) ? order.billing_details.address.postal_code : "-"}
-                        </span></p>
                     </div>
                 </div>
                 <div className="order_box shadow_concav">

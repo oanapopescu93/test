@@ -191,6 +191,10 @@ var word_bank = {
         game_type: "Tip joc",
         you_win: "Ai castigat",
         you_lose: "Ai pierdut",
+
+        welcome: "Welcome",
+        welcome_gift: "Welcome gift",
+        prize: "Prize",
     },
     "RO":{
         salon: "Salon",
@@ -385,6 +389,10 @@ var word_bank = {
         game_type: "Tip joc",
         you_win: "Ai castigat",
         you_lose: "Ai pierdut",
+
+        welcome: "Bine ai venit",
+        welcome_gift: "Cadiu de bun-venit",
+        prize: "Premii",
     }
 }
 

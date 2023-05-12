@@ -65,6 +65,12 @@ const pageSlice = createSlice({
                 setCookie("casino_user", encryptData(payload))
             }
         },
+        changeMoney: (state, { payload }) => {
+            if(payload){
+                state.user.money = encryptData(payload)
+                setCookie("casino_money", encryptData(payload))
+            }
+        },
         resetAuth: () => initialState,
     }
 })
@@ -74,6 +80,7 @@ export const {
     changeIsMinor,
     changePic,
     changeUsername,
+    changeMoney,
 } = pageSlice.actions
 
 export default pageSlice.reducer

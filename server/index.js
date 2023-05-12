@@ -238,7 +238,15 @@ io.on('connection', function(socket) {
       let logs = login_user.filter((x) => x.user_id === user_found[0].id)   
       streak = check_streak(logs)
     }
-    return streak
+    let prize = 0
+    if(streak>0){
+      if(streak % 10 === 0){
+        prize = 10
+      } else {
+        prize = 1
+      }
+    }
+    return {streak, prize}
   }
 
   // GAMES
@@ -247,18 +255,16 @@ io.on('connection', function(socket) {
       //get users_array only if the user didn't go through sign in or up
       if((typeof users_array !== "undefined" && users_array !== "null" && users_array !== null && users_array !== "")
         && (typeof login_user !== "undefined" && login_user !== "null" && login_user !== null && login_user !== "")){
-          let streak = updateStreak(data.uuid, users_array, login_user)    
           try{
-            io.to(socket.id).emit('game_read', {streak})
+            io.to(socket.id).emit('game_read', updateStreak(data.uuid, users_array, login_user))
           } catch(e){
             console.log('[error]','roulette_read--> ', e)
           }
       } else {
         users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
         login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
-        let streak = updateStreak(data.uuid, users_array, login_user)    
         try{
-          io.to(socket.id).emit('game_read', {streak})
+          io.to(socket.id).emit('game_read', updateStreak(data.uuid, users_array, login_user))
         } catch(e){
           console.log('[error]','roulette_read--> ', e)
         }

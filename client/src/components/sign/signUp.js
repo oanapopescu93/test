@@ -52,6 +52,13 @@ function SignUp(props) {
                         if(!isEmpty(data.obj.uuid)){
                             setCookie("casino_uuid", data.obj.uuid)
                         }
+                        //first time sign up - you get a popup gift
+                        let payload = {
+                            open: true,
+                            template: "welcome",
+                            title: translate({lang: props.lang, info: "welcome"}),
+                        }
+                        dispatch(changePopup(payload))
                     }
                 }
             }
