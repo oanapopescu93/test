@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { translate } from '../../../../translations/translate'
 import GameBoard from '../other/gameBoard'
 import $ from 'jquery'
-import { draw_rect, getRoom, get_blackjack_cards } from '../../../../utils/games'
+import { draw_rect, getRoom, get_cards } from '../../../../utils/games'
 import { changePopup } from '../../../../reducers/popup'
 import { decryptData } from '../../../../utils/crypto'
 
@@ -187,7 +187,7 @@ function blackjack_game(props){
 	let font_bold_12 = 'bold 12px sans-serif'
 	let font_bold_14 = 'bold 14px sans-serif'
     
-    let items = get_blackjack_cards()
+    let items = get_cards()
     let resize = 0
 
     this.ready = function(){

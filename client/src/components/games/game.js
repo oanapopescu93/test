@@ -26,6 +26,7 @@ import Market from './pages/market/market'
 import { changePopup } from '../../reducers/popup'
 import { getCookie, isEmpty, setCookie } from '../../utils/utils'
 import { changeMoney } from '../../reducers/auth'
+import Poker from './pages/poker/poker'
 
 function Game(props){
     const {lang, page, socket} = props
@@ -155,7 +156,16 @@ function Game(props){
                                     <img src={keno_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
                                     <p>Loading...</p>
                                 </>                                
-                            }                        
+                            }  
+                        case "poker":
+                            if(room){
+                                return <Poker {...props} results={(e)=>results(e)}></Poker>
+                            } else {
+                                return <>
+                                    <img src={blackjack_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                    <p>Loading...</p>
+                                </>
+                            }                      
                         default:
                             return <p>{translate({lang: lang, info: "error"})}</p>
                     }

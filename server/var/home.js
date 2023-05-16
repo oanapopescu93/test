@@ -17,6 +17,12 @@ module.exports = Object.freeze({
         {table_id: '015', table_name: "craps"},
         {table_id: '016', table_name: "craps"},
         {table_id: '017', table_name: "craps"},
+        {table_id: '018', table_name: "poker", table_type: "texas holdem"},
+        {table_id: '019', table_name: "poker", table_type: "5 card draw"},
+        {table_id: '020', table_name: "poker", table_type: "texas holdem"},
+        {table_id: '021', table_name: "poker", table_type: "5 card draw"},
+        {table_id: '022', table_name: "poker", table_type: "texas holdem"},
+        {table_id: '023', table_name: "poker", table_type: "5 card draw"},
     ],
     MARKET: [        
         {id: "garlic", name_eng: "garlic", name_ro: "usturoi", price:0.1},

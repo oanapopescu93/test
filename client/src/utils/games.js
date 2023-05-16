@@ -152,7 +152,7 @@ export const get_roulette_bets = function(){
 	]
 }
 
-export const get_blackjack_cards = function() {
+export const get_cards = function() {
 	return [
 	  {suit: '', value: '', src: card_back}, 
 	  {suit: 'Hearts', value: 'A', src: card_0}, 
