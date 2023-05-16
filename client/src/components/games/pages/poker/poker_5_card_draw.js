@@ -93,7 +93,7 @@ function Card(config){
 						break			
 				}				
 				
-				ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i*12, y + i*12 + space, w, h)
+				ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i*12, y + i*12, w, h)
 			}
 		}
 	}
