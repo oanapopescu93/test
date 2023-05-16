@@ -1,9 +1,9 @@
-var blackjack_deck = new Array()
+var blackjack_deck = []
 var blackjack_hidden_dealer = {}
 var blackjack_players = []
 var blackjack_dealer = {}
 
-function blackjack(data, how_lucky, user_join){
+function blackjack(data, user_join){
     let blackjack_current_player = 0
     let blackjack_game_end = false
 
@@ -42,8 +42,7 @@ function blackjack(data, how_lucky, user_join){
                 }                
             } else {
                 return {action: 'not_current_player'} 
-            }
-           
+            }           
         case 'stand':
             blackjack_players = data.players
             let index_stand = blackjack_players.findIndex((x) => x.uuid === data.uuid)

@@ -40,6 +40,7 @@ var chatroom_users = []
 
 const database = require('./database/mysql')
 var constants = require('./var/constants')
+const { poker } = require("./games/poker")
 var database_config = constants.DATABASE[0]
 
 io.on('connection', function(socket) {
@@ -257,7 +258,7 @@ io.on('connection', function(socket) {
     }
   }
 
-	socket.on('roulette_send', function(data) {
+	socket.on('roulette_send', function(data){
 		if(data.uuid){
       let room = data.room
 			let payload = roulette(data, how_lucky)
@@ -268,10 +269,10 @@ io.on('connection', function(socket) {
 			}
 		}
 	})
-  socket.on('blackjack_send', function(data) {
+  socket.on('blackjack_send', function(data){
 		if(data.uuid){
       let room = data.room
-      let payload = blackjack(data, how_lucky, chatroom_users)
+      let payload = blackjack(data, chatroom_users)
 			try{
 				io.to(room).emit('blackjack_read', payload)
 			} catch(e){
@@ -279,7 +280,18 @@ io.on('connection', function(socket) {
 			}
 		}
 	})
-  socket.on('slots_send', function(data) {    
+  socket.on('poker_send', function(data){
+		if(data.uuid){
+      let room = data.room
+      let payload = poker(data, chatroom_users)
+			try{
+				io.to(room).emit('poker_read', payload)
+			} catch(e){
+				console.log('[error]','roulette_read--> ', e)
+			}
+		}
+	})
+  socket.on('slots_send', function(data){    
 		if(data.uuid){
       let room = data.room
 			let payload = slots(data)
@@ -290,7 +302,7 @@ io.on('connection', function(socket) {
 			}
 		}
 	})
-  socket.on('craps_send', function(data) {
+  socket.on('craps_send', function(data){
 		if(data.uuid){
       let room = data.room
 			let payload = craps(data, how_lucky)
@@ -301,7 +313,7 @@ io.on('connection', function(socket) {
 			}
 		}
 	})
-  socket.on('race_send', function(data) {
+  socket.on('race_send', function(data){
 		if(data.uuid){
 			let payload = race(data, how_lucky)
 			try{
@@ -311,7 +323,7 @@ io.on('connection', function(socket) {
 			}
 		}
 	})
-  socket.on('keno_send', function(data) {
+  socket.on('keno_send', function(data){
 		if(data.uuid){
 			let payload = keno(data, how_lucky)
 			try{
@@ -322,7 +334,7 @@ io.on('connection', function(socket) {
 		}
 	})
 
-  socket.on('game_results_send', function(data) {
+  socket.on('game_results_send', function(data){
     if(data.uuid){
       database_config.sql = "SELECT * FROM casino_user;"
       database(database_config).then(function(result){
@@ -368,7 +380,7 @@ io.on('connection', function(socket) {
         database(database_config).then(function(){})
     }   
   })  
-  socket.on('promo_send', function(text) {
+  socket.on('promo_send', function(text){
     let coupon = {}
     for(let i in coupons){
       if(coupons[i].name === text){

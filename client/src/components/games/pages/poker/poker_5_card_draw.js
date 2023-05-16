@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react'
-import under_construction_icon from '../../../../img/icons/under_construction_icon.png'
 import GameBoard from '../other/gameBoard'
 import { useDispatch } from 'react-redux'
 import { decryptData } from '../../../../utils/crypto'
 import $ from "jquery"
-import { getRoom, get_cards } from '../../../../utils/games'
+import { draw_rect, getRoom, get_cards } from '../../../../utils/games'
 import { translate } from '../../../../translations/translate'
 import { changePopup } from '../../../../reducers/popup'
 
@@ -26,7 +25,9 @@ function Card(config){
 	self.show_cards = function(ctx, data){
 		let player = data.players[self.id]
         if(player){
-            self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, player.hand)
+            console.log('draw_card ', self.x, self.y, self.width, self.height)
+            draw_rect(ctx, self.x, self.y, self.width, self.height, 'red', 3, 'blue')
+            //self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, player.hand)
         }		
 	}
 
@@ -91,7 +92,7 @@ function Card(config){
 					case "K":
 						img_index = img_index + 12					
 						break			
-				}				
+				}
 				
 				ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i*12, y + i*12, w, h)
 			}
@@ -127,13 +128,13 @@ function poker_game(props){
             }
             Promise.all(promises).then(function(result){
                 images = result
+                self.drawBackground()
                 self.create_cards()
-                self.draw_cards()
             })
         } else {
             // the game started
+            self.drawBackground()
             self.create_cards()
-            self.draw_cards()	
         }
     }
 
@@ -190,27 +191,32 @@ function poker_game(props){
 		})
 	}
 
+    this.drawBackground = function(){
+
+    }
+
     this.create_cards = function(x){
         let card_base = [
-            {x: 0, y:0, width: 120, height: 180},
-            {x: 0, y:0, width: 120, height: 180},
-            {x: 0, y:0, width: 120, height: 180},
-            {x: 0, y:0, width: 120, height: 180},
-        ]        
+            {x: canvas.width/2, y: canvas.height, width: 120, height: 180}, //bottom
+            {x: 0, y: canvas.height/2, width: 120, height: 180}, //left
+            {x: canvas.width/2, y: 0, width: 120, height: 180}, //top
+            {x: canvas.width, y: canvas.height/2, width: 120, height: 180}, //right
+        ]  
 		for(let i=0;i<4;i++){
 			card_list.push(new Card({
 				id: i,
 				name: 'player',
 				user: 'player_'+i,
-				x: card_base.x, 
-				y: card_base.y,
-				width: card_base.width, 
-				height: card_base.height, 
+				x: card_base[0].x, 
+				y: card_base[0].y,
+				width: card_base[0].width, 
+				height: card_base[0].height, 
 				card: card,
 				card_img: card_img,
 				images: images,
 			}))
 		}
+        console.log(card_list)
 	}
 
     this.draw_cards = function(){
@@ -227,7 +233,8 @@ function poker_game(props){
 			ctx.clearRect(0, 0, canvas.width, canvas.height)
 			if(data.action === "start"){
 				resize = 0
-			}		
+			}
+            self.drawBackground()
 			self.draw_cards()
 			self.check_win_lose()
 		}
@@ -272,7 +279,7 @@ function Poker5CardDraw(props){
 				bet: poker_bets,
 				money: money - poker_bets
 			}
-			props.results(poker_payload)
+			//props.results(poker_payload)
 		}
 	}
 
@@ -367,8 +374,6 @@ function Poker5CardDraw(props){
     }
 
     return <div className="game_container poker_container">
-        <p>5 card draw</p>
-        <img className="under_construction_icon" alt="under construction" src={under_construction_icon} />
         <canvas id="poker_canvas"></canvas>
         <GameBoard template="poker_5_card_draw" {...props} startGame={startGame} choice={(e)=>choice(e)} updateBets={(e)=>updateBets(e)}></GameBoard>
     </div>
