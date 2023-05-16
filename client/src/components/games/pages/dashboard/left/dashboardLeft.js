@@ -47,7 +47,7 @@ function DashboardLeft(props){
     let name = user.user
     let money = user.money
     let profiles = home.profiles
-    let picId = decryptData(user.profile_pic)
+    let picId = decryptData(user.profile_pic)    
     let animal = profiles.filter(function(x){
         return x.id === picId
     })
@@ -100,7 +100,13 @@ function DashboardLeft(props){
                     <b>{translate({lang: lang, info: "animal"})}: </b>
                     {(() => {
                         if(animal && animal.length === 1 && animal[0]){
-                            return <>{lang === "ro" ? <>{animal[0].name_ro}</> : <>{animal[0].name_eng}</>}</>
+                            switch(lang) {
+                                case "RO":
+                                    return <>{animal[0].name_ro}</>
+                                case "ENG":
+                                default: 
+                                    return <>{animal[0].name_eng}</>
+                            }
                         } else {
                             return "-"
                         }

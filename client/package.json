@@ -1,7 +1,11 @@
 {
   "name": "client",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "client",
   "private": true,
+  "keywords": ["casino", "games", "online", "roulette", "blackjack", "slots", "craps", "race", "keno", "rabbit"],
+  "author": "Oana Popescu",
+  "license": "UNLICENSED",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-regular-svg-icons": "^6.4.0",

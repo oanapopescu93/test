@@ -9,10 +9,10 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCalendarDays} from '@fortawesome/free-solid-svg-icons'
 import carrot_img from '../../../img/icons/carrot_icon.png'
 import {faHouse, faGear, faPaperPlane, faPowerOff} from '@fortawesome/free-solid-svg-icons'
-import { setCookie } from '../../../utils/utils'
+import { isEmpty, setCookie } from '../../../utils/utils'
 
 function User(props){
-    const {lang, user, streak} = props
+    const {lang, page, user, streak} = props
     let dispatch = useDispatch()
     const [buttonUser, setButtonUser] = useState('active')
     const [buttonMarket, setButtonMarket] = useState('')
@@ -65,7 +65,7 @@ function User(props){
                 setButtonMarket('active')
             }
         }
-	}, [props.page.game_page]) 
+	}, [props.page.game_page])
 
     return <>
         <Header template="panel_user" details={props.page} lang={props.lang}></Header>
@@ -78,7 +78,7 @@ function User(props){
                     <span>{decryptData(user.money)}</span>
                     <img alt="carrot_img" className="currency_img" src={carrot_img}/>
                 </span>
-                <span id="user_streak">
+                {!isEmpty(streak) ? <span id="user_streak">
                     <span>{streak}</span>
                     <div className="my_tooltip">
                         <FontAwesomeIcon icon={faCalendarDays} />
@@ -97,7 +97,7 @@ function User(props){
                             }
                         })()}
                     </div>
-                </span>
+                </span> : null}
             </div>
          </div>
         <div id="user_tags">
@@ -109,9 +109,9 @@ function User(props){
             </div>
         </div>        
         <ul id="user_list">
-            <li onClick={()=>{handleChange('salon')}}>
+            {page.game || page.game_page ? <li onClick={()=>{handleChange('salon')}}>
                 <span><FontAwesomeIcon icon={faHouse} />{translate({lang: lang, info: "salon"})}</span>
-            </li>
+            </li> : null}            
             <li onClick={()=>{handleChange('cart')}}>
                 <span><FontAwesomeIcon icon={faHouse} />{translate({lang: lang, info: "cart"})}</span>
             </li>

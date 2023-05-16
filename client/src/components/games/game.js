@@ -47,7 +47,7 @@ function Game(props){
                 data: res
             }
             dispatch(changePopup(payload))
-            dispatch(changeMoney(res))
+            dispatch(changeMoney(res.money))
         }
     }
 

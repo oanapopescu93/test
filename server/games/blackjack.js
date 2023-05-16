@@ -31,7 +31,6 @@ function blackjack(data, how_lucky, user_join){
         case 'hit':
             blackjack_players = data.players
             let index_hit = blackjack_players.findIndex((x) => x.uuid === data.uuid)
-            console.log(index_hit, blackjack_current_player)
             if(index_hit === blackjack_current_player){
                 hitMe()
                 checkForEndOfGame(index_hit)

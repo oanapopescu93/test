@@ -38,104 +38,84 @@ var users_array = null
 var login_user = null
 var chatroom_users = []
 
+const database = require('./database/mysql')
+var constants = require('./var/constants')
+var database_config = constants.DATABASE[0]
+
 io.on('connection', function(socket) {
-  socket.on('signin_send', (data) => {    
-    users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
-    login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
-
-    if(users_array){
-      let user = users_array.filter(function(x){
-        return (x.user === data.user || x.email === data.email) && decrypt(JSON.parse(x.pass)) === data.pass
-      })
-      if(user && user.length>0){
-        let uuid = crypto.randomBytes(20).toString('hex')
-        let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
-
-        //emit
-        let obj = {
-          uuid: uuid, 
-          user: user[0].user, 
-          email: user[0].email, 
-          account_type: account_type, 
-          money: user_money, 
-          device: device,
-          profile_pic: user[0].profile_pic
-        }
-        try{
-          io.to(socket.id).emit('signin_read', {exists: true, obj: obj})
-        } catch(e){
-          console.log('[error]','signin_read :', e)
-        }
-
-        get_extra_data().then(function(res) {          
-          let extra_data = {}
-          if(res && res.data){
-            extra_data = {
-              city: res.data.city ? res.data.city : "",
-              country: res.data.country ? res.data.country : "",
-              ip_address: res.data.ip_address? res.data.ip_address : "",
-            }            
-          }   				
-          let timestamp = new Date().getTime() + ""
-          
-          //update
-          let objIndex = users_array.findIndex((obj => obj.id == user[0].id))
-
-          //update user for users.json   
-          users_array[objIndex].uuid = uuid
-          let payload_user = JSON.stringify(users_array)
-          fs.writeFileSync(path.resolve(__dirname, "./json/users.json"), payload_user)
-
-          //update user for users.json  
-          let login_id = login_user.length
-          let new_login = {
-            id: login_id,
-            user_id: user[0].id,
-            login_date: timestamp,
-            device: device,
-            ip_address: extra_data.ip_address,
-            city: extra_data.city,
-            country: extra_data.city,
-          }
-          login_user.push(new_login)
-          let payload_login_user = JSON.stringify(login_user)
-          fs.writeFileSync(path.resolve(__dirname, "./json/login.json"), payload_login_user)
+  socket.on('signin_send', (data) => {  
+    database_config.sql = "SELECT * FROM casino_user"
+		database(database_config).then(function(result){
+      if(result && result.length>0){
+        users_array = result
+        let user = users_array.filter(function(x){
+          return (x.user === data.user || x.email === data.email) && decrypt(JSON.parse(x.pass)) === data.pass
         })
-      } else {
-        try{
-          io.to(socket.id).emit('signin_read', {exists: false, obj: {}})
-        }catch(e){
-          console.log('[error]','signin_read2--> ', e)
+        if(user && user.length>0){
+          //the user exists --> we sign him in
+          let uuid = crypto.randomBytes(20).toString('hex')
+          let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
+  
+          //emit
+          let obj = {
+            uuid: uuid, 
+            user: user[0].user, 
+            email: user[0].email, 
+            account_type: account_type, 
+            money: user_money, 
+            device: device,
+            profile_pic: user[0].profile_pic
+          }
+          try{
+            io.to(socket.id).emit('signin_read', {exists: true, obj: obj})
+          } catch(e){
+            console.log('[error]','signin_read :', e)
+          }
+  
+          get_extra_data().then(function(res) {          
+            let extra_data = {}
+            if(res && res.data){
+              extra_data = {
+                city: res.data.city ? res.data.city : "",
+                country: res.data.country ? res.data.country : "",
+                ip_address: res.data.ip_address? res.data.ip_address : "",
+              }            
+            }   				
+            let timestamp = new Date().getTime() + ""
+            
+            //update user and login tables
+            database_config.sql = "UPDATE casino_user SET uuid='" + uuid + "' WHERE id=" + user[0].id + "; "
+						database_config.sql += "INSERT INTO login_user (user_id, login_date, device, ip_address, city, country) VALUES (?, ?, ?, ?, ?, ?)"
+						let payload =  [user[0].id, timestamp, device, extra_data.ip_address, extra_data.city, extra_data.country]
+						database(database_config, payload).then(function(){})
+          })
+        } else {
+          //the user doesn't exist
+          try{
+            io.to(socket.id).emit('signin_read', {exists: false, obj: {}})
+          }catch(e){
+            console.log('[error]','signin_read2--> ', e)
+          }
         }
+      } else {
+          try{
+            io.to(socket.id).emit('signin_read', {exists: false, obj: {}})
+          }catch(e){
+            console.log('[error]','signin_read2--> ', e)
+          }
       }
-    } else {
-      try{
-        io.to(socket.id).emit('signin_read', {exists: false, obj: {}})
-      }catch(e){
-        console.log('[error]','signin_read2--> ', e)
-      }
-    }
+    }) 
   })
   socket.on('signup_send', (data) => {  
-    users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
-    login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
-    
-    if(users_array){
-      let user = users_array.filter(function(x){
-        return x.user === data.user && x.email === data.email && decrypt(JSON.parse(x.pass)) === data.pass
-      })
-      if(user && user.length>0){
-        //the user already exists --> old user --> he must sign in
-        try{
-          io.to(socket.id).emit('signup_read', {exists: true, obj: {}})
-        } catch(e){
-          console.log('[error]','signup_read :', e)
-        }
-      } else {
+    database_config.sql = 'SELECT * FROM casino_user WHERE user = "' + data.user + '" AND email = "' + data.email + '"'
+		database(database_config).then(function(result){
+      if(result && result.length == 0){
         //no user was found --> new user --> he must sign up
+        users_array = result
+        login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
         let uuid = crypto.randomBytes(20).toString('hex')
         let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
-
+  
         //emit
         let obj = {
           uuid: uuid, 
@@ -151,96 +131,100 @@ io.on('connection', function(socket) {
         } catch(e){
           console.log('[error]','signup_read :', e)
         } 
-
-        get_extra_data().then(function(res) {
-          let id = users_array.length // if the array is empty id will be 0          
-          let timestamp = new Date().getTime() + ""   
-          let pass = JSON.stringify(encrypt(data.pass))   
-
-          //update users
-          let new_user = {
-            id: id,
-            uuid: uuid,
-            user: data.user, 
-            email: data.email,
-            pass: pass,
-            account_type: account_type,
-            profile_pic: profile_pic,
-            money: user_money,
-            signup: timestamp
-          } 
-          users_array.push(new_user) 
-          let payload_user = JSON.stringify(users_array)
-          fs.writeFileSync(path.resolve(__dirname, "./json/users.json"), payload_user)
-
-          //update login
-          let extra_data = {}
+  
+        get_extra_data().then(function(res) {  
+          let extra_data = extra_data = {city: "", country: "", ip_address: ""} 
           if(res && res.data){
             extra_data = {
               city: res.data.city ? res.data.city : "",
               country: res.data.country ? res.data.country : "",
               ip_address: res.data.ip_address? res.data.ip_address : "",
             }            
-          }          
-          let login_id = login_user.length
-          let new_login = {
-            id: login_id,
-            user_id: id,
-            login_date: timestamp,
-            device: device,
-            ip_address: extra_data.ip_address,
-            city: extra_data.city,
-            country: extra_data.city,
-          }
-          login_user.push(new_login)
-          let payload_login_user = JSON.stringify(login_user)
-          fs.writeFileSync(path.resolve(__dirname, "./json/login.json"), payload_login_user)                   
+          }  
+          let timestamp = new Date().getTime() + ""   
+          let pass = JSON.stringify(encrypt(data.pass))   
+
+          //insert new user in users and login tables
+          database_config.sql = "INSERT INTO casino_user (uuid, user, email, pass, account_type, money, signup) VALUES (?, ?, ?, ?, ?, ?, ?)"
+					let payload = [uuid, data.user, data.email, pass, account_type, user_money, timestamp] 
+          database(database_config, payload).then(function(result){
+						let insertId = result.insertId
+            database_config.sql = 'INSERT INTO login_user (user_id, login_date, device, ip_address, city, country) VALUES (' + insertId + ', "' + timestamp + '", ' + device + ', "' + extra_data.ip_address + '", "' + extra_data.city + '", "' + extra_data.country + '");'
+            database(database_config).then(function(result){})
+          })                           
         })
-      }
-    } else {
-      try{
-        io.emit('signup_read', {exists: false, obj: {}})
-      } catch(e){
-        console.log('[error]','signup_read :', e)
-      }
-    }   
-  })  
-  socket.on('forgotPassword_send', (data) => {    
-    users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
-    let user = null    
-    for(let i in users_array){
-      if(users_array[i].email === data.email){
-        user = users_array[i]        
-        break
-      }
-    } 
-    if(user){
-      sendEmail(user, data).then(function(res){
+      } else {
+        //the user already exists --> old user --> he must sign in
         try{
-          io.to(socket.id).emit('forgotPassword_read', res)
-        }catch(e){
-          console.log('[error]','forgotPassword_read2--> ', e)
+          io.emit('signup_read', {exists: false, obj: {}})
+        } catch(e){
+          console.log('[error]','signup_read :', e)
         }
-      })      
-    } else {
-      try{
-        io.to(socket.id).emit('forgotPassword_read', {send: "no_user"})
-      }catch(e){
-        console.log('[error]','forgotPassword_read3--> ', e)
+      }  
+    }) 
+  })
+  socket.on('forgotPassword_send', (data) => {    
+    database_config.sql = "SELECT * FROM casino_user"
+		database(database_config).then(function(result){
+      if(result && result.length>0){
+        users_array = result
+        let user = users_array.filter(function(x){
+          return x.email === data.email
+        })
+        if(user && user.length>0){
+          sendEmail(user, data).then(function(res){
+            try{
+              io.to(socket.id).emit('forgotPassword_read', res)
+            }catch(e){
+              console.log('[error]','forgotPassword_read2--> ', e)
+            }
+          }) 
+        } else {
+          try{
+            io.to(socket.id).emit('forgotPassword_read', {send: "no_user"})
+          } catch(e){
+            console.log('[error]','forgotPassword_read3--> ', e)
+          }
+        }
+      } else {
+        try{
+          io.to(socket.id).emit('forgotPassword_read', {send: "no_user"})
+        } catch(e){
+          console.log('[error]','forgotPassword_read3--> ', e)
+        }
       }
-    } 
+    })
   })
 
-  function updateStreak(uuid, users_array, login_user){
+  // GAMES
+  socket.on('game_send', function(data){
+		if(data.uuid){
+      database_config.sql = "SELECT * FROM casino_user;"
+      database_config.sql += "SELECT * FROM login_user;"
+      database(database_config).then(function(result){
+        users_array = result[0]
+        login_user = result[1]
+        let user_found = users_array.filter((x) => x.uuid === data.uuid) 
+        let payload = updateStreak(user_found, login_user)        
+        try{
+          io.to(socket.id).emit('game_read', data.uuid, payload)
+        } catch(e){
+          console.log('[error]','roulette_read--> ', e)
+        }
+
+        updateMoney(user_found, payload)
+      })
+    }
+	})
+  function updateStreak(user_found, login_user){
     let streak = 1
-    let user_found = users_array.filter((x) => x.uuid === uuid) 
     if(user_found[0]){
       let logs = login_user.filter((x) => x.user_id === user_found[0].id)   
       streak = check_streak(logs)
     }
     let prize = 0
     if(streak>0){
-      if(streak % 10 === 0){
+      if(streak % 10 === 0){ //each 10 days the user gets a bigger prize
         prize = 10
       } else {
         prize = 1
@@ -248,29 +232,30 @@ io.on('connection', function(socket) {
     }
     return {streak, prize}
   }
+  function updateMoney(user_found, payload){
+    if(user_found[0]){            
+      database_config.sql = "UPDATE casino_user SET money="+payload.prize+" WHERE id="+user_found[0].id
+      database(database_config).then(function(data){
+        let table_name = 'streak_prize'
+        let game_id = 'streak_prize'
+        let game_type = 'streak_prize'
+        let status = 1
+        let timestamp = new Date().getTime()
 
-  // GAMES
-  socket.on('game_send', function(data) {
-		if(data.uuid){
-      //get users_array only if the user didn't go through sign in or up
-      if((typeof users_array !== "undefined" && users_array !== "null" && users_array !== null && users_array !== "")
-        && (typeof login_user !== "undefined" && login_user !== "null" && login_user !== null && login_user !== "")){
-          try{
-            io.to(socket.id).emit('game_read', updateStreak(data.uuid, users_array, login_user))
-          } catch(e){
-            console.log('[error]','roulette_read--> ', e)
-          }
-      } else {
-        users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
-        login_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/login.json")))
-        try{
-          io.to(socket.id).emit('game_read', updateStreak(data.uuid, users_array, login_user))
-        } catch(e){
-          console.log('[error]','roulette_read--> ', e)
-        }
-      }
-		}
-	})
+        database_config.sql = 'INSERT INTO history_user (user_id, game_name, game_id, game_type, date, status, sum) '
+        database_config.sql += ' VALUES ('
+        database_config.sql += user_found[0].id + ', '
+        database_config.sql += '"' + table_name + '", '
+        database_config.sql += '"' + game_id + '", '
+        database_config.sql += '"' + game_type + '", '
+        database_config.sql += '"' + timestamp + '", '
+        database_config.sql += '"' + status + '", '
+        database_config.sql += payload.prize
+        database_config.sql += ')'
+        database(database_config).then(function(){})
+      })
+    }
+  }
 
 	socket.on('roulette_send', function(data) {
 		if(data.uuid){
@@ -338,41 +323,49 @@ io.on('connection', function(socket) {
 	})
 
   socket.on('game_results_send', function(data) {
-    let history_user = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/history.json")))
-    if(history_user){
-      console.log('game_results_send ==> ', data)
-      if(data.uuid){
-        try{
-          io.to(socket.id).emit('game_results_read', data)
-        } catch(e){
-          console.log('[error]','game_results_read--> ', e)
+    if(data.uuid){
+      database_config.sql = "SELECT * FROM casino_user;"
+      database(database_config).then(function(result){
+        users_array = result
+        let user_found = users_array.filter((x) => x.uuid === data.uuid) 
+        if(user_found && user_found.length>0){
+          let table_name = data.game.table_name ? data.game.table_name : ""
+          let table_id = data.game.table_id ? data.game.table_id : table_name
+          let table_type = data.game.table_type ? data.game.table_type : table_name
+          let status = data.status == "win" ? 1 : 0 
+          let timestamp = new Date().getTime()
+          database_config.sql = "UPDATE casino_user SET money='" + data.money + "' WHERE id=" + data.uuid + '; '
+          database_config.sql = 'INSERT INTO history_user (user_id, game_name, game_id, game_type, date, status, sum) '
+          database_config.sql += ' VALUES ('
+          database_config.sql += user_found[0].id + ', '
+          database_config.sql += '"' + table_name + '", '
+          database_config.sql += '"' + table_id + '", '
+          database_config.sql += '"' + table_type + '", '
+          database_config.sql += '"' + timestamp + '", '
+          database_config.sql += '"' + status + '", '
+          database_config.sql += data.bet
+          database_config.sql += ')'
         }
-      }
-    }    
+      })
+    } 
 	})
 
   // DASHBOARD, CART, CHECKOUT
   socket.on('dashboardChanges_send', function(data){
     if(data.uuid){
-      let users_array = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./json/users.json")))
-      for(let i in users_array){
-        if(users_array[i].uuid === data.uuid){
-          switch(data.type) {
-            case "pic":
-              users_array[i].profile_pic = data.value
-              break
-            case "user":
-              users_array[i].user = data.value
-              break
-            case "pass":
-              users_array[i].pass = data.value
-              break
-          }
-          break
+        switch(data.type) {
+          case "pic":            
+            database_config.sql = "UPDATE casino_user SET profile_pic='" + data.value + "' WHERE id=" + data.uuid + '; '
+            break
+          case "user":
+            database_config.sql = "UPDATE casino_user SET user='" + data.value + "' WHERE id=" + data.uuid + '; '
+            break
+          case "pass":
+            let new_pass = JSON.stringify(encrypt(data.value))
+            database_config.sql = "UPDATE casino_user SET pass='" + new_pass + "' WHERE id=" + data.uuid + '; '
+            break
         }
-      }
-      let payload_user = JSON.stringify(users_array)
-      fs.writeFileSync(path.resolve(__dirname, "./json/users.json"), payload_user)
+        database(database_config).then(function(){})
     }   
   })  
   socket.on('promo_send', function(text) {
