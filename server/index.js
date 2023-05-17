@@ -202,18 +202,23 @@ io.on('connection', function(socket) {
 		if(data.uuid){
       database_config.sql = "SELECT * FROM casino_user;"
       database_config.sql += "SELECT * FROM login_user;"
-      database(database_config).then(function(result){
-        users_array = result[0]
-        login_user = result[1]
-        let user_found = users_array.filter((x) => x.uuid === data.uuid) 
-        let payload = updateStreak(user_found, login_user)        
-        try{
-          io.to(socket.id).emit('game_read', data.uuid, payload)
-        } catch(e){
-          console.log('[error]','roulette_read--> ', e)
-        }
+      database(database_config).then(function(result){        
+        let payload = {streak: 1, prize: 0}
+        if(result){
+          users_array = result[0]
+          login_user = result[1]
+          if(users_array && login_user){
+            let user_found = users_array.filter((x) => x.uuid === data.uuid) 
+            payload = updateStreak(user_found, login_user)        
+            try{
+              io.to(socket.id).emit('game_read', payload)
+            } catch(e){
+              console.log('[error]','roulette_read--> ', e)
+            }
 
-        updateMoney(user_found, payload)
+            updateMoney(user_found, payload)
+          }
+        }
       })
     }
 	})

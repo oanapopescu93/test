@@ -3,7 +3,7 @@ import GameBoard from '../other/gameBoard'
 import { useDispatch } from 'react-redux'
 import { decryptData } from '../../../../utils/crypto'
 import $ from "jquery"
-import { draw_rect, getRoom, get_cards } from '../../../../utils/games'
+import { getRoom, get_cards } from '../../../../utils/games'
 import { translate } from '../../../../translations/translate'
 import { changePopup } from '../../../../reducers/popup'
 
@@ -12,7 +12,6 @@ function Card(config){
 	self.id = config.id
 	self.name = config.name
 	self.user = config.user
-	self.dealer = config.dealer
 	
 	self.x = config.x
 	self.y = config.y
@@ -21,82 +20,111 @@ function Card(config){
 	self.card = config.card //The size of the clipped image
 	self.card_img = config.card_img //The size of the image to use
 	self.images = config.images
+    self.space = config.space
+    self.text_color = config.text_color
+    self.text_bg = config.text_bg
+	self.text_font = config.text_font
+    self.text_x = config.text_x
+    self.text_y = config.text_y
 
 	self.show_cards = function(ctx, data){
-		let player = data.players[self.id]
-        if(player){
-            console.log('draw_card ', self.x, self.y, self.width, self.height)
-            draw_rect(ctx, self.x, self.y, self.width, self.height, 'red', 3, 'blue')
-            //self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, player.hand)
-        }		
+        if(self.id !== -1){
+            //player
+            let player = data.players[self.id]
+            if(player){
+                self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, player.hand)
+                self.draw_card_text(ctx, self.user, self.text_x, self.text_y, 70, 12)
+            }	
+        } else {
+            //dealer
+            let cards_number = data.dealer.hand.length
+            let hand_length = (cards_number-1) * self.card.width + (cards_number-2) * self.space
+            self.draw_card(ctx, self.x-hand_length/2, self.y, self.card.width, self.card.height, self.card_img, data.dealer.hand)
+        }
+			
 	}
 
 	this.draw_card = function(ctx, x, y, w, h, size, hand){
 		let img = self.images
 		let img_index = 0
-		if(hand === "hidden"){
-			ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x, y, w, h)
-		} else {
-			for(let i in hand){		
-				switch (hand[i].Suit) { 					
-					case "Hearts":
-						img_index = 1		
-						break				
-					case "Spades":
-						img_index = 14		
-						break
-					case "Diamonds":
-						img_index = 27	
-						break
-					case "Clubs":
-						img_index = 40							
-						break
-				}		  
-				switch (hand[i].Value) {
-					case "A":
-						img_index = img_index + 0			
-						break
-					case "2":
-						img_index = img_index + 1					
-						break
-					case "3":
-						img_index = img_index + 2							
-						break
-					case "4":	
-						img_index = img_index + 3				
-						break
-					case "5":
-						img_index = img_index + 4					
-						break
-					case "6":
-						img_index = img_index + 5						
-						break
-					case "7":
-						img_index = img_index + 6				
-						break
-					case "8":
-						img_index = img_index + 7							
-						break
-					case "9":
-						img_index = img_index + 8			
-						break
-					case "10":
-						img_index = img_index + 9					
-						break
-					case "J":
-						img_index = img_index + 10				
-						break
-					case "Q":	
-						img_index = img_index + 11	
-						break
-					case "K":
-						img_index = img_index + 12					
-						break			
-				}
-				
-				ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i*12, y + i*12, w, h)
-			}
-		}
+		for(let i in hand){		
+            switch (hand[i].Suit) { 					
+                case "Hearts":
+                    img_index = 1		
+                    break				
+                case "Spades":
+                    img_index = 14		
+                    break
+                case "Diamonds":
+                    img_index = 27	
+                    break
+                case "Clubs":
+                    img_index = 40							
+                    break
+            }		  
+            switch (hand[i].Value) {
+                case "A":
+                    img_index = img_index + 0			
+                    break
+                case "2":
+                    img_index = img_index + 1					
+                    break
+                case "3":
+                    img_index = img_index + 2							
+                    break
+                case "4":	
+                    img_index = img_index + 3				
+                    break
+                case "5":
+                    img_index = img_index + 4					
+                    break
+                case "6":
+                    img_index = img_index + 5						
+                    break
+                case "7":
+                    img_index = img_index + 6				
+                    break
+                case "8":
+                    img_index = img_index + 7							
+                    break
+                case "9":
+                    img_index = img_index + 8			
+                    break
+                case "10":
+                    img_index = img_index + 9					
+                    break
+                case "J":
+                    img_index = img_index + 10				
+                    break
+                case "Q":	
+                    img_index = img_index + 11	
+                    break
+                case "K":
+                    img_index = img_index + 12					
+                    break			
+            }
+            
+            if(self.id !== -1){
+                //player
+                ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * self.space, y, w, h)
+            } else {
+                //dealer
+                ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.card.width + self.space), y, w, h)
+            }
+        }
+	}
+
+    self.draw_card_text = function(ctx, text, x, y, w, h){	
+		ctx.beginPath()
+		ctx.fillStyle = self.text_bg
+        ctx.fillRect(x, y, w, h)
+        ctx.closePath()
+
+        ctx.beginPath()
+        ctx.fillStyle = self.text_color
+		ctx.font = self.text_font
+		ctx.fillText(text, x+5, y+8)
+		ctx.closePath()
 	}
 }
 
@@ -112,15 +140,17 @@ function poker_game(props){
 	let card_list = []
 	let card = {}
 	let card_img = {width: 237, height: 365}
+    let card_base = {width: 120, height: 180, space: 35}
+    let space = 12
+    let positions = []
     
     let items = get_cards()
-    let resize = 0
 
     this.ready = function(){
-        resize++
 		card_list = []
 		self.createCanvas(canvas_width, canvas_height)
-        if(!poker_status && resize === 1){
+        self.drawBackground()
+        if(!poker_status){
             //first time entering
             let promises = []
             for(let i in items){				
@@ -128,13 +158,11 @@ function poker_game(props){
             }
             Promise.all(promises).then(function(result){
                 images = result
-                self.drawBackground()
-                self.create_cards()
             })
         } else {
             // the game started
-            self.drawBackground()
             self.create_cards()
+			self.draw_cards()
         }
     }
 
@@ -143,22 +171,26 @@ function poker_game(props){
 		ctx = canvas.getContext("2d")	
 
 		if(window.innerWidth <= 480){
+            card = {width: 33, height: 50}
+            card_base = {width: 46, height: 70, space: 15}
+            space = 8
 			if(window.innerHeight < window.innerWidth){
 				//extra small landscape				
 				canvas.width = 400
-				canvas.height = 200				
-				card = {width: 33, height: 50}
+				canvas.height = 200	
 			} else {
 				//extra small portrait
 				canvas.width = 300
 				canvas.height = 200
 			}			
 		} else if (window.innerWidth <= 960){
+            card = {width: 40, height: 60}
+            card_base = {width: 53, height: 80, space: 15}
+            space = 10
 			if(window.innerHeight < window.innerWidth){
 				//small landscape				
 				canvas.width = 480
-				canvas.height = 220				
-				card = {width: 40, height: 60}
+				canvas.height = 220	
 			} else {
 				//small portrait
 				canvas.width = 300
@@ -168,17 +200,28 @@ function poker_game(props){
 			//big
 			canvas.width = 900
 			canvas.height = 450			
-			card = {width: 80, height: 120}
+			card = {width: 70, height: 105}
+            card_base = {width: 120, height: 180, space: 25}
+            space = 10
 		} else {
 			//extra big
 			canvas.width = 1200
 			canvas.height = 500			
-			card = {width: 100, height: 150}
+			card = {width: 70, height: 105}
+            card_base = {width: 80, height: 120, space: 25}
+            space = 10
 		}
 		
 		canvas_width = canvas.width
 		canvas_height = canvas.height	
 		canvas.height = canvas_height
+
+        positions = [
+            {x: canvas.width/2 - card.width/2, y: canvas.height - card.height - card_base.space, width: card_base.width, height: card_base.height}, //bottom
+            {x: card_base.space, y: canvas.height/2 - card.height/2, width: card_base.width, height: card_base.height}, //left
+            {x: canvas.width/2 - card.width/2, y: card_base.space, width: card_base.width, height: card_base.height}, //top
+            {x: canvas.width - card.width - 2 * card_base.space, y: canvas.height/2 - card.height/2, width: card_base.width, height: card_base.height}, //right
+        ] 
 	}
 
     this.preaload_images = function(item){
@@ -192,31 +235,60 @@ function poker_game(props){
 	}
 
     this.drawBackground = function(){
-
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.fillStyle = "rgba(255, 255, 0, 0.1)"
+        ctx.beginPath()
+        ctx.ellipse(canvas.width/2, canvas.height/2, canvas.width/2-2*card_base.space, canvas.height/2-2*card_base.space, 0, 0, 2 * Math.PI)
+        ctx.lineWidth = 1
+		ctx.strokeStyle = 'rgba(255, 255, 0, 0.5)'
+        ctx.stroke()
+        ctx.fill()
     }
 
-    this.create_cards = function(x){
-        let card_base = [
-            {x: canvas.width/2, y: canvas.height, width: 120, height: 180}, //bottom
-            {x: 0, y: canvas.height/2, width: 120, height: 180}, //left
-            {x: canvas.width/2, y: 0, width: 120, height: 180}, //top
-            {x: canvas.width, y: canvas.height/2, width: 120, height: 180}, //right
-        ]  
-		for(let i=0;i<4;i++){
-			card_list.push(new Card({
-				id: i,
-				name: 'player',
-				user: 'player_'+i,
-				x: card_base[0].x, 
-				y: card_base[0].y,
-				width: card_base[0].width, 
-				height: card_base[0].height, 
-				card: card,
-				card_img: card_img,
-				images: images,
-			}))
-		}
-        console.log(card_list)
+    this.create_cards = function(){         
+        if(poker_data){
+            // create dealer
+            card_list.push(new Card({
+                id: -1,
+                name: 'dealer',
+                x: canvas.width/2 - card.width/2, 
+                y: canvas.height/2 - card.height/2, 
+                width: positions[0].width, 
+                height: positions[0].height, 
+                card: card,
+                card_img: card_img,
+                images: images,
+                space: space,
+            }))	
+            
+            //players
+            for(let i=0;i<4;i++){
+                if(positions[i]){  
+                    let user = 'player_'+i
+                    if(poker_data.players && poker_data.players[i] && props.user.uuid === poker_data.players[i].uuid){
+                        user = decryptData(poker_data.players[i].user)
+                    }                       
+                    card_list.push(new Card({
+                        id: i,
+                        name: 'player',
+                        user: user,
+                        x: positions[i].x, 
+                        y: positions[i].y,
+                        width: positions[i].width, 
+                        height: positions[i].height, 
+                        card: card,
+                        card_img: card_img,
+                        images: images,
+                        space: space,
+                        text_color: "black",
+                        text_bg: "gold",
+                        text_font: 'bold 10px sans-serif',
+                        text_x: positions[i].x,
+                        text_y: positions[i].y - 2*space,
+                    }))
+                }
+            }
+        }
 	}
 
     this.draw_cards = function(){
@@ -230,13 +302,9 @@ function poker_game(props){
     this.action = function(data){
 		if(data.action){
 			poker_data = data
-			ctx.clearRect(0, 0, canvas.width, canvas.height)
-			if(data.action === "start"){
-				resize = 0
-			}
             self.drawBackground()
+            self.create_cards()
 			self.draw_cards()
-			self.check_win_lose()
 		}
     }
 

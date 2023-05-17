@@ -1,5 +1,6 @@
 var poker_deck = []
 var poker_players = []
+var poker_dealer = {}
 
 function poker(data, user_join){
     let poker_current_player = 0
@@ -13,7 +14,7 @@ function poker(data, user_join){
             poker_deck = createDeck(suits, values, 10000) 
             createPlayers()
             dealHands()            
-            return {action: data.action, players: poker_players}
+            return {action: data.action, players: poker_players, dealer: poker_dealer}
     }
 
     function createDeck(suits, values, turns){
@@ -51,8 +52,11 @@ function poker(data, user_join){
             poker_players.push(player)
         }
     }		
-    function dealHands(){	
+    function dealHands(){
+        poker_dealer = {id: "dealer", hand: []}		
         for(let i = 0; i < how_many_cards; i++){	
+            let card = poker_deck.pop()
+            poker_dealer.hand.push(card)
             for (let j = 0; j < poker_players.length; j++){
                 let card = poker_deck.pop()
                 if(i === 0){

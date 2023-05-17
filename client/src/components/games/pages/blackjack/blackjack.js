@@ -159,10 +159,7 @@ function Card(config){
 					case "K":
 						img_index = img_index + 12					
 						break			
-				}	
-				
-				console.log('draw_card ', x, y, w, h, size)
-				
+				}				
 				ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i*12, y + i*12 + space, w, h)
 			}
 		}
