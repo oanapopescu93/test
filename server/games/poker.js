@@ -54,9 +54,11 @@ function poker(data, user_join){
     }		
     function dealHands(){
         poker_dealer = {id: "dealer", hand: []}		
-        for(let i = 0; i < how_many_cards; i++){	
-            let card = poker_deck.pop()
-            poker_dealer.hand.push(card)
+        for(let i = 0; i < how_many_cards; i++){
+            if(i<3){//the dealer will show 3 cards at the start of the game
+                let card = poker_deck.pop()
+                poker_dealer.hand.push(card)
+            }
             for (let j = 0; j < poker_players.length; j++){
                 let card = poker_deck.pop()
                 if(i === 0){
@@ -103,7 +105,8 @@ function poker(data, user_join){
             }
         }
     }
-    function hasJacksOfBetter(hand) {
+    function hasJacksOfBetter(hand){
+        console.log(hand)
         return false
     }
     function has2Pair(hand){
