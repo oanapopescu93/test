@@ -84,10 +84,26 @@ function GameBoard(props){
                 case "poker_5_card_draw":
                     return <Row>
                         {startGame ? <>
-                            <Col xs={12}>
+                            <Col xs={4}>
                                 <div  className="button_box">
-                                    under construction
-                                </div>                                    
+                                    <Button type="button" onClick={()=>handleClick('call')} className="mybutton button_fullcolor shadow_convex">
+                                        {translate({lang: lang, info: "call"})}
+                                    </Button>
+                                </div>
+                            </Col>
+                            <Col xs={4}>
+                                <div  className="button_box">
+                                    <Button type="button" onClick={()=>handleClick('raise')} className="mybutton button_fullcolor shadow_convex">
+                                        {translate({lang: lang, info: "raise"})}
+                                    </Button>
+                                </div>
+                            </Col>
+                            <Col xs={4}>
+                                <div  className="button_box">
+                                    <Button type="button" onClick={()=>handleClick('fold')} className="mybutton button_fullcolor shadow_convex">
+                                        {translate({lang: lang, info: "fold"})}
+                                    </Button>
+                                </div>
                             </Col>
                         </> : <>
                             <Col xs={4}>

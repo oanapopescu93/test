@@ -46,12 +46,14 @@ function Cell(props) {
             switch (template) {
                 case "salon":
                     let table_type = data.table_type
-                    // table_type=table_type.split('_').join(' ')
+                    if(table_type){
+                        table_type=table_type.split('_').join(' ')
+                    }
                     return <div className="cell_salon_container">
                         <div className="cell_salon shadow_concav">
                             <div className="cell_info">
                                 <h4>{data.table_name} {data.table_id}</h4>
-                                <p>{table_type}</p>
+                                {table_type ? <p>{table_type}</p> : null}
                             </div>
                             <div className="cell_button">
                                 <Button 

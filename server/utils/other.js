@@ -15,7 +15,7 @@ function sort_array_obj(array, sort_by){
 	switch (typeof sort_by) {
 		case 'string': // sort array of objects
 			while (!sorted){
-				sorted = true
+				sorted = true				
 				for(let i=0; i<array.length-1; i++){
 					if (array[i][sort_by] > array[i+1][sort_by]) {
 						let t = array[i+1]
@@ -40,7 +40,7 @@ function sort_array_obj(array, sort_by){
 			}
 			break			
 	}
-  	
+  	return array
 }
 function get_device(headers){
 	let device = 0 // 0 = computer, 1 = mobile, 2 = other

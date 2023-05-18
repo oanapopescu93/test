@@ -1,6 +1,9 @@
+const { sort_array_obj } = require("../utils/other")
+
 var poker_deck = []
 var poker_players = []
 var poker_dealer = {}
+var poker_hidden_players = []
 
 function poker(data, user_join){
     let poker_current_player = 0
@@ -13,8 +16,11 @@ function poker(data, user_join){
             let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
             poker_deck = createDeck(suits, values, 10000) 
             createPlayers()
-            dealHands()            
-            return {action: data.action, players: poker_players, dealer: poker_dealer}
+            dealHands() 
+            sortHands()
+            createHiddenPlayers()  
+            poker_hidden_players = checkPrize(poker_hidden_players)         
+            return {action: data.action, players: poker_hidden_players, dealer: poker_dealer}
     }
 
     function createDeck(suits, values, turns){
@@ -71,67 +77,89 @@ function poker(data, user_join){
                 poker_players[j].hand.push(card)
             }
         }
-        check()
     }
 
-    function check(){
+    function sortHands(){        
+        for(let i in poker_players){            
+            poker_players[i].hand = sort_array_obj(poker_players[i].hand, "Value")
+        }
+    }
+
+    function createHiddenPlayers(){
         for(let i in poker_players){
-            if(hasJacksOfBetter(poker_players[i].hand)){
-                poker_players[i].prize = 1
-            }
-            if(has2Pair(poker_players[i].hand)){
-                poker_players[i].prize = 2
-            }
-            if(has3ofKind(poker_players[i].hand)){
-                poker_players[i].prize = 3
-            }
-            if(hasStraight(poker_players[i].hand)){
-                poker_players[i].prize = 4
-            }
-            if(hasFlush(poker_players[i].hand)){
-                poker_players[i].prize = 6
-            }
-            if(hasFullHouse(poker_players[i].hand)){
-                poker_players[i].prize = 9
-            }
-            if(has4ofKind(poker_players[i].hand)){
-                poker_players[i].prize = 25
-            }
-            if(hasStraightFlush(poker_players[i].hand)){
-                poker_players[i].prize = 50
-            }
-            if(hasRoyalFlush(poker_players[i].hand)){
-                poker_players[i].prize = 250
+            if(data.uuid === poker_players[i].uuid){
+                poker_hidden_players.push(poker_players[i])
+            } else {
+                poker_hidden_players.push({...poker_players[i], hand: null})
             }
         }
     }
-    function hasJacksOfBetter(hand){
-        console.log(hand)
-        return false
+
+    function checkPrize(array){        
+        for(let i in array){
+            if(array[i].hand !== "hidden"){
+                array[i].evaluateHand = evaluateHand(array[i].hand)
+            }
+        }
+        return array
     }
-    function has2Pair(hand){
-        return false
+
+    function evaluateHand(hand){//1, 2, 3, 4, 6, 9, 25, 50, 250
+        return {hasOfKind: hasOfKind(hand), hasFlush: hasFlush(hand), hasSequence: hasSequence(hand)}
     }
-    function has3ofKind(hand){
-        return false
+    function hasOfKind(hand){//checkes groups of same values
+        if(hand){
+            const results = hand.reduce((a, e) => {
+                a[e.Value] = ++a[e.Value] || 0
+                return a
+            }, {})
+            return results
+        } else {
+            return null
+        }        
     }
-    function hasStraight(hand){
-        return false
+    function hasFlush(hand){//has five of same suit
+        let spades = 0
+        let hearts = 0
+        let diamonds = 0
+        let clubs = 0
+        if(hand){
+            for(let i in hand){
+                switch(hand[i].Suit){
+                    case "Spades":
+                        spades++
+                        break
+                    case "Hearts":
+                        hearts++
+                        break
+                    case "Diamonds":
+                        diamonds++
+                        break
+                    case "Clubs":
+                        clubs++
+                        break
+                }
+            }        
+            if(spades >= 5){return {flush: "spades"}}
+            if(hearts >= 5){return {flush: "hearts"}}
+            if(diamonds >= 5){return {flush: "diamonds"}}
+            if(clubs >= 5){return {flush: "clubs"}}
+        }        
+        return {flush: null}
     }
-    function hasFlush(hand){
-        return false
-    }
-    function hasFullHouse(hand){
-        return false
-    }
-    function has4ofKind(hand){
-        return false
-    }
-    function hasStraightFlush(hand){
-        return false
-    }
-    function hasRoyalFlush(hand){
-        return false
+    function hasSequence(hand){
+        if(hand){
+            let t = true
+            for(let i = 1; i < hand.length; i++) {
+                if (hand[i].Value - hand[i-1].Value !== 1) {
+                t = false
+                break
+                }
+            }
+            return t
+        } else {
+            return false
+        }
     }
     
     return {}

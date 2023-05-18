@@ -3,15 +3,17 @@ import GameBoard from '../other/gameBoard'
 import { useDispatch } from 'react-redux'
 import { decryptData } from '../../../../utils/crypto'
 import $ from "jquery"
-import { getRoom, get_cards } from '../../../../utils/games'
+import { draw_rect, getMousePos, getRoom, get_cards, isInside } from '../../../../utils/games'
 import { translate } from '../../../../translations/translate'
 import { changePopup } from '../../../../reducers/popup'
 
 function Card(config){
 	let self = this
 	self.id = config.id
+    self.uuid = config.uuid
 	self.name = config.name
 	self.user = config.user
+    self.props = config.props
 	
 	self.x = config.x
 	self.y = config.y
@@ -27,24 +29,31 @@ function Card(config){
     self.text_x = config.text_x
     self.text_y = config.text_y
 
+    self.hand = config.hand
+    self.selectedCards = []
+
 	self.show_cards = function(ctx, data){
         if(self.id !== -1){
             //player
-            let player = data.players[self.id]
-            if(player){
-                self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, player.hand)
+            if(self.uuid === self.props.user.uuid){
+                let cards_number = self.hand.length
+                let hand_length = (cards_number-1) * self.card.width + (cards_number-2) * self.space
+                self.draw_card(ctx, self.x-hand_length/2, self.y, self.card.width, self.card.height, self.card_img, self.hand, "me")
+                self.draw_card_text(ctx, self.user, self.text_x-hand_length/2, self.text_y, 70, 12)                    
+            } else {
+                self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, self.hand, "player")
                 self.draw_card_text(ctx, self.user, self.text_x, self.text_y, 70, 12)
-            }	
+            }
         } else {
             //dealer
             let cards_number = data.dealer.hand.length
             let hand_length = (cards_number-1) * self.card.width + (cards_number-2) * self.space
-            self.draw_card(ctx, self.x-hand_length/2, self.y, self.card.width, self.card.height, self.card_img, data.dealer.hand)
+            self.draw_card(ctx, self.x-hand_length/2, self.y, self.card.width, self.card.height, self.card_img, data.dealer.hand, "dealer")
         }
 			
 	}
 
-	this.draw_card = function(ctx, x, y, w, h, size, hand){
+	this.draw_card = function(ctx, x, y, w, h, size, hand, text){
 		let img = self.images
 		let img_index = 0
 		for(let i in hand){		
@@ -102,16 +111,23 @@ function Card(config){
                 case "K":
                     img_index = img_index + 12					
                     break			
-            }
+            }           
             
-            if(self.id !== -1){
+            if(self.id !== -1){                
                 //player
-                ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * self.space, y, w, h)
+                if(self.uuid === self.props.user.uuid){
+                    ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.space + w), y, w, h)
+                    self.updateHand(i, x + i * (self.space + w), y, w, h)
+                } else {
+                    ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * self.space, y, w, h)
+                    self.updateHand(i, x + i * self.space, y, w, h)
+                }
             } else {
                 //dealer
-                ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.card.width + self.space), y, w, h)
+                ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.space + w), y, w, h)
+                self.updateHand(i, x + i * (self.space + w), y, w, h)
             }
-        }
+        }        
 	}
 
     self.draw_card_text = function(ctx, text, x, y, w, h){	
@@ -126,6 +142,22 @@ function Card(config){
 		ctx.fillText(text, x+5, y+8)
 		ctx.closePath()
 	}
+
+    self.updateHand = function(i, x, y, w, h){        
+        self.hand[i].x = x
+        self.hand[i].y = y
+        self.hand[i].width = w
+        self.hand[i].height = h
+    }
+
+    self.updateSelected = function(x){ 
+        let index = self.selectedCards.findIndex((i) => i === x)     
+        if(index === -1){
+            self.selectedCards.push(x)
+        } else {
+            self.selectedCards.splice(index, 1)
+        }
+    }
 }
 
 function poker_game(props){
@@ -150,6 +182,7 @@ function poker_game(props){
 		card_list = []
 		self.createCanvas(canvas_width, canvas_height)
         self.drawBackground()
+        self.handleClick()
         if(!poker_status){
             //first time entering
             let promises = []
@@ -259,18 +292,30 @@ function poker_game(props){
                 card_img: card_img,
                 images: images,
                 space: space,
+                hand: poker_data.dealer.hand
             }))	
             
             //players
             for(let i=0;i<4;i++){
-                if(positions[i]){  
+                if(positions[i]){ 
+                    let uuid = null 
                     let user = 'player_'+i
+                    let evaluateHand = null
                     if(poker_data.players && poker_data.players[i] && props.user.uuid === poker_data.players[i].uuid){
+                        uuid = poker_data.players[i].uuid
                         user = decryptData(poker_data.players[i].user)
-                    }                       
+                        evaluateHand = poker_data.players[i].evaluateHand
+                    } 
+                    let hand = []
+                    if(poker_data.players[i].hand){
+                        hand = poker_data.players[i].hand
+                    } else {
+                        hand = [{Value: null}, {Value: null}, {Value: null}, {Value: null}, {Value: null}]
+                    }
                     card_list.push(new Card({
                         id: i,
                         name: 'player',
+                        uuid: uuid,
                         user: user,
                         x: positions[i].x, 
                         y: positions[i].y,
@@ -285,6 +330,9 @@ function poker_game(props){
                         text_font: 'bold 10px sans-serif',
                         text_x: positions[i].x,
                         text_y: positions[i].y - 2*space,
+                        props: props,
+                        evaluateHand: evaluateHand,
+                        hand: hand,
                     }))
                 }
             }
@@ -305,6 +353,36 @@ function poker_game(props){
             self.drawBackground()
             self.create_cards()
 			self.draw_cards()
+		}
+    }
+
+    this.handleClick = function(){
+        if($('#poker_canvas')){
+            $('#poker_canvas').off('click').on('click', function(event) {
+                let mousePos = getMousePos(canvas, event)
+                self.canvas_click(mousePos)
+            })
+        }		
+    }
+
+    this.canvas_click = function(mouse){ 
+        for(let i in card_list){
+			let hand = card_list[i].hand
+            if(card_list[i].uuid){
+                for(let j in hand){
+                    if(isInside(mouse, hand[j])){
+                        card_list[i].updateSelected(j) 
+                        self.drawBackground()
+                        self.draw_cards()
+                        let selectedCards = card_list[i].selectedCards
+                        for(let k in selectedCards){
+                            let t = selectedCards[k]
+                            let card = card_list[i].hand[t]
+                            draw_rect(ctx, card.x, card.y, card.width, card.height, "transparent", 3, "red")
+                        }
+                    }
+                }
+            }
 		}
     }
 
@@ -384,8 +462,19 @@ function Poker5CardDraw(props){
     useEffect(() => {
 		props.socket.on('poker_read', function(data){
 			if(my_poker && data){
-				if(data.action === "start"){
+				if(data.action === "start" || data.action === "call" || data.action === "raise"){
 					my_poker.action(data)
+				} else if(data.action === "fold"){
+					if(poker_bets > 0){			
+                        let poker_payload = {
+                            uuid: props.user.uuid,
+                            game: game,
+                            status: 'lose',
+                            bet: poker_bets,
+                            money: money - poker_bets
+                        }
+                        //props.results(poker_payload)
+                    }
 				} else {
 					//it means it must be an error
 					let payload = {
