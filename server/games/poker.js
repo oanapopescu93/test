@@ -9,6 +9,7 @@ function poker(data, user_join){
     let poker_current_player = 0
     let how_many_players = 4
     let how_many_cards = 5
+    var handsOrder = ["High Card", "Pair", "Double Pair", "Three of Kind", "Straight", "Flush", "Full House", "Four of Kind", "Straight Flush", "Royal Flush"];
 
     switch (data.action) {
         case 'start':
@@ -26,12 +27,22 @@ function poker(data, user_join){
     function createDeck(suits, values, turns){
         for (let i = 0 ; i < values.length; i++){
             for(let j = 0; j < suits.length; j++){
-                let weight = parseInt(values[i])
-                if (values[i] == "J" || values[i] == "Q" || values[i] == "K"){
-                    weight = 10		
-                }
-                if (values[i] == "A"){
-                    weight = 11				
+                let weight = 0
+                switch(values[i]){
+                    case "J":
+                        weight = 11
+                        break    
+                    case "Q":
+                        weight = 12
+                        break    
+                    case "K":
+                        weight = 13
+                        break    
+                    case "A":
+                        weight = 14
+                        break 
+                    default:
+                        weight = parseInt(values[i]) 
                 }
                 let card = { Value: values[i], Suit: suits[j], Weight: weight }
                 poker_deck.push(card)
@@ -102,10 +113,25 @@ function poker(data, user_join){
             }
         }
         return array
-    }
+    }    
 
     function evaluateHand(hand){//1, 2, 3, 4, 6, 9, 25, 50, 250
-        return {hasOfKind: hasOfKind(hand), hasFlush: hasFlush(hand), hasSequence: hasSequence(hand)}
+        return {hasHighCard: hasHighCard(hand), hasOfKind: hasOfKind(hand), hasFlush: hasFlush(hand), hasSequence: hasSequence(hand)}
+    }
+    function hasHighCard(hand){
+        if(hand){
+            let max = 0
+            let card = null
+            for(let i in hand){
+                if(hand[i].Weight > max){
+                    max = hand[i].Weight
+                    card = hand[i]
+                }
+            }
+            return {highCard: card}
+        } else {
+            return {highCard: null}
+        } 
     }
     function hasOfKind(hand){//checkes groups of same values
         if(hand){

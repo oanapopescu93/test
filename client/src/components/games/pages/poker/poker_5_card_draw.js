@@ -243,6 +243,7 @@ function poker_game(props){
 			card = {width: 70, height: 105}
             card_base = {width: 80, height: 120, space: 25}
             space = 10
+            
 		}
 		
 		canvas_width = canvas.width
@@ -269,12 +270,19 @@ function poker_game(props){
 
     this.drawBackground = function(){
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.fillStyle = "rgba(255, 255, 0, 0.1)"
+        ctx.fillStyle = "darkgreen"
+        ctx.shadowBlur = 20
+        ctx.shadowColor = "black"
+        ctx.shadowOffsetY = 10
         ctx.beginPath()
-        ctx.ellipse(canvas.width/2, canvas.height/2, canvas.width/2-2*card_base.space, canvas.height/2-2*card_base.space, 0, 0, 2 * Math.PI)
-        ctx.lineWidth = 1
-		ctx.strokeStyle = 'rgba(255, 255, 0, 0.5)'
-        ctx.stroke()
+        ctx.ellipse(canvas.width/2, canvas.height/2, canvas.width/2-2*card_base.space, canvas.height/2-2*card_base.space, 0, 0, 2 * Math.PI) 
+        ctx.fill()
+        ctx.shadowBlur = 0
+        ctx.shadowColor = "transparent"
+        ctx.shadowOffsetY = 0
+        ctx.fillStyle = "green"
+        ctx.beginPath()
+        ctx.ellipse(canvas.width/2, canvas.height/2, canvas.width/2-4*card_base.space, canvas.height/2-3*card_base.space, 0, 0, 2 * Math.PI)  
         ctx.fill()
     }
 
@@ -326,7 +334,7 @@ function poker_game(props){
                         images: images,
                         space: space,
                         text_color: "black",
-                        text_bg: "gold",
+                        text_bg: "white",
                         text_font: 'bold 10px sans-serif',
                         text_x: positions[i].x,
                         text_y: positions[i].y - 2*space,
@@ -349,10 +357,21 @@ function poker_game(props){
     
     this.action = function(data){
 		if(data.action){
-			poker_data = data
-            self.drawBackground()
-            self.create_cards()
-			self.draw_cards()
+            poker_data = data
+            switch(data.action){
+                case "start":                    
+                    self.drawBackground()
+                    self.create_cards()
+                    self.draw_cards()
+                    break
+                case "call":
+                    console.log('call--> ')
+                    break
+                case "raise":
+                    console.log('raise--> ')
+                    break
+                default:
+            }
 		}
     }
 
@@ -413,6 +432,7 @@ function Poker5CardDraw(props){
     let game = props.page.game
 	let money = decryptData(props.user.money)
 	let [startGame, setStartGame]= useState(false)
+    let [gameAction, setGameAction]= useState(null)
     let dispatch = useDispatch()
 
 	let clear = function(bet){
@@ -464,19 +484,8 @@ function Poker5CardDraw(props){
 			if(my_poker && data){
 				if(data.action === "start" || data.action === "call" || data.action === "raise"){
 					my_poker.action(data)
-				} else if(data.action === "fold"){
-					if(poker_bets > 0){			
-                        let poker_payload = {
-                            uuid: props.user.uuid,
-                            game: game,
-                            status: 'lose',
-                            bet: poker_bets,
-                            money: money - poker_bets
-                        }
-                        //props.results(poker_payload)
-                    }
 				} else {
-					//it means it must be an error
+					//it means it must be an error, if the user folds, he just loses the money without payload to server
 					let payload = {
 						open: true,
 						template: "error",
@@ -490,8 +499,8 @@ function Poker5CardDraw(props){
 		})	
     }, [props.socket])
 
-    function choice(type){		
-        if(type === "start"){
+    function choice(type){
+        if(type === "start" || type === "fold" || type === "call" || type === "raise"){
             let poker_payload_server = {
                 uuid: props.user.uuid,
                 room: getRoom(game),
@@ -515,9 +524,34 @@ function Poker5CardDraw(props){
 								props.socket.emit('poker_send', poker_payload_server)
 								poker_status = true
 								setStartGame(true)
+                                setGameAction("start")
 							}
 						}
 					}                    
+                    break
+                case "fold": //the user decided to quit --> he loses his bet
+                    console.log(type)	
+                    let poker_payload = {
+                        uuid: props.user.uuid,
+                        game: game,
+                        status: 'lose',
+                        bet: poker_bets,
+                        money: money - poker_bets
+                    }
+                    console.log('fold--> ', poker_payload)
+                    //props.results(poker_payload)
+                    break
+                case "call":
+                    if(my_poker){                    
+                        setGameAction("call")
+                        props.socket.emit('poker_send', poker_payload_server)
+                    }
+                    break
+                case "raise":
+                    if(my_poker){   
+                        setGameAction("raise")                 
+                        props.socket.emit('poker_send', poker_payload_server)
+                    }
                     break
             }
 			if(payload){
@@ -532,7 +566,7 @@ function Poker5CardDraw(props){
 
     return <div className="game_container poker_container">
         <canvas id="poker_canvas"></canvas>
-        <GameBoard template="poker_5_card_draw" {...props} startGame={startGame} choice={(e)=>choice(e)} updateBets={(e)=>updateBets(e)}></GameBoard>
+        <GameBoard template="poker_5_card_draw" {...props} startGame={startGame} action={gameAction} choice={(e)=>choice(e)} updateBets={(e)=>updateBets(e)}></GameBoard>
     </div>
 }
 
