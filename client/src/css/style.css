@@ -32,7 +32,7 @@ body{
 .grad:before{
 	content: "";
   background-image: url('./../img/bg.jpg');
-	background-image: url('./../img/noise.png'), url('./../img/bg01.jpg');
+	background-image: url('./../img/noise.png'), url('./../img/bg001.jpg');
 	background-repeat: repeat, repeat;
 	background-size: auto, 200px auto;
 	position:absolute;

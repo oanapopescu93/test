@@ -31,6 +31,7 @@ function Card(config){
 
     self.hand = config.hand
     self.selectedCards = []
+    self.fold = config.fold
 
 	self.show_cards = function(ctx, data){
         if(self.id !== -1){
@@ -38,10 +39,10 @@ function Card(config){
             if(self.uuid === self.props.user.uuid){
                 let cards_number = self.hand.length
                 let hand_length = (cards_number-1) * self.card.width + (cards_number-2) * self.space
-                self.draw_card(ctx, self.x-hand_length/2, self.y, self.card.width, self.card.height, self.card_img, self.hand, "me")
+                self.draw_card(ctx, self.x-hand_length/2, self.y, self.card.width, self.card.height, self.card_img, self.hand, self.fold)
                 self.draw_card_text(ctx, self.user, self.text_x-hand_length/2, self.text_y, 70, 12)                    
             } else {
-                self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, self.hand, "player")
+                self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, self.hand, self.fold)
                 self.draw_card_text(ctx, self.user, self.text_x, self.text_y, 70, 12)
             }
         } else {
@@ -53,9 +54,10 @@ function Card(config){
 			
 	}
 
-	this.draw_card = function(ctx, x, y, w, h, size, hand, text){
+	this.draw_card = function(ctx, x, y, w, h, size, hand, fold){
 		let img = self.images
 		let img_index = 0
+        console.log(img_index, img, img[img_index])
 		for(let i in hand){		
             switch (hand[i].Suit) { 					
                 case "Hearts":
@@ -115,6 +117,9 @@ function Card(config){
             
             if(self.id !== -1){                
                 //player
+                if(fold){ //if the player folded, his cards will be grey
+                    ctx.filter = 'grayscale(1)'
+                }
                 if(self.uuid === self.props.user.uuid){
                     ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.space + w), y, w, h)
                     self.updateHand(i, x + i * (self.space + w), y, w, h)
@@ -122,6 +127,7 @@ function Card(config){
                     ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * self.space, y, w, h)
                     self.updateHand(i, x + i * self.space, y, w, h)
                 }
+                ctx.filter = 'grayscale(0)'
             } else {
                 //dealer
                 ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.space + w), y, w, h)
@@ -286,7 +292,8 @@ function poker_game(props){
         ctx.fill()
     }
 
-    this.create_cards = function(){         
+    this.create_cards = function(){   
+        card_list = []      
         if(poker_data){
             // create dealer
             card_list.push(new Card({
@@ -305,7 +312,7 @@ function poker_game(props){
             
             //players
             for(let i=0;i<4;i++){
-                if(positions[i]){ 
+                if(positions[i] && poker_data.players[i]){ 
                     let uuid = null 
                     let user = 'player_'+i
                     let evaluateHand = null
@@ -319,6 +326,10 @@ function poker_game(props){
                         hand = poker_data.players[i].hand
                     } else {
                         hand = [{Value: null}, {Value: null}, {Value: null}, {Value: null}, {Value: null}]
+                    }
+                    let fold = false
+                    if(poker_data.players[i].fold){
+                        fold = true
                     }
                     card_list.push(new Card({
                         id: i,
@@ -341,6 +352,7 @@ function poker_game(props){
                         props: props,
                         evaluateHand: evaluateHand,
                         hand: hand,
+                        fold: fold
                     }))
                 }
             }
@@ -356,22 +368,12 @@ function poker_game(props){
 	} 
     
     this.action = function(data){
-		if(data.action){
+        console.log('action--> ', data, data.player, data.round)
+		if(data && data.action){
             poker_data = data
-            switch(data.action){
-                case "start":                    
-                    self.drawBackground()
-                    self.create_cards()
-                    self.draw_cards()
-                    break
-                case "call":
-                    console.log('call--> ')
-                    break
-                case "raise":
-                    console.log('raise--> ')
-                    break
-                default:
-            }
+            self.drawBackground()
+            self.create_cards()
+            self.draw_cards()
 		}
     }
 
@@ -389,7 +391,7 @@ function poker_game(props){
 			let hand = card_list[i].hand
             if(card_list[i].uuid){
                 for(let j in hand){
-                    if(isInside(mouse, hand[j])){
+                    if(isInside(mouse, hand[j]) && !card_list[i]){
                         card_list[i].updateSelected(j) 
                         self.drawBackground()
                         self.draw_cards()
@@ -432,7 +434,8 @@ function Poker5CardDraw(props){
     let game = props.page.game
 	let money = decryptData(props.user.money)
 	let [startGame, setStartGame]= useState(false)
-    let [gameAction, setGameAction]= useState(null)
+    let [round, setRound]= useState(0)
+    let [spectator, setSpectator]= useState(false)
     let dispatch = useDispatch()
 
 	let clear = function(bet){
@@ -454,8 +457,7 @@ function Poker5CardDraw(props){
 		setStartGame(false)
 	}
     let options = {...props, dispatch, getResults, clear}
-    let my_poker = new poker_game(options)
-    
+    let my_poker = new poker_game(options)    
 
     function ready(){
         if(my_poker && document.getElementById("poker_canvas")){
@@ -482,20 +484,30 @@ function Poker5CardDraw(props){
     useEffect(() => {
 		props.socket.on('poker_read', function(data){
 			if(my_poker && data){
-				if(data.action === "start" || data.action === "call" || data.action === "raise"){
-					my_poker.action(data)
-				} else {
-					//it means it must be an error, if the user folds, he just loses the money without payload to server
-					let payload = {
-						open: true,
-						template: "error",
-						title: translate({lang: props.lang, info: "error"}),
-						data: translate({lang: props.lang, info: data.action})
-					}
-					dispatch(changePopup(payload))
-				}
-				
-            }		
+                if(data.action === "start" || data.action === "call" || data.action === "raise" || data.action === "fold"){
+                    my_poker.action(data)
+                    setRound(data.round)
+                    if(data.action === "fold"){ //the user decided to quit --> he loses his bet  
+                        let poker_payload = {
+                            uuid: props.user.uuid,
+                            game: game,
+                            status: 'lose',
+                            bet: poker_bets,
+                            money: money - poker_bets
+                        }
+                        //props.results(poker_payload)
+                    }				
+                } else {
+                    //it means it must be an error, if the user folds, he just loses the money without payload to server
+                    let payload = {
+                        open: true,
+                        template: "error",
+                        title: translate({lang: props.lang, info: "error"}),
+                        data: translate({lang: props.lang, info: data.action})
+                    }
+                    dispatch(changePopup(payload))
+                }
+            }	
 		})	
     }, [props.socket])
 
@@ -505,7 +517,8 @@ function Poker5CardDraw(props){
                 uuid: props.user.uuid,
                 room: getRoom(game),
                 action: type,
-                bet: poker_bets
+                bet: poker_bets,
+                money: money
             }
 			let payload = null
             switch (type) {
@@ -520,37 +533,23 @@ function Poker5CardDraw(props){
 						dispatch(changePopup(payload))
 					} else {
 						if(my_poker){                    
-							if(!poker_status){
+							if(!poker_status){                                
 								props.socket.emit('poker_send', poker_payload_server)
 								poker_status = true
 								setStartGame(true)
-                                setGameAction("start")
 							}
 						}
 					}                    
                     break
-                case "fold": //the user decided to quit --> he loses his bet
-                    console.log(type)	
-                    let poker_payload = {
-                        uuid: props.user.uuid,
-                        game: game,
-                        status: 'lose',
-                        bet: poker_bets,
-                        money: money - poker_bets
-                    }
-                    console.log('fold--> ', poker_payload)
-                    //props.results(poker_payload)
-                    break
+                case "fold": 
                 case "call":
-                    if(my_poker){                    
-                        setGameAction("call")
-                        props.socket.emit('poker_send', poker_payload_server)
-                    }
-                    break
                 case "raise":
-                    if(my_poker){   
-                        setGameAction("raise")                 
+                    if(my_poker){      
                         props.socket.emit('poker_send', poker_payload_server)
+                        if(type === "fold"){
+                            console.log('spectator-choice ', type)
+                            setSpectator(true)
+                        }
                     }
                     break
             }
@@ -566,7 +565,14 @@ function Poker5CardDraw(props){
 
     return <div className="game_container poker_container">
         <canvas id="poker_canvas"></canvas>
-        <GameBoard template="poker_5_card_draw" {...props} startGame={startGame} action={gameAction} choice={(e)=>choice(e)} updateBets={(e)=>updateBets(e)}></GameBoard>
+        {!spectator ? <GameBoard 
+            template="poker_5_card_draw" 
+            {...props} 
+            startGame={startGame} 
+            round={round}
+            choice={(e)=>choice(e)} 
+            updateBets={(e)=>updateBets(e)}
+        ></GameBoard> : null}
     </div>
 }
 
