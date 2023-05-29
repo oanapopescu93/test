@@ -3,24 +3,27 @@ var poker_players = []
 var poker_dealer = {}
 var poker_hidden_players = []
 var poker_pot = 0
-let suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
-let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 let how_many_players = 4
 let how_many_cards = 5
 let how_many_rounds = 3
+let poker_current_player = 0    
+let poker_current_round = 0
 
 function poker(data, user_join){
-    let poker_current_player = 0
-    let poker_current_round = 0
     poker_hidden_players = []
     let index = null 
+    let suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
+    let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 
     switch (data.action) {
-        case 'start':         
-            poker_deck = createDeck(suits, values, 10000) 
+        case 'start':     
+            poker_current_player = 0    
+            poker_current_round = 0    
+            poker_deck = createDeck(10000) 
             createPlayers()        
             dealHands()            
             handleBet()
+            break
         case "raise": 
         case "call":
         case "fold":
@@ -31,10 +34,11 @@ function poker(data, user_join){
                 handleCallRaise(data, index)
             }
             nextTurn()
+            break
         case "replace":
-            index = poker_players.findIndex((x) => x.uuid === data.uuid)    
-            let cards_to_replace = []//to do
-            replaceCards(index, cards_to_replace) 
+            index = poker_players.findIndex((x) => x.uuid === data.uuid)  
+            replaceCards(index, data.replaceCards) 
+            break
     }    
 
     createHiddenPlayers()
@@ -79,41 +83,52 @@ function poker(data, user_join){
     }
     function nextTurn() {  
         poker_current_player++
-        if(poker_current_player > poker_players.length){
+        bot_decisions(poker_current_player) //simulate bots making decisions
+
+        console.log('nextTurn2 ', poker_current_player, poker_current_round, data.action)
+        if(poker_current_player >= poker_players.length){
             poker_current_player = 0
             poker_current_round++
         }
+
+        console.log('nextTurn3 ', poker_current_player, poker_current_round, data.action)
+
         if (poker_current_round > how_many_rounds) {
             showdown()
-        } else {            
-            //simulate bots making decisions
-            for(let i=poker_current_player; i<poker_players.length; i++){                
-                if(poker_players[i].uuid === "bot" && poker_players[i].fold){
-                    let random_action = Math.floor(Math.random() * 100 + 1)
-                    let random_bet = Math.floor(Math.random() * 10 + 1)
-                    poker_players[i].bet = random_bet
-                    let payload = {
-                        bet: random_bet,
-                        action: "call"
-                    }
-                    if(random_action<20){
-                        handleFold(i)
-                    } else {
-                        if(random_action>=20 && random_action<60){
-                            payload.action = "raise"
-                        }
-                        handleCallRaise(payload, i)
-                    }
+        }
+    }  
+    
+    function bot_decisions(index){
+        for(let i=index; i<poker_players.length; i++){     
+            if(poker_players[i].uuid !== "bot"){ //if it's a real player we stop the simulation and let the player decide
+                break
+            } else if(!poker_players[i].fold){ //even if it's a bot, if he already decided to fold, we pass him
+                let random_action = Math.floor(Math.random() * 100 + 1)
+                let random_bet = Math.floor(Math.random() * 10 + 1)
+                poker_players[i].bet = random_bet
+                let payload = {
+                    bet: random_bet,
+                    action: "call"
                 }
+                if(random_action<20){
+                    handleFold(i)
+                } else {
+                    if(random_action>=20 && random_action<60){
+                        payload.action = "raise"
+                    }
+                    handleCallRaise(payload, i)
+                }
+                poker_current_player++
+                console.log('nextTurn1 ', poker_current_player, poker_current_round, data.action)
             }
         }
-    }    
+    }
 
     function handleBet(){
         let index = poker_players.findIndex((x) => x.uuid === data.uuid)
         poker_pot += poker_players[index].bet
     }
-    function createDeck(suits, values, turns){
+    function createDeck(turns){
         for (let i = 0 ; i < values.length; i++){
             for(let j = 0; j < suits.length; j++){
                 let weight = 0
@@ -277,12 +292,12 @@ function poker(data, user_join){
     }
 
     function replaceCards(index, cards_to_replace){
-        if(poker_players[index]){
+        if(poker_players[index] && cards_to_replace && cards_to_replace.length>0){
             for(let i in cards_to_replace){
-                const index = poker_players.hand.findIndex((card) => card === cards_to_replace[i])
-                if (index !== -1){
-                    const newCard = deck.pop()
-                    poker_players.hand[index] = newCard
+                let x = cards_to_replace[i]
+                if(poker_players[index].hand[x]){
+                    const newCard = poker_deck.pop()
+                    poker_players[index].hand[x] = newCard
                 }
             }
         }

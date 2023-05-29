@@ -30,7 +30,7 @@ module.exports = function database(database_config, params){
                     } else {
                         con.query(database_config.sql, function (err, result, fields) {
                             if (err) {
-                                console.error('err2b--> ', err)
+                                console.error('err2b--> ', err, database_config.sql)
 					            resolve(null)
                             } else {
                                 resolve(result)

@@ -5,19 +5,33 @@ import Counter from '../../../partials/counter'
 import { decryptData } from '../../../../utils/crypto'
 
 function PokerBoard(props){
-    const {lang, user, startGame} = props
+    const {lang, user, startGame, round} = props
     let max_bet = decryptData(user.money)
     let bet = 0
     let betRaise = 0
     let [status, setStatus]= useState(null)
+    let [roundChange, setRoundChange]= useState(0)    
+    let [draw, setDraw]= useState(false)    
+
+    useEffect(() => {        
+        if(round > 0 && round !== roundChange){
+            setRoundChange(round)
+            setDraw(true)
+        } else {
+            setDraw(false)
+        }
+	}, [round]) 
 
     function handleSendParent(type){   
         if(typeof props.updateBets === "function" && type !== "fold"){
             switch(type){
                 case "raise":
                     props.updateBets(betRaise)
-                default:
+                    break
+                case "start":
                     props.updateBets(bet)
+                    break
+                default:
             }
         }     
         if(typeof props.choice === "function"){
@@ -38,6 +52,9 @@ function PokerBoard(props){
     }
 
     return <Row>
+        {(() => {
+            console.log('draw--> ', draw, round, roundChange)
+        })()}
         {startGame ? <>
             {(() => {
                 switch(status) {
@@ -81,27 +98,34 @@ function PokerBoard(props){
                         </>
                     default: 
                         return <>
-                            <Col xs={4}>
+                            <Col sm={3} xs={6}>
                                 <div className="button_box">
                                     <Button type="button" onClick={()=>handleClick('call')} className="mybutton button_fullcolor shadow_convex">
                                         {translate({lang: lang, info: "call"})}
                                     </Button>
                                 </div>
                             </Col>
-                            <Col xs={4}>
+                            <Col sm={3} xs={6}>
                                 <div className="button_box">
                                     <Button type="button" onClick={()=>handleClick('raise')} className="mybutton button_fullcolor shadow_convex">
                                         {translate({lang: lang, info: "raise"})}
                                     </Button>
                                 </div>
                             </Col>
-                            <Col xs={4}>
+                            <Col sm={3} xs={6}>
                                 <div className="button_box">
                                     <Button type="button" onClick={()=>handleSendParent('fold')} className="mybutton button_fullcolor shadow_convex">
                                         {translate({lang: lang, info: "fold"})}
                                     </Button>
                                 </div>
                             </Col>
+                            {draw ? <Col sm={3} xs={6}>
+                                <div className="button_box">
+                                    <Button type="button" onClick={()=>handleSendParent('replace')} className="mybutton button_fullcolor shadow_convex">
+                                        {translate({lang: lang, info: "replace"})}
+                                    </Button>
+                                </div>
+                            </Col> : null}
                         </>
                 }
             })()}
