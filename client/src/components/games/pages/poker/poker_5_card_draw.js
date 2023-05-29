@@ -57,7 +57,6 @@ function Card(config){
 	this.draw_card = function(ctx, x, y, w, h, size, hand, fold){
 		let img = self.images
 		let img_index = 0
-        console.log(img_index, img, img[img_index])
 		for(let i in hand){		
             switch (hand[i].Suit) { 					
                 case "Hearts":
@@ -130,6 +129,9 @@ function Card(config){
                 ctx.filter = 'grayscale(0)'
             } else {
                 //dealer
+                if(!img[img_index]){
+                    console.log(img, img_index, img[img_index])
+                }
                 ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.space + w), y, w, h)
                 self.updateHand(i, x + i * (self.space + w), y, w, h)
             }
@@ -166,6 +168,7 @@ function Card(config){
     }
 }
 
+var card_list = []
 function poker_game(props){
     let self = this
     let images = []
@@ -173,9 +176,8 @@ function poker_game(props){
 	let canvas
 	let ctx
 	let canvas_width = 900
-	let canvas_height = 500
+	let canvas_height = 500	
 	
-	let card_list = []
 	let card = {}
 	let card_img = {width: 237, height: 365}
     let card_base = {width: 120, height: 180, space: 35}
@@ -389,9 +391,9 @@ function poker_game(props){
     this.canvas_click = function(mouse){ 
         for(let i in card_list){
 			let hand = card_list[i].hand
-            if(card_list[i].uuid){
+            if(card_list[i].uuid === props.user.uuid){
                 for(let j in hand){
-                    if(isInside(mouse, hand[j]) && !card_list[i]){
+                    if(isInside(mouse, hand[j])){
                         card_list[i].updateSelected(j) 
                         self.drawBackground()
                         self.draw_cards()
@@ -405,6 +407,17 @@ function poker_game(props){
                 }
             }
 		}
+    }
+
+    this.getReplaceCards = function(){
+        let replaceCards = []
+        for(let i in card_list){
+            if(card_list[i].uuid === props.user.uuid){
+                replaceCards = card_list[i].selectedCards
+                break
+            }
+        }
+        return replaceCards
     }
 
 	this.check_win_lose = function(){
@@ -436,7 +449,8 @@ function Poker5CardDraw(props){
 	let [startGame, setStartGame]= useState(false)
     let [round, setRound]= useState(0)
     let [spectator, setSpectator]= useState(false)
-    let dispatch = useDispatch()
+    let dispatch = useDispatch()  
+    let [draw, setDraw]= useState(false)    
 
 	let clear = function(bet){
 		poker_bets = bet
@@ -484,7 +498,7 @@ function Poker5CardDraw(props){
     useEffect(() => {
 		props.socket.on('poker_read', function(data){
 			if(my_poker && data){
-                if(data.action === "start" || data.action === "call" || data.action === "raise" || data.action === "fold"){
+                if(data.action === "start" || data.action === "call" || data.action === "raise" || data.action === "fold" || data.action === "replace"){
                     my_poker.action(data)
                     setRound(data.round)
                     if(data.action === "fold"){ //the user decided to quit --> he loses his bet  
@@ -512,50 +526,52 @@ function Poker5CardDraw(props){
     }, [props.socket])
 
     function choice(type){
-        if(type === "start" || type === "fold" || type === "call" || type === "raise"){
-            let poker_payload_server = {
-                uuid: props.user.uuid,
-                room: getRoom(game),
-                action: type,
-                bet: poker_bets,
-                money: money
-            }
-			let payload = null
-            switch (type) {
-                case "start":
-					if(poker_bets === 0){
-						payload = {
-							open: true,
-							template: "error",
-							title: translate({lang: props.lang, info: "error"}),
-							data: translate({lang: props.lang, info: "no_bets"})
-						}
-						dispatch(changePopup(payload))
-					} else {
-						if(my_poker){                    
-							if(!poker_status){                                
-								props.socket.emit('poker_send', poker_payload_server)
-								poker_status = true
-								setStartGame(true)
-							}
-						}
-					}                    
-                    break
-                case "fold": 
-                case "call":
-                case "raise":
-                    if(my_poker){      
+        if(type === "start" || type === "fold" || type === "call" || type === "raise" || type === "replace"){
+            if(my_poker){
+                let poker_payload_server = {
+                    uuid: props.user.uuid,
+                    room: getRoom(game),
+                    action: type,
+                    bet: poker_bets,
+                    money: money
+                }
+
+                let payload = null
+                switch (type) {
+                    case "start":
+                        if(poker_bets === 0){
+                            payload = {
+                                open: true,
+                                template: "error",
+                                title: translate({lang: props.lang, info: "error"}),
+                                data: translate({lang: props.lang, info: "no_bets"})
+                            }
+                            dispatch(changePopup(payload))
+                        } else {          
+                            if(!poker_status){                                
+                                props.socket.emit('poker_send', poker_payload_server)
+                                poker_status = true
+                                setStartGame(true)
+                            }
+                        }                    
+                        break
+                    case "fold": 
+                    case "call":
+                    case "raise":
+                    case "replace":
+                        if(type === "replace"){
+                            poker_payload_server.replaceCards = my_poker.getReplaceCards()
+                        }
                         props.socket.emit('poker_send', poker_payload_server)
                         if(type === "fold"){
-                            console.log('spectator-choice ', type)
                             setSpectator(true)
                         }
-                    }
-                    break
+                        break
+                }
+                if(payload){
+                    dispatch(changePopup(payload))
+                }
             }
-			if(payload){
-				dispatch(changePopup(payload))
-			}
         }		
 	}
 
