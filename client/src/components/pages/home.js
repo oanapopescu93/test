@@ -20,6 +20,7 @@ import Market from '../games/pages/market/market'
 import Dashboard from '../games/pages/dashboard/dashboard'
 import Panel from '../games/sidebar/panel'
 import BuyCarrots from './buyCarrots'
+import HowToPlay from './howToPlay/howToPlay'
 
 function Home(props) {
     const {home, page, user, cookies} = props
@@ -62,6 +63,8 @@ function Home(props) {
                     return <Orders {...props}></Orders>
                 case "BuyCarrots":
                     return <BuyCarrots {...props}></BuyCarrots>
+                case "how_to_play": 
+                    return <HowToPlay {...props}></HowToPlay>
                 case "Salon":
                     switch (page.game_page) {
                         case "dashboard":

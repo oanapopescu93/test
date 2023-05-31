@@ -492,14 +492,14 @@ textarea {
   padding: var(--padding);
   text-align: center;
 }
-.cell_salon, .cell_market{
+.cell_salon, .cell_market, .cell_howToPlay{
   border: solid 1px var(--color);
   border-radius: var(--radius);
   padding: var(--padding);
   height: 120px;
   background-color: var(--transparent_2);
 }
-.cell_salon p, .cell_market p{
+.cell_salon p, .cell_market p, .cell_howToPlay p{
   margin-bottom: var(--padding);
 }
 .cell_salon h4, .cell_market h4{
@@ -552,7 +552,8 @@ textarea {
 .dropdown-toggle::after{
   display: none;
 }
-.salon_games .dropdown .dropdown-toggle{
+.salon_games .dropdown .dropdown-toggle,
+.page_content.how_to_play .dropdown .dropdown-toggle{
   width: 100%;
   border-radius: var(--radius_big);
 }
@@ -562,9 +563,12 @@ textarea {
   color: var(--color);
   width: 100%;
   border-radius: var(--radius);
-  overflow: hidden;
   max-height: 200px;
+  overflow-x: hidden;  
 	overflow-y: auto;
+}
+.salon_games .dropdown .dropdown-menu{
+  max-height: 115px;
 }
 .dropdown-item{
   color: var(--color);
@@ -2484,6 +2488,72 @@ textarea {
   color: var(--color);
 }
 
+/* HOW TO PLAY */
+.list_games_table_container{
+  overflow: hidden;
+  height: 0px;
+  -webkit-transition: height 1s ease;
+    -moz-transition: height 1s ease;
+      -o-transition: height 1s ease;
+      -ms-transition: height 1s ease;
+          transition: height 1s ease;
+}
+.list_games_table_container.open{
+  height: 160px;
+}
+.how_to_play_titles{
+  text-align: center;
+  max-height: 320px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-bottom: var(--padding);
+}
+.cell_howToPlay_container{
+  width: 100%;
+  max-width: 150px;
+  display: inline-block;
+  vertical-align: top;
+  padding: var(--padding_small);
+}
+.cell_howToPlay{
+  width: 100%;
+  height: 150px;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+.cell_howToPlay .cell_info{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  padding: var(--padding);
+}
+.cell_howToPlay img{
+  width: 100%;
+}
+.cell_howToPlay p{
+  margin: 0px;
+}
+.list_games_table{
+  text-align: left;
+  margin-bottom: var(--padding);
+  max-height: 600px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.list_games_table h2, .list_games_table h3{
+  margin: var(--padding_small) 0px;
+}
+.list_games_table ul{
+  padding-left: 20px;
+}
+.list_games_table ul li{
+  list-style: circle;
+  display: list-item;
+}
+
 /* media */
 @media (max-width: 1200px){
 	.shop_shader{
@@ -2501,6 +2571,16 @@ textarea {
 	}
   .progress_bubble_container{
     max-height: 205px;
+  }
+  /* HOW TO PLAY */
+  .cell_howToPlay_container{
+    max-width: 100px;
+  }
+  .cell_howToPlay{
+    height: 100px;
+  }
+  .list_games_table{
+    max-height: 400px;
   }
 }
 @media (max-width: 767px) {	
@@ -2809,6 +2889,13 @@ textarea {
   }
   .welcome_popup img{
     width:150px;
+  }
+  /* HOW TO PLAY */
+  .cell_howToPlay_container{
+    max-width: 80px;
+  }
+  .cell_howToPlay{
+    height: 80px;
   }
 }
 

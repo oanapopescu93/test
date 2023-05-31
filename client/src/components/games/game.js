@@ -21,6 +21,7 @@ import slots_loading_icon from '../../img/icons_other/icons/yellow/slots.png'
 import craps_loading_icon from '../../img/icons_other/icons/yellow/craps.png'
 import race_loading_icon from '../../img/icons_other/icons/yellow/race.png'
 import keno_loading_icon from '../../img/icons_other/icons/yellow/keno.png'
+import poker_loading_icon from '../../img/icons_other/icons/yellow/carribean.png'
 import Dashboard from './pages/dashboard/dashboard'
 import Market from './pages/market/market'
 import { changePopup } from '../../reducers/popup'
@@ -162,7 +163,7 @@ function Game(props){
                                 return <Poker {...props} results={(e)=>results(e)}></Poker>
                             } else {
                                 return <>
-                                    <img src={blackjack_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
+                                    <img src={poker_loading_icon} className="game_loading_icon" alt="game_loading_icon"/>
                                     <p>Loading...</p>
                                 </>
                             }                      

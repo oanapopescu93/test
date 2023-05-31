@@ -8,7 +8,7 @@ import Header from '../../partials/header'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCalendarDays} from '@fortawesome/free-solid-svg-icons'
 import carrot_img from '../../../img/icons/carrot_icon.png'
-import {faHouse, faGear, faPaperPlane, faPowerOff} from '@fortawesome/free-solid-svg-icons'
+import {faHouse, faGear, faPaperPlane, faPowerOff, faCircleQuestion} from '@fortawesome/free-solid-svg-icons'
 import { isEmpty, setCookie } from '../../../utils/utils'
 
 function User(props){
@@ -41,6 +41,11 @@ function User(props){
                 }
                 dispatch(changePopup(payload))
 				break
+            case "how_to_play":
+                dispatch(changePage(choice))
+                dispatch(changeGame(null))
+                dispatch(changeGamePage(null))
+				break
             case "contact":
                 dispatch(changePage(choice))
                 dispatch(changeGame(null))
@@ -65,10 +70,10 @@ function User(props){
                 setButtonMarket('active')
             }
         }
-	}, [props.page.game_page])
+	}, [page.game_page])
 
     return <>
-        <Header template="panel_user" details={props.page} lang={props.lang}></Header>
+        <Header template="panel_user" details={page} lang={lang}></Header>
         <div id="user_subtitle">
             <div className="user_subtitle_left">
                 <span id="user_name">{decryptData(user.user)}</span>
@@ -117,6 +122,9 @@ function User(props){
             </li>
             <li onClick={()=>{handleChange('settings')}}>
                 <span><FontAwesomeIcon icon={faGear} />{translate({lang: lang, info: "settings"})}</span>
+            </li>
+            <li onClick={()=>{handleChange('how_to_play')}}>
+                <span><FontAwesomeIcon icon={faCircleQuestion} />{translate({lang: lang, info: "how_to_play"})}</span>
             </li>
             <li onClick={()=>{handleChange('contact')}}>
                 <span><FontAwesomeIcon icon={faPaperPlane} />{translate({lang: lang, info: "contact"})}</span>

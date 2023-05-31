@@ -87,6 +87,7 @@ var word_bank = {
 
         market: "Market",
         settings: "Settings",
+        how_to_play: "How to play",
         logout: "Logout",
         joined_the_chat: "joined the chat",
         left_the_chat: "left the chat",
@@ -284,6 +285,7 @@ var word_bank = {
 
         market: "Market",
         settings: "Setari",
+        how_to_play: "Cum sa joci",
         logout: "Logout",
         joined_the_chat: "s-a alaturat chat-ului",
         left_the_chat: "a parasit chat-ul",
