@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
 import { translate } from '../../translations/translate'
-import { useDispatch } from 'react-redux';
 import { Form, Button, Col, Row } from 'react-bootstrap';
 
 function SignIn(props) {
