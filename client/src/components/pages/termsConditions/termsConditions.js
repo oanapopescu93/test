@@ -5,6 +5,10 @@ import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { translate } from '../../../translations/translate'
 import TermsConditionsEng from './termsConditionsEng'
 import TermsConditionsRo from './termsConditionsRo'
+import TermsConditionsIt from './termsConditionsIt'
+import TermsConditionsFr from './termsConditionsFr'
+import TermsConditionsEs from './termsConditionsEs'
+import TermsConditionsDe from './termsConditionsDe'
 import Header from '../../partials/header'
 
 function TermsConditions(props){
@@ -19,6 +23,14 @@ function TermsConditions(props){
         <div className="page_content">
             {(() => {
                 switch (props.lang) {
+                    case "DE":
+                        return <TermsConditionsDe></TermsConditionsDe>
+                    case "ES":
+                        return <TermsConditionsEs></TermsConditionsEs>
+                    case "FR":
+                        return <TermsConditionsFr></TermsConditionsFr>
+                    case "IT":
+                        return <TermsConditionsIt></TermsConditionsIt>
                     case "RO":
                         return <TermsConditionsRo></TermsConditionsRo>
                     case "ENG":

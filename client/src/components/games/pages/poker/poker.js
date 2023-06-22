@@ -1,22 +1,20 @@
 import React from 'react'
-import PokerTexasHoldem from './poker_texas_holdem'
-import Poker5CardDraw from './poker_5_card_draw'
+import PokerDashboard from './pokerDashboard'
 
 function Poker(props){ 
     const {page} = props
     let table_type = page.game.table_type //texas holdem or 5 card draw
+    let template = "texas_holdem"
+    switch(table_type) {
+        case "5_card_draw":
+            template = "5_card_draw"
+            break
+        case "texas_holdem":
+        default: 
+            template = "texas_holdem"
+    }
 
-    return <>
-        {(() => {            
-            switch(table_type) {
-                case "texas holdem":
-                    return <PokerTexasHoldem {...props}></PokerTexasHoldem>
-                case "5 card draw":
-                default: 
-                    return <Poker5CardDraw {...props}></Poker5CardDraw>
-            }
-        })()}
-    </>
+    return <PokerDashboard {...props} template={template}></PokerDashboard>
 }
 
 export default Poker

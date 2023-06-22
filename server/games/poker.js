@@ -8,12 +8,21 @@ let how_many_cards = 5
 let how_many_rounds = 3
 let poker_current_player = 0    
 let poker_current_round = 0
+let showdown = false
 
 function poker(data, user_join){
     poker_hidden_players = []
     let index = null 
     let suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
     let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+
+    switch(data.game){
+        case "texas_holdem":
+            how_many_cards = 2
+            break
+        default:
+            how_many_cards = 5
+    }
 
     switch (data.action) {
         case 'start':     
@@ -41,9 +50,15 @@ function poker(data, user_join){
             break
     }    
 
-    createHiddenPlayers()
-    poker_hidden_players = evaluateHands(poker_hidden_players)         
-    return {action: data.action, players: poker_hidden_players, dealer: poker_dealer, pot: poker_pot, player: poker_current_player, round: poker_current_round}
+    if(!showdown){
+        createHiddenPlayers()
+        poker_hidden_players = evaluateHands(poker_hidden_players)    
+        console.log('nextTurn4 ', poker_current_round)     
+        return {action: data.action, players: poker_hidden_players, dealer: poker_dealer, pot: poker_pot, player: poker_current_player, round: poker_current_round, showdown}
+    } else {
+        poker_players = evaluateHands(poker_players)
+        return {action: data.action, players: poker_players, dealer: poker_dealer, pot: poker_pot, player: poker_current_player, round: poker_current_round, showdown}
+    }    
     
     function handleCallRaise(payload, index){
         if(poker_players[index]){
@@ -85,16 +100,16 @@ function poker(data, user_join){
         poker_current_player++
         bot_decisions(poker_current_player) //simulate bots making decisions
 
-        console.log('nextTurn2 ', poker_current_player, poker_current_round, data.action)
+        //console.log('nextTurn2 ', poker_current_player, poker_current_round, data.action)
         if(poker_current_player >= poker_players.length){
             poker_current_player = 0
             poker_current_round++
         }
 
-        console.log('nextTurn3 ', poker_current_player, poker_current_round, data.action)
+        //console.log('nextTurn3 ', poker_current_player, poker_current_round, data.action)
 
         if (poker_current_round > how_many_rounds) {
-            showdown()
+            showdown = true
         }
     }  
     
@@ -301,9 +316,6 @@ function poker(data, user_join){
                 }
             }
         }
-    }
-    function showdown(){
-        console.log('THE END')
     }
     
     return {}

@@ -484,9 +484,9 @@ textarea {
 #header_sign{
   margin: var(--padding);
 }
-.header h3{
-  /* font-family: 'Grenadier'; */
-}
+/* .header h3{
+  font-family: 'Grenadier';
+} */
 
 .cell_salon_container, .cell_market_container{
   padding: var(--padding);

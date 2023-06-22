@@ -25,7 +25,7 @@ function Donation(props){
                     return <div className="donation_container">
                         <div className="donation_ukraine">
                             <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/fundraisers/explore/search/charities/?query=ukraine">
-                                Donation for Ukraine <img id="ukraine_icon" alt="ukraine_icon" src={ukraine}></img>
+                                {translate({lang: props.lang, info: "donation"})} <img id="ukraine_icon" alt="ukraine_icon" src={ukraine}></img>
                             </a>
                         </div>
                         <div className="deco">

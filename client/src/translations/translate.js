@@ -1,6 +1,11 @@
 import { capitalizeFirstLetter } from '../utils/utils'
-import { wordsEng } from './eng/words'
+
+import { wordsDe } from './de/words'
+import { wordsEs } from './es/words'
+import { wordsFr } from './fr/words'
+import { wordsIt } from './eng/words'
 import { wordsRo } from './ro/words'
+import { wordsEng } from './eng/words'
 
 export const translate = function (data){
     if(!data) return
@@ -9,6 +14,18 @@ export const translate = function (data){
     let capitalize_first_fetter = data.capitalize_first_fetter ? data.capitalize_first_fetter : false
     let word = wordsEng(info)
     switch(lang){
+        case "DE":
+            word = wordsDe(info)
+            break
+        case "ES":
+            word = wordsEs(info)
+            break
+        case "FR":
+            word = wordsFr(info)
+            break
+        case "IT":
+            word = wordsIt(info)
+            break
         case "RO":
             word = wordsRo(info)
             break

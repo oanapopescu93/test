@@ -5,6 +5,10 @@ import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import { translate } from '../../../translations/translate'
 import PolicyPrivacyEng from './policyPrivacyEng'
 import PolicyPrivacyRo from './policyPrivacyRo'
+import PolicyPrivacyIt from './policyPrivacyIt'
+import PolicyPrivacyFr from './policyPrivacyFr'
+import PolicyPrivacyEs from './policyPrivacyEs'
+import PolicyPrivacyDe from './policyPrivacyDe'
 import Header from '../../partials/header'
 
 function PolicyPrivacy(props){
@@ -21,6 +25,14 @@ function PolicyPrivacy(props){
         <div className="page_content">
             {(() => {
                 switch (props.lang) {
+                    case "DE":
+                        return <PolicyPrivacyDe></PolicyPrivacyDe>
+                    case "ES":
+                        return <PolicyPrivacyEs></PolicyPrivacyEs>
+                    case "FR":
+                        return <PolicyPrivacyFr></PolicyPrivacyFr>
+                    case "IT":
+                        return <PolicyPrivacyIt></PolicyPrivacyIt>
                     case "RO":
                         return <PolicyPrivacyRo></PolicyPrivacyRo>
                     case "ENG":
