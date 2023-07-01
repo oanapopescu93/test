@@ -229,23 +229,24 @@ function poker(data, user_join){
         }
         return array
     }
+
     function evaluateHand(hand){
         // Sort the hand by card weight in descending order
         hand.sort((a, b) => b.Weight - a.Weight)
 
         // Check for specific hand combinations in decreasing order of strength
-        if (isRoyalFlush(hand)) return {text: 'Royal Flush', strength: 9}
-        if (isStraightFlush(hand)) return {text: 'Straight Flush', strength: 8}
-        if (isFourOfAKind(hand)) return {text: 'Four of a Kind', strength: 7}
-        if (isFullHouse(hand)) return {text: 'Full House', strength: 6}
-        if (isFlush(hand)) return {text: 'Flush', strength: 5}
-        if (isStraight(hand)) return {text: 'Straight', strength: 4}
-        if (isThreeOfAKind(hand)) return {text: 'Three of a Kind', strength: 3}
-        if (isTwoPair(hand)) return {text: 'Two Pair', strength: 2}
-        if (isOnePair(hand)) return {text: 'One Pair', strength: 1}
+        if (isRoyalFlush(hand)) return {text: 'Royal Flush', strength: 10}
+        if (isStraightFlush(hand)) return {text: 'Straight Flush', strength: 9}
+        if (isFourOfAKind(hand)) return {text: 'Four of a Kind', strength: 8}
+        if (isFullHouse(hand)) return {text: 'Full House', strength: 7}
+        if (isFlush(hand)) return {text: 'Flush', strength: 6}
+        if (isStraight(hand)) return {text: 'Straight', strength: 5}
+        if (isThreeOfAKind(hand)) return {text: 'Three of a Kind', strength: 4}
+        if (isTwoPair(hand)) return {text: 'Two Pair', strength: 3}
+        if (isOnePair(hand)) return {text: 'One Pair', strength: 2}
 
         // If none of the above combinations, it is a high card hand
-        return {text: 'High Card', info: hand[0]}
+        return {text: 'High Card', info: hand[0], strength: 1}
     }
     // Helper functions to check hand combinations
     function isRoyalFlush(hand){

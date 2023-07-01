@@ -424,6 +424,17 @@ export const poker_game = function(props){
 
     this.showdown = function(){
         console.log('showdown--> ', poker_data)
+        let players = poker_data.players
+        let max = 0
+        let playerMax = null
+        for(let i in players){
+            if(players[i] && players[i].handStrength && players[i].handStrength.strength && players[i].handStrength.strength > max){
+                max = players[i].handStrength.strength
+                playerMax = players[i]
+            }
+        }
+
+        console.log('showdown--> ', max, playerMax)
     }
 
 	this.check_win_lose = function(){
