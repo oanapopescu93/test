@@ -1572,11 +1572,11 @@ textarea {
 }
 #contact_map .leaflet-popup-content-wrapper, #contact_map .leaflet-popup-tip,
 #contact_map .leaflet-popup-content-wrapper, #contact_map .leaflet-popup-tip{
-  background-color: var(--color);
-  color: var(--bg);
+  background-color: var(--red);
+  color: white;
 }
 #contact_map .leaflet-container a.leaflet-popup-close-button{
-  color: var(--bg);
+  color: white;
 }
 
 /* DASHBOARD */

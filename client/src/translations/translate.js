@@ -3,7 +3,7 @@ import { capitalizeFirstLetter } from '../utils/utils'
 import { wordsDe } from './de/words'
 import { wordsEs } from './es/words'
 import { wordsFr } from './fr/words'
-import { wordsIt } from './eng/words'
+import { wordsIt } from './it/words'
 import { wordsRo } from './ro/words'
 import { wordsEng } from './eng/words'
 

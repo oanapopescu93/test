@@ -46,7 +46,7 @@ function User(props){
                 dispatch(changeGame(null))
                 dispatch(changeGamePage(null))
 				break
-            case "contact":
+            case "Contact":
                 dispatch(changePage(choice))
                 dispatch(changeGame(null))
                 dispatch(changeGamePage(null))
@@ -126,7 +126,7 @@ function User(props){
             <li onClick={()=>{handleChange('how_to_play')}}>
                 <span><FontAwesomeIcon icon={faCircleQuestion} />{translate({lang: lang, info: "how_to_play"})}</span>
             </li>
-            <li onClick={()=>{handleChange('contact')}}>
+            <li onClick={()=>{handleChange('Contact')}}>
                 <span><FontAwesomeIcon icon={faPaperPlane} />{translate({lang: lang, info: "contact"})}</span>
             </li>
             <li onClick={()=>{handleChange('logout')}}>
