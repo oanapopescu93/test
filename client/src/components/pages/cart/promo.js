@@ -44,13 +44,21 @@ function Promo(props){
                     if(Object.keys(coupon).length>0){
                         return <p className="alert alert-success">
                             {(() => {
-                                switch(lang) {
+                                switch (props.lang) {
+                                    case "DE":
+                                        return <span>{coupon.discount}% Rabatt</span>
+                                    case "ES":
+                                        return <span>Descuento del {coupon.discount}%</span>
+                                    case "FR":
+                                        return <span>Remise de {coupon.discount}%</span>
+                                    case "IT":
+                                        return <span>Sconto del {coupon.discount}%</span>
                                     case "RO":
                                         return <span>Reducere de {coupon.discount}%</span>
                                     case "ENG":
-                                    default: 
+                                    default:
                                         return <span>{coupon.discount}% discount</span>
-                                }
+                                } 
                             })()}
                         </p>
                     } else {

@@ -72,13 +72,21 @@ function Cell(props) {
                         <div className="cell_market shadow_concav">
                             <div className="cell_info">
                                 {(() => {
-                                    switch(lang) {
+                                    switch (props.lang) {
+                                        case "DE":
+                                            return <h4>{data.name_de}</h4>
+                                        case "ES":
+                                            return <h4>{data.name_es}</h4>
+                                        case "FR":
+                                            return <h4>{data.name_fr}</h4>
+                                        case "IT":
+                                            return <h4>{data.name_it}</h4>
                                         case "RO":
                                             return <h4>{data.name_ro}</h4>
                                         case "ENG":
-                                        default: 
+                                        default:
                                             return <h4>{data.name_eng}</h4>
-                                    }
+                                    } 
                                 })()}
                                 <p>{translate({lang: lang, info: "price"})}: {price}</p>
                                 <Counter update={(e)=>updateQtyMarket(e)}></Counter>

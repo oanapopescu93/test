@@ -103,18 +103,39 @@ function sendEmail(data){ //send an email with instructions to reset token
 
     let subject = ''
     let html = ''
-    switch(lang){
-      case "RO":
-        subject = 'BunnyBet resetare parola'
-        html = html + '<p>Buna ' + user + '</p>'
-        html = html + '<p>Ai cerut resetarea parolei tale.</p>'
-        break
-      default:
-        subject = 'BunnyBet reset password'
-        html = html + '<p>Hi ' + user + '</p>'
-        html = html + '<p>You requested to reset your password.</p>'
-        break
-    }
+	switch (lang) {
+		case "DE":
+			subject = 'BunnyBet Passwort zurücksetzen'
+			html = html + '<p>Hallo ' + user + '</p>'
+			html = html + '<p>Sie haben eine Passwortrücksetzung angefordert.</p>'
+			break
+		case "ES":
+			subject = 'BunnyBet restablecer contraseña'
+			html = html + '<p>Hola ' + user + '</p>'
+			html = html + '<p>Has solicitado restablecer tu contraseña.</p>'
+			break
+		case "FR":
+			subject = 'BunnyBet réinitialiser le mot de passe'
+			html = html + '<p>Bonjour ' + user + '</p>'
+			html = html + '<p>Vous avez demandé à réinitialiser votre mot de passe.</p>'
+			break
+		case "IT":
+			subject = 'BunnyBet reimposta password'
+			html = html + '<p>Ciao ' + user + '</p>'
+			html = html + '<p>Hai richiesto di resettare la tua password.</p>'
+			break
+		case "RO":
+			subject = 'BunnyBet resetare parola'
+			html = html + '<p>Buna ' + user + '</p>'
+			html = html + '<p>Ai cerut resetarea parolei tale.</p>'
+			break
+		case "ENG":
+		default:
+			subject = 'BunnyBet reset password'
+			html = html + '<p>Hi ' + user + '</p>'
+			html = html + '<p>You requested to reset your password.</p>'
+			break
+	}
 
     let mailOptions = {
       from: constants.AUTH_FROM,

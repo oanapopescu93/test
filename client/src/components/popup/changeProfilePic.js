@@ -19,15 +19,27 @@ function ChangeProfilePic(props) {
     let money = decryptData(user.money)  
     let account_type = decryptData(user.account_type)  
     let item_name_lang = "name_eng"
-    switch(lang) {
+    switch (lang) {
+        case "DE":
+            item_name_lang = "name_de"
+            break
+        case "ES":
+            item_name_lang = "name_es"
+            break
+        case "FR":
+            item_name_lang = "name_fr"
+            break
+        case "IT":
+            item_name_lang = "name_it"
+            break
         case "RO":
-        item_name_lang = "name_ro"
-        break    
+            item_name_lang = "name_ro"
+            break
         case "ENG":
-        default: 
-        item_name_lang = "name_eng"
-        break             
-    }
+        default:
+            item_name_lang = "name_eng"
+            break
+    } 
 
     function choosePic(item, i){
         setError(false)

@@ -64,13 +64,21 @@ function Cart(props){
                         </div>
                         <div className="cart_info">
                             {(() => {
-                                switch(lang) {
+                                switch (props.lang) {
+                                    case "DE":
+                                        return <h4>{product[0].name_de}</h4>
+                                    case "ES":
+                                        return <h4>{product[0].name_es}</h4>
+                                    case "FR":
+                                        return <h4>{product[0].name_fr}</h4>
+                                    case "IT":
+                                        return <h4>{product[0].name_it}</h4>
                                     case "RO":
                                         return <h4>{product[0].name_ro}</h4>
                                     case "ENG":
-                                    default: 
+                                    default:
                                         return <h4>{product[0].name_eng}</h4>
-                                }
+                                } 
                             })()}
                             <p><b>{translate({lang: lang, info: "price"})}</b>: {product[0].price}<img alt="carrot_img" className="currency_img" src={carrot_img}/></p>
                             <p><b>{translate({lang: lang, info: "qty"})}</b>: {item.qty}</p>

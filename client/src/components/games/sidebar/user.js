@@ -88,17 +88,33 @@ function User(props){
                     <div className="my_tooltip">
                         <FontAwesomeIcon icon={faCalendarDays} />
                         {(() => {
-                            switch (lang) {
+                            switch (props.lang) {
+                                case "DE":
+                                    return <span className="my_tooltiptext">
+                                    <p>Cate zile la rand ai jucat</p>
+                                </span> 
+                                case "ES":
+                                    return <span className="my_tooltiptext">
+                                    <p>Cate zile la rand ai jucat</p>
+                                </span> 
+                                case "FR":
+                                    return <span className="my_tooltiptext">
+                                    <p>Cate zile la rand ai jucat</p>
+                                </span> 
+                                case "IT":
+                                    return <span className="my_tooltiptext">
+                                    <p>Cate zile la rand ai jucat</p>
+                                </span> 
                                 case "RO":
                                     return <span className="my_tooltiptext">
-                                        <p>Cate zile la rand ai jucat</p>
-                                    </span>                                
+                                    <p>Cate zile la rand ai jucat</p>
+                                </span> 
                                 case "ENG":
                                 default:
                                     return <span className="my_tooltiptext">
-                                        <p><b>Your streak</b></p>
-                                        <p>How many days in a row you have played</p>
-                                    </span>
+                                    <p><b>Your streak</b></p>
+                                    <p>How many days in a row you have played</p>
+                                </span>
                             }
                         })()}
                     </div>

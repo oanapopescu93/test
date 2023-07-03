@@ -130,6 +130,7 @@ function Sign(props) {
                     open: true,
                     template: "welcome",
                     title: translate({lang: props.lang, info: "welcome"}),
+                    size: 'lg',
                 }
                 dispatch(changePopup(payload))
             } else {
@@ -178,12 +179,20 @@ function Sign(props) {
                                                         <input className="input_light" type="checkbox" name="checkbox1" checked={checkboxOne} onChange={()=>{handleChangeCheck("checkbox1")}}/>
                                                         {(() => {
                                                             switch (props.lang) {
+                                                                case "DE":
+                                                                    return <h6>Ich stimme <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> und <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
+                                                                case "ES":
+                                                                    return <h6>Estoy de acuerdo con <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> y <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
+                                                                case "FR":
+                                                                    return <h6>Je suis d'accord avec <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> et <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
+                                                                case "IT":
+                                                                    return <h6>I agree to <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> and <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
                                                                 case "RO":
-                                                                    return <h6>Sunt de acord cu <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> si <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
+                                                                    return <h6>Sono d'accordo con <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> e <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
                                                                 case "ENG":
                                                                 default:
                                                                     return <h6>I agree to <span onClick={()=>handleLink("terms_cond")}>{translate({lang: props.lang, info: "terms_cond"})}</span> and <span onClick={()=>handleLink("policy_privacy")}>{translate({lang: props.lang, info: "policy_privacy"})}</span></h6>
-                                                            }
+                                                            } 
                                                         })()}
                                                     </label>
                                                 </div>

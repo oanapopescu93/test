@@ -58,8 +58,9 @@ function Popup(props){
     socket.on('forgotPassword_read', function(res){
         setForgotPasswordResult(translate({lang: lang, info: res.send}))      
     })
-   
-    return <Modal id="myModal" className={"mymodal " + template} show={open} onHide={closeModal} size={size} centered> 
+
+    return <>
+        {template !== "welcome" ? <Modal id="myModal" className={"mymodal " + template} show={open} onHide={closeModal} size={size} centered> 
             {title !== "" ? <Modal.Header>
                 {!sticky ? <div className="closeButton closeButtonHeader" onClick={closeModal}>
                     <span>X</span>
@@ -93,8 +94,6 @@ function Popup(props){
                             return <KenoPrizeTable lang={lang} kenoPrizes={data}></KenoPrizeTable>
                         case "game_results":
                             return <GameResults lang={lang} results={data}></GameResults>
-                        case "welcome":
-                                return <Welcome lang={lang}></Welcome>
                         case "streak":
                                 return <Streak lang={lang} data={data}></Streak>
                         case "error":
@@ -115,6 +114,11 @@ function Popup(props){
                     return null
                 }
             })()}
-        </Modal>
+        </Modal> : <Modal id="myModal_gift" className={"mymodal " + template} show={open} onHide={closeModal} size={size} centered> 
+            <Modal.Body>
+                <Welcome lang={lang}></Welcome>
+            </Modal.Body>
+        </Modal>}
+    </>
 }
 export default Popup

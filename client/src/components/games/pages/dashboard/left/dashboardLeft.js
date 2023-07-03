@@ -100,13 +100,21 @@ function DashboardLeft(props){
                     <b>{translate({lang: lang, info: "animal"})}: </b>
                     {(() => {
                         if(animal && animal.length === 1 && animal[0]){
-                            switch(lang) {
+                            switch (props.lang) {
+                                case "DE":
+                                    return <>{animal[0].name_de}</>
+                                case "ES":
+                                    return <>{animal[0].name_es}</>
+                                case "FR":
+                                    return <>{animal[0].name_fr}</>
+                                case "IT":
+                                    return <>{animal[0].name_it}</>
                                 case "RO":
                                     return <>{animal[0].name_ro}</>
                                 case "ENG":
-                                default: 
+                                default:
                                     return <>{animal[0].name_eng}</>
-                            }
+                            } 
                         } else {
                             return "-"
                         }

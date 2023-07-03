@@ -434,7 +434,7 @@ export const poker_game = function(props){
             }
         }
 
-        console.log('showdown--> ', max, playerMax)
+        console.log('showdown--> ', max, playerMax, props.user.uuid)
     }
 
 	this.check_win_lose = function(){
