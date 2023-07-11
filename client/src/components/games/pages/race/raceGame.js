@@ -123,6 +123,8 @@ function Rabbit(config){
 	self.w = config.w
 	self.h = config.h
 	self.y_original = config.y
+	self.x_starting = config.x
+	self.y_starting = config.y
 
 	self.frameWidth = 672
 	self.frameHeight = 592
@@ -141,10 +143,10 @@ function Rabbit(config){
 	}
 
 	self.draw_starting = function(ctx, x, y, width, height, r, sAngle, eAngle, counterclockwise, fillStyle, lineWidth, strokeStyle){
-		draw_rect(ctx, x, y, width, height, fillStyle, lineWidth, strokeStyle)
-		draw_dot(ctx, x+5, y+height/2-5, r, sAngle, eAngle, counterclockwise, fillStyle, lineWidth, strokeStyle)
+		draw_rect(ctx, 0, self.y_starting-5, width, height, fillStyle, lineWidth, strokeStyle)
+		draw_dot(ctx, 5, self.y_starting+height/2-10, r, sAngle, eAngle, counterclockwise, fillStyle, lineWidth, strokeStyle)
 		let font_obstacle = '10px sans-serif'
-		self.add_text(ctx, self.id, x+5, y+height/2-1, font_obstacle, strokeStyle, "center")
+		self.add_text(ctx, self.id, 5, self.y_starting+height/2-6, font_obstacle, strokeStyle, "center")
 	}
 
 	self.run = function(canvas, ctx, nr, finish_line_x){
@@ -218,6 +220,7 @@ function Rabbit(config){
 function Obstacle(config){
 	let self = this
 	self.id = config.id+1
+	self.name = config.name
 	self.img = config.img
 	self.color = config.color
 	self.border = config.border
@@ -352,7 +355,7 @@ function Lane(config){
 		}
 
 		//create and move obstacle
-		self.create_obstacles(nr, finish_line_x)
+		self.create_obstacles(canvas, nr, finish_line_x)
 		self.move_obstacles(ctx, nr)
 
 		//make rabbit run
@@ -612,7 +615,7 @@ function race_game(props){
 	this.background = function(){
 		self.create_background()	
 		self.draw_background()	
-		self.create_finish_line()
+		self.create_finish_line(finish_line_x)
 	}
 	this.create_background = function(){
 		let i = land_color.length
@@ -648,7 +651,7 @@ function race_game(props){
 		}
 		self.draw_road(canvas, ctx, -100, draw_road_height, 2*canvas.width, draw_road_height, 1, "rgba(255, 215, 0, 0.1)", "rgba(255, 215, 0, 0.5)")		
 	}
-	this.create_finish_line = function(){
+	this.create_finish_line = function(finish_line_x){
 		finish_line = new FinishLine({
 			fillStyle: "rgba(255, 215, 0, 0.1)",
 			lineWidth: 1,
@@ -891,6 +894,7 @@ function race_game(props){
 			bet: Math.abs(money_original - money_history)
 		}
 		if(typeof props.results === "function"){
+			console.log(finish_line)
 			props.results(race_payload)
 		}		
 	}
