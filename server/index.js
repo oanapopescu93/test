@@ -343,25 +343,27 @@ io.on('connection', function(socket) {
     if(data.uuid){
       database_config.sql = "SELECT * FROM casino_user;"
       database(database_config).then(function(result){
-        users_array = result
-        let user_found = users_array.filter((x) => x.uuid === data.uuid) 
-        if(user_found && user_found.length>0){
-          let table_name = data.game.table_name ? data.game.table_name : ""
-          let table_id = data.game.table_id ? data.game.table_id : table_name
-          let table_type = data.game.table_type ? data.game.table_type : table_name
-          let status = data.status == "win" ? 1 : 0 
-          let timestamp = new Date().getTime()
-          database_config.sql = "UPDATE casino_user SET money='" + data.money + "' WHERE id=" + data.uuid + '; '
-          database_config.sql = 'INSERT INTO history_user (user_id, game_name, game_id, game_type, date, status, sum) '
-          database_config.sql += ' VALUES ('
-          database_config.sql += user_found[0].id + ', '
-          database_config.sql += '"' + table_name + '", '
-          database_config.sql += '"' + table_id + '", '
-          database_config.sql += '"' + table_type + '", '
-          database_config.sql += '"' + timestamp + '", '
-          database_config.sql += '"' + status + '", '
-          database_config.sql += data.bet
-          database_config.sql += ')'
+        if(result){
+          users_array = result
+          let user_found = users_array.filter((x) => x.uuid === data.uuid) 
+          if(user_found && user_found.length>0){
+            let table_name = data.game.table_name ? data.game.table_name : ""
+            let table_id = data.game.table_id ? data.game.table_id : table_name
+            let table_type = data.game.table_type ? data.game.table_type : table_name
+            let status = data.status == "win" ? 1 : 0 
+            let timestamp = new Date().getTime()
+            database_config.sql = "UPDATE casino_user SET money='" + data.money + "' WHERE id=" + data.uuid + '; '
+            database_config.sql = 'INSERT INTO history_user (user_id, game_name, game_id, game_type, date, status, sum) '
+            database_config.sql += ' VALUES ('
+            database_config.sql += user_found[0].id + ', '
+            database_config.sql += '"' + table_name + '", '
+            database_config.sql += '"' + table_id + '", '
+            database_config.sql += '"' + table_type + '", '
+            database_config.sql += '"' + timestamp + '", '
+            database_config.sql += '"' + status + '", '
+            database_config.sql += data.bet
+            database_config.sql += ')'
+          }
         }
       })
     } 

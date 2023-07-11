@@ -34,7 +34,7 @@ function PokerDashboard(props){
 	}
 
     let getResults = function(payload){
-		props.results(payload)
+		//props.results(payload)
 		setStartGame(false)
 	}
     let options = {...props, dispatch, getResults, clear}

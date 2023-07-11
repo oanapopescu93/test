@@ -48,17 +48,24 @@ function poker(data, user_join){
             index = poker_players.findIndex((x) => x.uuid === data.uuid)  
             replaceCards(index, data.replaceCards) 
             break
-    }    
+    }
 
     if(!showdown){
         createHiddenPlayers()
-        poker_hidden_players = evaluateHands(poker_hidden_players)    
-        console.log('nextTurn4 ', poker_current_round)     
+        poker_hidden_players = evaluateHands(poker_hidden_players)   
+        add_cards_dealer()
         return {action: data.action, players: poker_hidden_players, dealer: poker_dealer, pot: poker_pot, player: poker_current_player, round: poker_current_round, showdown}
     } else {
         poker_players = evaluateHands(poker_players)
         return {action: data.action, players: poker_players, dealer: poker_dealer, pot: poker_pot, player: poker_current_player, round: poker_current_round, showdown}
-    }    
+    }   
+    
+    function add_cards_dealer(){
+        if(poker_current_round === 1 || poker_current_round === 2){ // it is a turn or a river
+            let card = poker_deck.pop()
+            poker_dealer.hand.push(card)
+        }
+    }
     
     function handleCallRaise(payload, index){
         if(poker_players[index]){
@@ -99,43 +106,52 @@ function poker(data, user_join){
     function nextTurn() {  
         poker_current_player++
         bot_decisions(poker_current_player) //simulate bots making decisions
-
         //console.log('nextTurn2 ', poker_current_player, poker_current_round, data.action)
         if(poker_current_player >= poker_players.length){
             poker_current_player = 0
             poker_current_round++
         }
-
         //console.log('nextTurn3 ', poker_current_player, poker_current_round, data.action)
-
-        if (poker_current_round > how_many_rounds) {
+        if (poker_current_round > how_many_rounds-1 || check_how_many_players_active()<=1) {
             showdown = true
         }
     }  
+
+    function check_how_many_players_active(){
+        let how_many = 0
+        for(let i in poker_players){
+            if(!poker_players[i].fold){
+                how_many++
+            }
+        }
+        return how_many
+    }
     
     function bot_decisions(index){
-        for(let i=index; i<poker_players.length; i++){     
+        for(let i=index; i<poker_players.length; i++){   
             if(poker_players[i].uuid !== "bot"){ //if it's a real player we stop the simulation and let the player decide
                 break
-            } else if(!poker_players[i].fold){ //even if it's a bot, if he already decided to fold, we pass him
-                let random_action = Math.floor(Math.random() * 100 + 1)
-                let random_bet = Math.floor(Math.random() * 10 + 1)
-                poker_players[i].bet = random_bet
-                let payload = {
-                    bet: random_bet,
-                    action: "call"
-                }
-                if(random_action<20){
-                    handleFold(i)
-                } else {
-                    if(random_action>=20 && random_action<60){
-                        payload.action = "raise"
+            } else { 
+                if(!poker_players[i].fold){ //even if it's a bot, if he already decided to fold, we pass him
+                    let random_action = Math.floor(Math.random() * 100 + 1)
+                    let random_bet = Math.floor(Math.random() * 10 + 1)
+                    poker_players[i].bet = random_bet
+                    let payload = {
+                        bet: random_bet,
+                        action: "call"
                     }
-                    handleCallRaise(payload, i)
-                }
+                    if(random_action<20){
+                        handleFold(i)
+                    } else {
+                        if(random_action>=20 && random_action<60){
+                            payload.action = "raise"
+                        }
+                        handleCallRaise(payload, i)
+                    }
+                }                
                 poker_current_player++
-                console.log('nextTurn1 ', poker_current_player, poker_current_round, data.action)
-            }
+                //console.log('nextTurn1 ', poker_current_player, poker_current_round, data.action)
+            }            
         }
     }
 
@@ -191,12 +207,12 @@ function poker(data, user_join){
         }
     }		
     function dealHands(){
-        poker_dealer = {id: "dealer", hand: []}		
+        poker_dealer = {id: "dealer", hand: []}	
+        for(let i = 0; i < 3; i++){ //the dealer will show 3 cards at the start of the game
+            let card = poker_deck.pop()
+            poker_dealer.hand.push(card)
+        }	
         for(let i = 0; i < how_many_cards; i++){
-            if(i<3){//the dealer will show 3 cards at the start of the game
-                let card = poker_deck.pop()
-                poker_dealer.hand.push(card)
-            }
             for (let j = 0; j < poker_players.length; j++){
                 let card = poker_deck.pop()
                 if(i === 0){
@@ -235,15 +251,15 @@ function poker(data, user_join){
         hand.sort((a, b) => b.Weight - a.Weight)
 
         // Check for specific hand combinations in decreasing order of strength
-        if (isRoyalFlush(hand)) return {text: 'Royal Flush', strength: 10}
-        if (isStraightFlush(hand)) return {text: 'Straight Flush', strength: 9}
-        if (isFourOfAKind(hand)) return {text: 'Four of a Kind', strength: 8}
-        if (isFullHouse(hand)) return {text: 'Full House', strength: 7}
-        if (isFlush(hand)) return {text: 'Flush', strength: 6}
-        if (isStraight(hand)) return {text: 'Straight', strength: 5}
-        if (isThreeOfAKind(hand)) return {text: 'Three of a Kind', strength: 4}
-        if (isTwoPair(hand)) return {text: 'Two Pair', strength: 3}
-        if (isOnePair(hand)) return {text: 'One Pair', strength: 2}
+        if (isRoyalFlush(hand)) return {text: 'Royal Flush', info: hand[0], strength: 10}
+        if (isStraightFlush(hand)) return {text: 'Straight Flush', info: hand[0], strength: 9}
+        if (isFourOfAKind(hand)) return {text: 'Four of a Kind', info: hand[0], strength: 8}
+        if (isFullHouse(hand)) return {text: 'Full House', info: hand[0], strength: 7}
+        if (isFlush(hand)) return {text: 'Flush', info: hand[0], strength: 6}
+        if (isStraight(hand)) return {text: 'Straight', info: hand[0], strength: 5}
+        if (isThreeOfAKind(hand)) return {text: 'Three of a Kind', info: hand[0], strength: 4}
+        if (isTwoPair(hand)) return {text: 'Two Pair', info: hand[0], strength: 3}
+        if (isOnePair(hand)) return {text: 'One Pair', info: hand[0], strength: 2}
 
         // If none of the above combinations, it is a high card hand
         return {text: 'High Card', info: hand[0], strength: 1}

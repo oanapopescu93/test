@@ -36,15 +36,22 @@ function Card(config){
 	self.show_cards = function(ctx, data){
         if(self.id !== -1){
             //player
+
+            if(self.fold){ //if the player folded, his cards will be grey
+                ctx.filter = 'grayscale(1)'
+            } 
+
             if(self.uuid === self.props.user.uuid){
                 let cards_number = self.hand.length
                 let hand_length = (cards_number-1) * self.card.width + (cards_number-2) * self.space
-                self.draw_card(ctx, self.x-hand_length/2, self.y, self.card.width, self.card.height, self.card_img, self.hand, self.fold)
+                self.draw_card(ctx, self.x-hand_length/2, self.y, self.card.width, self.card.height, self.card_img, self.hand)
                 self.draw_card_text(ctx, self.user, self.text_x-hand_length/2, self.text_y, 70, 12)                    
             } else {
-                self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, self.hand, self.fold)
+                self.draw_card(ctx, self.x, self.y, self.card.width, self.card.height, self.card_img, self.hand)
                 self.draw_card_text(ctx, self.user, self.text_x, self.text_y, 70, 12)
             }
+
+            ctx.filter = 'grayscale(0)'
         } else {
             //dealer
             let cards_number = data.dealer.hand.length
@@ -54,7 +61,7 @@ function Card(config){
 			
 	}
 
-	this.draw_card = function(ctx, x, y, w, h, size, hand, fold){
+	this.draw_card = function(ctx, x, y, w, h, size, hand){
 		let img = self.images
 		let img_index = 0
 		for(let i in hand){		
@@ -116,9 +123,6 @@ function Card(config){
             
             if(self.id !== -1){                
                 //player
-                if(fold){ //if the player folded, his cards will be grey
-                    ctx.filter = 'grayscale(1)'
-                }
                 if(self.uuid === self.props.user.uuid){
                     ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.space + w), y, w, h)
                     self.updateHand(i, x + i * (self.space + w), y, w, h)
@@ -126,16 +130,12 @@ function Card(config){
                     ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * self.space, y, w, h)
                     self.updateHand(i, x + i * self.space, y, w, h)
                 }
-                ctx.filter = 'grayscale(0)'
             } else {
                 //dealer
-                if(!img[img_index]){
-                    console.log(img, img_index, img[img_index])
-                }
                 ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.space + w), y, w, h)
                 self.updateHand(i, x + i * (self.space + w), y, w, h)
             }
-        }        
+        }
 	}
 
     self.draw_card_text = function(ctx, text, x, y, w, h){	
@@ -423,36 +423,66 @@ export const poker_game = function(props){
     }
 
     this.showdown = function(){
-        console.log('showdown--> ', poker_data)
-        let players = poker_data.players
-        let max = 0
-        let playerMax = null
-        for(let i in players){
-            if(players[i] && players[i].handStrength && players[i].handStrength.strength && players[i].handStrength.strength > max){
-                max = players[i].handStrength.strength
-                playerMax = players[i]
+        let players = [...poker_data.players]
+        for(let i = 0; i < players.length; i++){                                    
+            if(players[i].fold) { 
+                players.splice(i, 1)
+                i--
             }
         }
 
-        console.log('showdown--> ', max, playerMax, props.user.uuid)
+        let bestPlayer = players[0]
+        for(let i = 1; i < players.length; i++){   
+            if(bestPlayer.handStrength.strength < players[i].handStrength.strength){
+                bestPlayer = players[i]
+            } else if(bestPlayer.handStrength.strength === players[i].handStrength.strength){
+                if(bestPlayer.hand[0].Weight < players[i].hand[0].Weight){
+                    bestPlayer = players[i]
+                }
+            }
+        }
+
+        self.check_win_lose(bestPlayer)        
     }
 
-	this.check_win_lose = function(){
-        let finished = false
+	this.check_win_lose = function(bestPlayer){
+        let player = poker_data.players.filter(function(x){
+            return x.uuid === props.user.uuid
+        })
+
 		let game = null	
 		if(props.page && props.page.game){
 			game = props.page.game
 		}
+
 		let money = decryptData(props.user.money)
+        let money_history = money        
+        let pot = poker_data.pot
+
+        let mybets = 1
+        if(player && player[0] && player[0].bet){
+            mybets = player[0].bet
+        }
+
+        let status = 'lose'
+        if(bestPlayer.uuid === props.user.uuid){
+            status = 'win'
+            money_history = money_history + pot
+        } else {
+            money_history = money_history - mybets
+        }
+        
 
         let poker_payload = {
 			uuid: props.user.uuid,
 			game: game,
-			status: 'lose',
-			bet: poker_bets
+			money: money_history,
+			status: status,
+			bet: mybets
 		}
-        if(finished && typeof props.getResults === "function"){
-			//props.getResults(poker_payload)
-		}
+        
+        if(typeof props.getResults === "function"){
+            props.getResults(poker_payload)
+        }
     }
 }

@@ -52,9 +52,6 @@ function PokerBoard(props){
     }
 
     return <Row>
-        {(() => {
-            console.log('draw--> ', draw, round, roundChange)
-        })()}
         {startGame ? <>
             {(() => {
                 switch(status) {
