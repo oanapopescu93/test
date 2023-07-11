@@ -454,8 +454,8 @@ function race_game(props){
 
 	let finish_line
 	let finish_line_x = 0
-	// let race_interval = 800
-	let race_interval = 20
+	let race_interval = 800
+	// let race_interval = 20
 		
 	this.ready = function(reason){
 		self.createCanvas(canvas_width, canvas_height)	

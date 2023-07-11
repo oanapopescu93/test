@@ -67,7 +67,7 @@ function RaceTables(props){
                 type="button"  
                 className="mybutton round button_transparent shadow_convex"
                 onClick={()=>getData()}
-            >{translate({lang: lang, info: "Click"})}</Button>
+            >{translate({lang: lang, info: "Start"})}</Button>
         </div>
     </div>
 }

@@ -345,7 +345,7 @@ io.on('connection', function(socket) {
       database(database_config).then(function(result){
         if(result){
           users_array = result
-          let user_found = users_array.filter((x) => x.uuid === data.uuid) 
+          let user_found = users_array.filter((x) => x.uuid === data.uuid)  
           if(user_found && user_found.length>0){
             let table_name = data.game.table_name ? data.game.table_name : ""
             let table_id = data.game.table_id ? data.game.table_id : table_name
