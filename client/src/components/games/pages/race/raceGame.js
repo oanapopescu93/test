@@ -388,7 +388,7 @@ function FinishLine(config){
 	self.y = config.y
 	self.cube = config.cube	
 
-	self.draw = function(canvas, ctx){
+	self.draw = function(canvas, ctx, x){
 		draw_rect(ctx, self.x, self.y, self.cube/2, canvas.height, self.fillStyle, self.lineWidth, self.strokeStyle) //line01
 		
 		//cubes
@@ -461,6 +461,7 @@ function race_game(props){
 	// let race_interval = 20
 		
 	this.ready = function(reason){
+		startGame = false //the game immediately begins
 		self.createCanvas(canvas_width, canvas_height)	
 		self.start(reason)
 	}
@@ -773,89 +774,94 @@ function race_game(props){
 			}
 	  	})()
 	  
-	  	function race() {			
+	  	function race(){
 			let stop = false
-			let avg_dist = lane_list[0].rabbit.avg_dist
 
-			if (nr > time) {
-				rabbit_list = self.order_rabbits(rabbit_list)			
-				let end_rabbit = true
-				let end_finish_line = true
-				let sit_rabbit = true
-				
-				if(finish_line_x > canvas.width/2){
-					finish_line_x = finish_line_x - 5
-					end_finish_line = false
-				} 
-				
-				end_rabbit = self.check_rabbits(finish_line_x)
+			if(!startGame){
+				let avg_dist = lane_list[0].rabbit.avg_dist
 
-				if(end_rabbit && end_finish_line){
-					for(let i in lane_list){		
-						if(lane_list[i].rabbit.frame !== 4){
-							sit_rabbit = false
-							break
-						}
-					}
+				if (nr > time) {
+					rabbit_list = self.order_rabbits(rabbit_list)			
+					let end_rabbit = true
+					let end_finish_line = true
+					let sit_rabbit = true
+					
+					if(finish_line_x > canvas.width/2){
+						finish_line_x = finish_line_x - 5
+						end_finish_line = false
+					} 
+					
+					end_rabbit = self.check_rabbits(finish_line_x)
 
-					if(sit_rabbit){
-						stop = true
-						self.draw_background()
-						finish_line.draw(ctx)
-
+					if(end_rabbit && end_finish_line){
 						for(let i in lane_list){		
-							lane_list[i].rabbit.stop(ctx, nr)
+							if(lane_list[i].rabbit.frame !== 4){
+								sit_rabbit = false
+								break
+							}
 						}
-						self.win_lose()
+
+						if(sit_rabbit){
+							stop = true
+							self.draw_background()
+							finish_line.draw(canvas, ctx)
+
+							for(let i in lane_list){		
+								lane_list[i].rabbit.stop(ctx, nr)
+							}
+							self.win_lose()
+						} else {
+							nr++
+							stop = false
+							self.draw_background()
+							finish_line.draw(canvas, ctx)
+
+							for(let i in lane_list){		
+								lane_list[i].rabbit.stop(ctx, nr)
+							}
+						}
+						
 					} else {
 						nr++
 						stop = false
 						self.draw_background()
-						finish_line.draw(ctx)
+						finish_line.move(finish_line_x)
+						finish_line.draw(canvas, ctx)
 
-						for(let i in lane_list){		
-							lane_list[i].rabbit.stop(ctx, nr)
+						if(end_rabbit){
+							for(let i in lane_list){		
+								lane_list[i].rabbit.stop(ctx, nr, false)
+							}
+						} else {
+							self.draw_rabbits('run', nr, finish_line_x) 
 						}
-					}
-					
-				} else {
-					nr++
+					}			
+				} else{
+					nr++	
 					stop = false
-					self.draw_background()
-					finish_line.move(finish_line_x)
-					finish_line.draw(ctx)
-
-					if(end_rabbit){
-						for(let i in lane_list){		
-							lane_list[i].rabbit.stop(ctx, nr, false)
+					if(!move_landscape){
+						if(avg_dist > canvas.width/2){
+							move_landscape = true
 						}
 					} else {
-						self.draw_rabbits('run', nr, finish_line_x) 
-					}
-				}			
-			} else{
-				nr++	
-				stop = false
-				if(!move_landscape){
-					if(avg_dist > canvas.width/2){
-						move_landscape = true
-					}
-				} else {
-					let i = landscape.length			
-					while (i--) {
-						landscape[i].update()
-						let my_lands = landscape[i].lands
-						for(let j in my_lands){
-							my_lands[j].x = my_lands[j].x + landscape[i].x
+						let i = landscape.length			
+						while (i--) {
+							landscape[i].update()
+							let my_lands = landscape[i].lands
+							for(let j in my_lands){
+								my_lands[j].x = my_lands[j].x + landscape[i].x
+							}
 						}
 					}
+					self.draw_background()	
+					self.draw_rabbits('run', nr)
 				}
-				self.draw_background()	
-				self.draw_rabbits('run', nr)
-			}	
+			} else {
+				stop = true
+			}			
 			
 			if(!stop){
-				window.requestAnimFrame(race)
+				window.requestAnimationFrame(race)
 			} else {
 				window.cancelAnimationFrame(race)
 			}
@@ -885,7 +891,7 @@ function race_game(props){
 		if(money_history > money_original){
 			status = "win"
 		}
-		console.log(money_original, money_history, rabbit_array, rabbit_list)
+		
 		let race_payload = {
 			uuid: props.user.uuid,
 			game: "race",
@@ -894,15 +900,36 @@ function race_game(props){
 			bet: Math.abs(money_original - money_history)
 		}
 		if(typeof props.results === "function"){
-			console.log(finish_line)
 			props.results(race_payload)
 		}		
 	}
 
     this.leave = function(){
+		startGame = true
+		let money = decryptData(props.user.money)
+		let bet = 0
 
+		for(let i in rabbit_array){
+			if(typeof rabbit_array[i].bet !== "undefined" && rabbit_array[i].bet !== "0" && rabbit_array[i].bet !== 0){
+				bet = bet + rabbit_array[i].bet
+			}
+		}		
+
+		let race_payload = {
+			uuid: props.user.uuid,
+			game: "race",
+			money: money - bet,
+			status: 'lose',
+			bet: bet
+		}
+
+		if(typeof props.results === "function"){
+			props.results(race_payload)
+		}
 	}
 }
+
+var startGame = true
 
 function RaceGame(props){
     let dispatch = useDispatch()	
@@ -929,9 +956,7 @@ function RaceGame(props){
     }, [])
 
 	useEffect(() => {
-		props.socket.on('race_read', function(data){
-						
-		})	
+		props.socket.on('race_read', function(data){})	
     }, [props.socket])
 
     return <div className="game_container race_game_container">
