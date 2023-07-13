@@ -263,13 +263,13 @@ function whack_game(props){
 			bet: target_array_killed.length
 		}
 
-		// if(typeof props.results === "function"){
-        //     props.results(whack_payload)
-        // }
+		if(typeof props.results === "function"){
+            props.results(whack_payload)
+        }
 
-        // dispatch(changePage('Salon'))
-        // dispatch(changeGame(null))
-        // dispatch(changeGamePage(null))
+        dispatch(changePage('Salon'))
+        dispatch(changeGame(null))
+        dispatch(changeGamePage(null))
     }
 }
 
