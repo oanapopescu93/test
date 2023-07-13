@@ -202,7 +202,7 @@ function slots_game(props, id){
 	  	function spin_slot() {
 			self.update(self.state)
 			if(self.running){
-				window.requestAnimFrame(spin_slot)
+				window.requestAnimationFrame(spin_slot)
 			} else {
 				slots_status = false
 				window.cancelAnimationFrame(spin_slot)

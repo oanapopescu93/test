@@ -91,6 +91,8 @@ var word_bank = {
     joined_the_chat: "s-a alaturat chat-ului",
     left_the_chat: "a parasit chat-ul",
     buy: "Cumpara",
+    play: "Joaca",
+    play_whack_a_rabbit: "Joaca Whack a rabbit pentru a castiga morcovi!",
 
     language: "Limba",
     date_calendar: "Data calendaristica",

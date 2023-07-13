@@ -45,27 +45,36 @@ var database_config = constants.DATABASE[0]
 
 io.on('connection', function(socket) {
   socket.on('signin_send', (data) => {  
-    database_config.sql = "SELECT * FROM casino_user"
+    database_config.sql = "SELECT * FROM casino_user;"
+    database_config.sql += "SELECT * FROM login_user;"
 		database(database_config).then(function(result){
-      if(result && result.length>0){
-        users_array = result
-        let user = users_array.filter(function(x){
+      if(result && result[0] && result[1]){
+        users_array = result[0]
+        login_user = result[1]
+        let user_found = users_array.filter(function(x){
           return (x.user === data.user || x.email === data.email) && decrypt(JSON.parse(x.pass)) === data.pass
         })
-        if(user && user.length>0){
+        if(user_found && user_found.length>0){
           //the user exists --> we sign him in
           let uuid = crypto.randomBytes(20).toString('hex')
           let device = get_device(socket.request.headers) // 0 = computer, 1 = mobile, 2 = other
+
+          let logs = login_user.filter((x) => {
+            let date01 = new Date().setHours(0, 0, 0, 0)
+            let date02 = new Date(parseInt(x.login_date)).setHours(0, 0, 0, 0)
+            return x.user_id === user_found[0].id && date01 === date02
+          })   
   
           //emit
           let obj = {
-            uuid: uuid, 
-            user: user[0].user, 
-            email: user[0].email, 
+            uuid, 
+            user: user_found[0].user, 
+            email: user_found[0].email, 
             account_type: account_type, 
             money: user_money, 
-            device: device,
-            profile_pic: user[0].profile_pic
+            device,
+            profile_pic: user_found[0].profile_pic,
+            logs: logs.length
           }
           try{
             io.to(socket.id).emit('signin_read', {exists: true, obj: obj})
@@ -85,9 +94,9 @@ io.on('connection', function(socket) {
             let timestamp = new Date().getTime() + ""
             
             //update user and login tables
-            database_config.sql = "UPDATE casino_user SET uuid='" + uuid + "' WHERE id=" + user[0].id + "; "
+            database_config.sql = "UPDATE casino_user SET uuid='" + uuid + "' WHERE id=" + user_found[0].id + "; "
 						database_config.sql += "INSERT INTO login_user (user_id, login_date, device, ip_address, city, country) VALUES (?, ?, ?, ?, ?, ?)"
-						let payload =  [user[0].id, timestamp, device, extra_data.ip_address, extra_data.city, extra_data.country]
+						let payload =  [user_found[0].id, timestamp, device, extra_data.ip_address, extra_data.city, extra_data.country]
 						database(database_config, payload).then(function(){})
           })
         } else {

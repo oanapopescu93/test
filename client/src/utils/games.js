@@ -89,6 +89,13 @@ import 	craps_one_roll_3 from '../img/craps/hover/craps_one_roll_3.png'
 import 	craps_one_roll_4 from '../img/craps/hover/craps_one_roll_4.png'
 import 	craps_any_craps from '../img/craps/hover/craps_any_craps.png'
 
+import 	whack_a_rabbit00 from '../img/whack_a_rabbit/whack_a_rabbit00.png'
+import 	whack_a_rabbit01 from '../img/whack_a_rabbit/whack_a_rabbit01.png'
+import 	whack_a_rabbit02 from '../img/whack_a_rabbit/whack_a_rabbit02.png'
+import 	whack_a_rabbit03 from '../img/whack_a_rabbit/whack_a_rabbit03.png'
+import 	hammer01 from '../img/whack_a_rabbit/hammer01.png'
+import 	hammer02 from '../img/whack_a_rabbit/hammer02.png'
+
 export const getMousePos = function(canvas, event) {
 	let rect = canvas.getBoundingClientRect()
 	return {
@@ -257,4 +264,16 @@ export const get_craps_bets = function(){
 	  {x: 790, y: 340, width:100, height:45, text: "one roll 4", id: "one_roll_4", src: craps_one_roll_4, odds: 2},
 	  {x: 690, y: 385, width:200, height:50, text: "any craps", id: "any_craps", src: craps_any_craps, odds: 2},
 	]
-  }
+}
+
+export const get_what_a_rabbit_img = function(){
+	return [
+	  	{id: 0, src: whack_a_rabbit00},
+	  	{id: 1, src: whack_a_rabbit01},
+		{id: 2, src: whack_a_rabbit02},
+		{id: 3, src: whack_a_rabbit03},
+
+		{id: 4, src: hammer01},
+		{id: 5, src: hammer02},
+	]
+}

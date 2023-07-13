@@ -91,6 +91,8 @@ var word_bank = {
     joined_the_chat: "joined the chat",
     left_the_chat: "left the chat",
     buy: "Buy",
+    play: "Play",
+    play_whack_a_rabbit: "Play Whack a rabbit to get free carrots!",
 
     language: "Language",
     date_calendar: "Date",

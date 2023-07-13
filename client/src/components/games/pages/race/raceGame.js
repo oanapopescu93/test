@@ -461,7 +461,7 @@ function race_game(props){
 	// let race_interval = 20
 		
 	this.ready = function(reason){
-		startGame = false //the game immediately begins
+		startGameRace = false //the game immediately begins
 		self.createCanvas(canvas_width, canvas_height)	
 		self.start(reason)
 	}
@@ -777,7 +777,7 @@ function race_game(props){
 	  	function race(){
 			let stop = false
 
-			if(!startGame){
+			if(!startGameRace){
 				let avg_dist = lane_list[0].rabbit.avg_dist
 
 				if (nr > time) {
@@ -905,7 +905,7 @@ function race_game(props){
 	}
 
     this.leave = function(){
-		startGame = true
+		startGameRace = true
 		let money = decryptData(props.user.money)
 		let bet = 0
 
@@ -929,7 +929,7 @@ function race_game(props){
 	}
 }
 
-var startGame = true
+var startGameRace = true
 
 function RaceGame(props){
     let dispatch = useDispatch()	

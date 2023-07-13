@@ -18,6 +18,8 @@ import KenoPrizeTable from "./kenoPrizeTable"
 import GameResults from "./gameResults"
 import Welcome from "./welcome"
 import Streak from "./streak"
+import WhackARabbit from "./whackARabbit"
+import { changeGamePage, changePage, changeGame } from "../../reducers/page"
 
 function Popup(props){
     const {lang, date, currency, socket, home} = props
@@ -52,6 +54,13 @@ function Popup(props){
 
     function dashboardChanges(x){
         socket.emit('dashboardChanges_send', x)
+        closeModal()
+    }
+
+    function handleWhackARabbit(){
+        dispatch(changePage('Salon'))
+        dispatch(changeGamePage(null))
+        dispatch(changeGame({table_name: "whack_a_rabbit"}))
         closeModal()
     }
 
@@ -95,14 +104,15 @@ function Popup(props){
                         case "game_results":
                             return <GameResults lang={lang} results={data}></GameResults>
                         case "streak":
-                                return <Streak lang={lang} data={data}></Streak>
+                            return <Streak lang={lang} data={data}></Streak>
+                        case "whack_a_rabbit":
+                            return <WhackARabbit lang={lang} handleClick={()=>handleWhackARabbit()}></WhackARabbit>
                         case "error":
                         default:
                             if(typeof data === "string"){
                                 return <Default lang={lang} text={data}></Default>
-                            } else {
-                                return null
                             }
+                            return null
                             
                     }
                 })()}

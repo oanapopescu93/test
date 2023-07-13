@@ -368,7 +368,7 @@ function roulette_game(props){
 				}		
             
 				if(!stop){
-					window.requestAnimFrame(spin_roulette)
+					window.requestAnimationFrame(spin_roulette)
 				} else {
 					window.cancelAnimationFrame(spin_roulette)
 				}

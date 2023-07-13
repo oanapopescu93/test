@@ -169,7 +169,7 @@ function keno_game(props){
 				}		
             
 				if(!stop){
-					window.requestAnimFrame(run)
+					window.requestAnimationFrame(run)
 				} else {
 					window.cancelAnimationFrame(run)
 				}

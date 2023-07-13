@@ -2856,6 +2856,25 @@ textarea {
   display: list-item;
 }
 
+/* Whack A Rabbit */
+.whack_a_rabbit_container{
+  position: relative;
+  z-index: 1;
+}
+.whack_a_rabbit_popup p{
+  margin-bottom: 10px;
+}
+#whack_canvas, #whack_canvas_hammer{
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0px);
+}
+#whack_canvas_hammer{
+  z-index: 2;
+}
+
 /* media */
 @media (max-width: 1200px){
 	.shop_shader{

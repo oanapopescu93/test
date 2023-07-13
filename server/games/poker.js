@@ -20,7 +20,7 @@ function poker(data, user_join){
         case "texas_holdem":
             how_many_cards = 2
             break
-        default:
+        default: //ex: 5_card_draw
             how_many_cards = 5
     }
 
@@ -61,7 +61,7 @@ function poker(data, user_join){
     }   
     
     function add_cards_dealer(){
-        if(poker_current_round === 1 || poker_current_round === 2){ // it is a turn or a river
+        if(data.action != "replace" && (poker_current_round === 1 || poker_current_round === 2)){ // it is a turn or a river
             let card = poker_deck.pop()
             poker_dealer.hand.push(card)
         }
@@ -106,12 +106,12 @@ function poker(data, user_join){
     function nextTurn() {  
         poker_current_player++
         bot_decisions(poker_current_player) //simulate bots making decisions
-        //console.log('nextTurn2 ', poker_current_player, poker_current_round, data.action)
+        console.log('nextTurn2 ', poker_current_player, poker_current_round, data.action)
         if(poker_current_player >= poker_players.length){
             poker_current_player = 0
             poker_current_round++
         }
-        //console.log('nextTurn3 ', poker_current_player, poker_current_round, data.action)
+        console.log('nextTurn3 ', poker_current_player, poker_current_round, data.action)
         if (poker_current_round > how_many_rounds-1 || check_how_many_players_active()<=1) {
             showdown = true
         }
@@ -150,7 +150,7 @@ function poker(data, user_join){
                     }
                 }                
                 poker_current_player++
-                //console.log('nextTurn1 ', poker_current_player, poker_current_round, data.action)
+                console.log('nextTurn1 ', poker_current_player, poker_current_round, data.action)
             }            
         }
     }
