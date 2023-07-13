@@ -263,13 +263,13 @@ function whack_game(props){
 			bet: target_array_killed.length
 		}
 
-		if(typeof props.results === "function"){
-            props.results(whack_payload)
-        }
+		// if(typeof props.results === "function"){
+        //     props.results(whack_payload)
+        // }
 
-        dispatch(changePage('Salon'))
-        dispatch(changeGame(null))
-        dispatch(changeGamePage(null))
+        // dispatch(changePage('Salon'))
+        // dispatch(changeGame(null))
+        // dispatch(changeGamePage(null))
     }
 }
 
@@ -323,10 +323,12 @@ function WhackARabbit(props){
         counter()
     }, [])
 
-    return <div className="whack_a_rabbit_container">
-        <p id="timer">00:{time}</p>
-        <canvas id="whack_canvas"></canvas>
-        <canvas id="whack_canvas_hammer"></canvas>
-    </div>
+    return <>
+        <p id="whack_a_rabbit_timer">00:{time}</p>
+        <div className="whack_a_rabbit_container">
+            <canvas id="whack_canvas" className="shadow_concav"></canvas>
+            <canvas id="whack_canvas_hammer"></canvas>
+        </div>
+    </>
 }
 export default WhackARabbit

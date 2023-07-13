@@ -2861,9 +2861,6 @@ textarea {
   position: relative;
   z-index: 1;
 }
-.whack_a_rabbit_popup p{
-  margin-bottom: 10px;
-}
 #whack_canvas, #whack_canvas_hammer{
   position: absolute;
   z-index: 1;
@@ -2873,6 +2870,14 @@ textarea {
 }
 #whack_canvas_hammer{
   z-index: 2;
+}
+#whack_canvas{
+  border: solid 1px var(--color);
+  border-radius: var(--radius_big);
+  background-color: var(--transparent_2);
+}
+#whack_a_rabbit_timer{
+  margin-bottom: var(--padding);
 }
 
 /* media */
