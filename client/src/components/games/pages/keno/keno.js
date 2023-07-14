@@ -89,7 +89,6 @@ function Keno(props){
             template: "keno_prizes",
             title: translate({lang: props.lang, info: "keno_prizes"}),
             data: props.home.keno_prizes,
-            size: 'lg',
         }
         dispatch(changePopup(payload))
     }

@@ -1626,6 +1626,9 @@ textarea {
 }
 
 /* QUESTIONS */
+.question_subcategory{
+  margin-bottom: 20px;
+}
 .question_box{
 	padding:var(--padding);
 }
@@ -1635,7 +1638,6 @@ textarea {
   border-radius: 50px;
   display: inline-block;
   max-width: 600px;
-  margin-top: var(--padding);
 	width: 100%;
 	cursor: pointer;
 	position: relative;
@@ -1646,6 +1648,7 @@ textarea {
 }
 .answer_container{
 	display:none;
+  text-align: left;
 }
 .answer_container.open{
 	display:block;
@@ -2878,6 +2881,25 @@ textarea {
 }
 #whack_a_rabbit_timer{
   margin-bottom: var(--padding);
+}
+
+/* OTHER PAGES */
+.other_page_container{
+  text-align: left;
+  padding-bottom: var(--padding);
+}
+.other_page_container h3{
+  margin-top: var(--padding)
+}
+.other_page_container h3:first-child{
+  margin-top: 0px
+}
+.other_page_container ul{
+	margin-left: 30px;
+}
+.other_page_container li{
+	display: list-item;
+  list-style: circle;
 }
 
 /* media */

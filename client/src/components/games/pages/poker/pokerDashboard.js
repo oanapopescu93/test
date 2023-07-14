@@ -16,8 +16,7 @@ function PokerDashboard(props){
 	let [startGame, setStartGame]= useState(false)
     let [round, setRound]= useState(0)
     let [spectator, setSpectator]= useState(false)
-    let dispatch = useDispatch()  
-    let [draw, setDraw]= useState(false)    
+    let dispatch = useDispatch()    
 
 	let clear = function(bet){
 		poker_bets = bet
@@ -29,13 +28,14 @@ function PokerDashboard(props){
 				bet: poker_bets,
 				money: money - poker_bets
 			}
-			//props.results(poker_payload)
+			props.results(poker_payload)
 		}
 	}
 
     let getResults = function(payload){
-		//props.results(payload)
+		props.results(payload)
 		setStartGame(false)
+        poker_status = false
 	}
     let options = {...props, dispatch, getResults, clear}
     let my_poker = new poker_game(options)    
@@ -75,7 +75,7 @@ function PokerDashboard(props){
                             bet: poker_bets,
                             money: money - poker_bets
                         }
-                        //props.results(poker_payload)
+                        props.results(poker_payload)
                     }				
                 } else {
                     //it means it must be an error, if the user folds, he just loses the money without payload to server

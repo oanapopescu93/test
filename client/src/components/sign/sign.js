@@ -108,7 +108,6 @@ function Sign(props) {
         props.socket.on('signin_read', function(data){	
             setLoaded(true)
             if(data && data.exists && data.obj && Object.keys(data.obj).length>0){
-                console.log('signin ', data)
                 dispatch(changeUser(data.obj))
                 if(typeof data.obj.logs !== "undefined" && data.obj.logs !== "null" && data.obj.logs !== null && data.obj.logs === 0){
                     let payload = {

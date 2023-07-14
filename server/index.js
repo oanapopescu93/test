@@ -216,16 +216,15 @@ io.on('connection', function(socket) {
         if(result){
           users_array = result[0]
           login_user = result[1]
-          if(users_array && login_user){
-            let user_found = users_array.filter((x) => x.uuid === data.uuid) 
-            payload = updateStreak(user_found, login_user)        
+          if(users_array && users_array.length>0 && login_user && login_user.length>0){            
             try{
+              let user_found = users_array.filter((x) => x.uuid === data.uuid) 
+              payload = updateStreak(user_found, login_user)        
               io.to(socket.id).emit('game_read', payload)
+              updateMoney(user_found, payload)
             } catch(e){
               console.log('[error]','roulette_read--> ', e)
-            }
-
-            updateMoney(user_found, payload)
+            }            
           }
         }
       })
@@ -352,7 +351,7 @@ io.on('connection', function(socket) {
     if(data.uuid){
       database_config.sql = "SELECT * FROM casino_user;"
       database(database_config).then(function(result){
-        if(result){
+        if(result && result.length>0){
           users_array = result
           let user_found = users_array.filter((x) => x.uuid === data.uuid)  
           if(user_found && user_found.length>0){

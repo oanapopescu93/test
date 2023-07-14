@@ -36,7 +36,6 @@ function Card(config){
 	self.show_cards = function(ctx, data){
         if(self.id !== -1){
             //player
-
             if(self.fold){ //if the player folded, his cards will be grey
                 ctx.filter = 'grayscale(1)'
             } 
@@ -130,12 +129,13 @@ function Card(config){
                     ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * self.space, y, w, h)
                     self.updateHand(i, x + i * self.space, y, w, h)
                 }
+                ctx.filter = 'grayscale(0)'
             } else {
                 //dealer
                 ctx.drawImage(img[img_index].src, 0, 0, size.width, size.height, x + i * (self.space + w), y, w, h)
                 self.updateHand(i, x + i * (self.space + w), y, w, h)
             }
-        }
+        }        
 	}
 
     self.draw_card_text = function(ctx, text, x, y, w, h){	
@@ -369,7 +369,7 @@ export const poker_game = function(props){
 	} 
     
     this.action = function(data){
-        console.log('action--> ', data, data.player, data.round)
+        //console.log('action--> ', data, data.player, data.round)
 		if(data && data.action){
             poker_data = data
             self.drawBackground()
@@ -422,7 +422,7 @@ export const poker_game = function(props){
         return replaceCards
     }
 
-    this.showdown = function(){
+	this.showdown = function(){
         let players = [...poker_data.players]
         for(let i = 0; i < players.length; i++){                                    
             if(players[i].fold) { 

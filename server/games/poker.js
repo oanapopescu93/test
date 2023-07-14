@@ -29,6 +29,7 @@ function poker(data, user_join){
             poker_current_player = 0    
             poker_current_round = 0    
             poker_deck = createDeck(10000) 
+            poker_pot = 0
             createPlayers()        
             dealHands()            
             handleBet()
@@ -50,14 +51,19 @@ function poker(data, user_join){
             break
     }
 
+    let payload = {}
     if(!showdown){
         createHiddenPlayers()
         poker_hidden_players = evaluateHands(poker_hidden_players)   
         add_cards_dealer()
-        return {action: data.action, players: poker_hidden_players, dealer: poker_dealer, pot: poker_pot, player: poker_current_player, round: poker_current_round, showdown}
+        payload = {action: data.action, players: poker_hidden_players, dealer: poker_dealer, pot: poker_pot, player: poker_current_player, round: poker_current_round, showdown}
+        return payload
     } else {
+        //showdown
         poker_players = evaluateHands(poker_players)
-        return {action: data.action, players: poker_players, dealer: poker_dealer, pot: poker_pot, player: poker_current_player, round: poker_current_round, showdown}
+        payload = {action: data.action, players: poker_players, dealer: poker_dealer, pot: poker_pot, player: poker_current_player, round: poker_current_round, showdown}
+        showdown = false
+        return payload
     }   
     
     function add_cards_dealer(){
@@ -157,7 +163,9 @@ function poker(data, user_join){
 
     function handleBet(){
         let index = poker_players.findIndex((x) => x.uuid === data.uuid)
-        poker_pot += poker_players[index].bet
+        if(index >= 0){
+            poker_pot += poker_players[index].bet
+        }
     }
     function createDeck(turns){
         for (let i = 0 ; i < values.length; i++){
