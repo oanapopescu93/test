@@ -4,7 +4,7 @@ import { Col, Row, Dropdown, DropdownButton } from 'react-bootstrap'
 import { checkoutData } from '../../../utils/utils';
 
 function PaymentForm(props){
-    const {lang, nameError, emailError, cardNumberError, cvvError, monthError, yearError} = props 
+    const {lang, nameError, emailError, cardNumberError, cvvError, monthError, yearError, bitcoinWalletError} = props 
     
     const [month, setMonth] = useState(-1)    
     const [year, setYear] = useState("")
@@ -67,7 +67,7 @@ function PaymentForm(props){
         </Row>
         <Row>
             <Col sm={6}>
-                <label htmlFor="firstname">{translate({lang: props.lang, info: "name"})}</label>
+                <label htmlFor="name">{translate({lang: props.lang, info: "name"})}</label>
                 <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "name"})} id="name" name="name"/>
                 {nameError ? <div className="alert alert-danger">
                     <p className="text_red">
@@ -96,15 +96,15 @@ function PaymentForm(props){
                     <Col sm={12}>
                     <div className="checkbox_radio_container">
                             <label>
-                                <input type="radio" name="radio1" checked={radioOne} onChange={()=>{handleChangeCheck("radio1")}}/>
+                                <input id="pay_card" type="radio" name="radio1" checked={radioOne} onChange={()=>{handleChangeCheck("radio1")}}/>
                                 {translate({lang: props.lang, info: "pay_card"})}
                             </label>
                             <label>
-                                <input type="radio" name="radio2" checked={radioTwo} onChange={()=>{handleChangeCheck("radio2")}}/>
+                                <input id="pay_paypal" type="radio" name="radio2" checked={radioTwo} onChange={()=>{handleChangeCheck("radio2")}}/>
                                 {translate({lang: props.lang, info: "pay_paypal"})}
                             </label>
                             <label>
-                                <input type="radio" name="radio3" checked={radioThree} onChange={()=>{handleChangeCheck("radio3")}}/>
+                                <input id="pay_crypto" type="radio" name="radio3" checked={radioThree} onChange={()=>{handleChangeCheck("radio3")}}/>
                                 {translate({lang: props.lang, info: "pay_crypto"})}
                             </label>
                         </div>
@@ -159,7 +159,20 @@ function PaymentForm(props){
                             </div> : null}
                         </Col>
                     </Row>
-                </> : null}                            
+                </> : null} 
+                {radioThree ? <>
+                    <Row>
+                        <Col sm={12}>
+                            <label htmlFor="bitcoin_wallet">{translate({lang: props.lang, info: "bitcoin_wallet"})}</label>
+                            <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "bitcoin_wallet"})} id="bitcoin_wallet" name="bitcoin_wallet"/>
+                            {bitcoinWalletError ? <div className="alert alert-danger">
+                                <p className="text_red">
+                                    {translate({lang: props.lang, info: "fill_field"})}
+                                </p>                            
+                            </div> : null}
+                        </Col>
+                    </Row>
+                </> : null}                           
             </Col>
         </Row>                              
     </form>

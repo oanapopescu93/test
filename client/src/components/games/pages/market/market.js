@@ -5,6 +5,9 @@ import shop from '../../../../img/other/shop.png'
 import Carousel from '../../../carousel/carousel'
 import { useDispatch } from 'react-redux'
 import { cartAdd } from '../../../../reducers/cart'
+import { Button } from 'react-bootstrap'
+import { translate } from '../../../../translations/translate'
+import { changePage, changeGame, changeGamePage } from '../../../../reducers/page'
 
 function Market(props){
     const {lang, socket, home} = props
@@ -36,6 +39,20 @@ function Market(props){
         dispatch(cartAdd(x))
     }
 
+    function handleGoTo(x){
+        switch (x) {  
+            case "cart":
+                dispatch(changePage('Cart'))
+                break
+            case "back":
+            default:
+                dispatch(changePage('Salon'))
+                break
+		}
+        dispatch(changeGame(null))
+        dispatch(changeGamePage(null))
+    }
+
     return <div className="market_container">
         <Row>
             <Col sm={12}><h2>Market</h2></Col>
@@ -58,6 +75,16 @@ function Market(props){
                 ></Carousel>
             </Col>
             <Col sm={2}></Col>
+        </Row>
+        <Row>
+            <Col sm={12} className="button_action_group">
+                <Button type="button" onClick={()=>handleGoTo('cart')} className="mybutton round button_transparent shadow_convex">
+                    {translate({lang: props.lang, info: "cart"})}
+                </Button>	
+                <Button type="button" onClick={()=>handleGoTo('back')} className="mybutton round button_transparent shadow_convex">
+                    {translate({lang: props.lang, info: "back"})}
+                </Button>	
+            </Col>
         </Row>
     </div>
 }

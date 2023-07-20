@@ -15,57 +15,47 @@ paypal.configure({
 })
 
 paypalPayment.post('/api/paypal', jsonParser, (req, res, next) => {
-    let list = req.body.list
-    let amount = req.body.amount
+  let amount = req.body.amount
+  //let list = req.body.list
+  if(amount && amount>0){
+    //console.log(list)
     const create_payment_json = {
-        intent: "sale",
-        payer: {
-          payment_method: "paypal",
-        },
-        redirect_urls: {
-          return_url: "/success",
-          cancel_url: "/cancel",
-        },
-        transactions: [
-          {
-            item_list: {
-              items: [
-                {
-                    name: "Red Sox Hat",
-                    sku: "001",
-                    price: "25.00",
-                    currency: "USD",
-                    quantity: 1,
-                  },
-                  {
-                    name: "Red Sox Hat",
-                    sku: "001",
-                    price: "25.00",
-                    currency: "USD",
-                    quantity: 1,
-                  },
-              ],
-            },
-            amount: {
-              currency: "USD",
-              total: "50.00",
-            },
-            description: "Hat for the best team ever",
+      intent: "sale",
+      payer: {
+        payment_method: "paypal",
+      },
+      redirect_urls: {
+        return_url: "/success",
+        cancel_url: "/cancel",
+      },
+      transactions: [
+        {
+          amount: {
+            currency: "USD",
+            total: amount,
           },
-        ],
-    }     
+          description: "This is the payment description.",
+        },
+      ],
+    }
     paypal.payment.create(create_payment_json, function (error, payment) {
         if (error) {
             console.log(error.response)
-            throw error
+            res.json({type: "stripe", result: "error", payload: 'paypal_error'})
         } else {
             for (let i = 0; i < payment.links.length; i++) {
                 if (payment.links[i].rel === "approval_url") {
-                    res.json({forwardLink: payment.links[i].href})
+                    res.json({
+                      payload: {
+                        receipt_url: payment.links[i].href
+                      },
+                      result: "success"
+                    })
                 }
             }
         }
     })
+  }
 })
 paypalPayment.post('/success', jsonParser, (req, res) => {
     const payerId = req.query.PayerID

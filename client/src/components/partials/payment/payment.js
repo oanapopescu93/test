@@ -3,12 +3,12 @@ import { translate } from '../../../translations/translate'
 import PaymentForm from './paymentForm'
 import { Col, Row, Button } from 'react-bootstrap'
 import Counter from '../counter'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import $ from "jquery"
 import { decryptData } from '../../../utils/crypto'
 import { isEmpty, postData } from '../../../utils/utils'
-import { validateCVV, validateCard, validateInput } from '../../../utils/validate'
+import { validateCVV, validateCard, validateCardMonthYear, validateInput } from '../../../utils/validate'
 import { changePopup } from '../../../reducers/popup'
 import PaymentCart from './paymentCart'
 
@@ -27,6 +27,7 @@ function Payment(props){
     const [cvvError, setCvvError] = useState(false)
     const [monthError, setMonthError] = useState(false)   
     const [yearError, setYearError] = useState(false)
+    const [bitcoinWalletError, setBitcoinWalletError] = useState(false)
     const [gateway, setGateway] = useState("stripe")
 
     function getChanges(data){
@@ -61,13 +62,14 @@ function Payment(props){
         if($('#payment_form') && qty > 0){
             let form = $('#payment_form').serializeArray()
             let payload = {
-                firstname: getValueFromForm(form, 'name'),
+                name: getValueFromForm(form, 'name'),
                 email: getValueFromForm(form, 'email'),
                 cardNumber: getValueFromForm(form, 'card_number'),
                 cvv: getValueFromForm(form, 'cvv'),
                 expiry_month: month,
                 expiry_year: year,
-            }       
+                bitcoin_address: getValueFromForm(form, 'bitcoin_wallet'),
+            }
             validate(payload)
         }
     }
@@ -79,8 +81,20 @@ function Payment(props){
             }
         }
     }
-    function validate(data){
+    function validate(data){ 
         let problem = false
+        setNameError(false)
+        setEmailError(false)
+        setCardNumberError(false)
+        setCvvError(false)
+        setMonthError(false)
+        setYearError(false)
+        setBitcoinWalletError(false)
+
+        let pay_card = $("input[name='radio1']:checked").val()
+        let pay_paypal = $("input[name='radio2']:checked").val()
+        let pay_crypto = $("input[name='radio3']:checked").val()        
+        
         if(isEmpty(data.name)){
             setNameError(true)
             problem = true
@@ -89,19 +103,15 @@ function Payment(props){
             setEmailError(true)
             problem = true
         }
-        if(!data.radio1){
-            if(isEmpty(data.card_number)){
+       
+        if(pay_card){            
+            if(isEmpty(data.cardNumber) || !validateCard(data.cardNumber)){
                 setCardNumberError(true)
                 problem = true
-            } else {
-                if(!validateCard(data.card_number)){
-                    setCardNumberError(true)
-                    problem = true
-                }     
-                if(!validateCVV(data.card_number, data.cvv)){
-                    setCvvError(true)
-                    problem = true
-                }
+            }     
+            if(isEmpty(data.cvv) || !validateCVV(data.cardNumber, data.cvv)){
+                setCvvError(true)
+                problem = true
             }
             
             if(month === -1){
@@ -112,16 +122,26 @@ function Payment(props){
                 setYearError(true)
                 problem = true
             }
+            if(!validateCardMonthYear(year, month)){
+                setMonthError(true)
+                setYearError(true)
+                problem = true
+            }
         }
 
-        //sendPayload(data)//for fast tests (the errors will appear but the pay will be sent)
+        if(pay_crypto){
+            if(isEmpty(data.bitcoin_address) || !validateInput(data.bitcoin_address, "bitcoin_address")){
+                setBitcoinWalletError(true)
+                problem = true
+            } 
+        }
+        
         if(!problem){
-            let payload = data
-            sendPayload(payload)
+            sendPayload(data)
         }
     }
 
-    function sendPayload(payload){        
+    function sendPayload(payload){
         if(amount > 0){ // something is wrong and we can't charge client (ex: somehow the cart is empty, so, the total amount is 0)
             let url = ""
             switch(gateway){
@@ -136,11 +156,13 @@ function Payment(props){
                     break
                 default:                    
             }
-            console.log(gateway, payload, amount, url)   
+            payload.amount = amount
+            console.log('aaa', gateway, payload, amount, url)   
             if(!isEmpty(url)){
                 postData(url, payload).then((data) => {
-                    if(data && data.forwardLink){
-                        window.location.href = data.forwardLink
+                    console.log(data)
+                    if(data && data.result && data.result === "success"){
+                        window.open(data.payload.receipt_url,'_blank')
                     } else {
                         let payload = {
                             open: true,
@@ -181,7 +203,8 @@ function Payment(props){
                 cardNumberError={cardNumberError} 
                 cvvError={cvvError} 
                 monthError={monthError}  
-                yearError={yearError} 
+                yearError={yearError}
+                bitcoinWalletError={bitcoinWalletError}
             ></PaymentForm> 
         </Col>
         <Col sm={4}>

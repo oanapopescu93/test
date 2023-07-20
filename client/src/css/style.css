@@ -403,6 +403,9 @@ textarea:focus, input:focus{
 .button_action_group .mybutton svg{
   margin-right: var(--padding_small);
 }
+.button_action_group .round{
+  margin: 0px 5px!important;
+}
 
 .close{
 	width: 30px;
@@ -2215,6 +2218,9 @@ textarea {
 }
 #payment_form input, #payment_form .dropdown{
   margin-bottom: var(--padding);
+}
+#payment_form .alert{
+  margin-top: 0px;
 }
 
 /* ORDERS */

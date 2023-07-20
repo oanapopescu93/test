@@ -139,6 +139,7 @@ var word_bank = {
     month: "Month",
     year: "Year",  
     cvv: "cvv",
+    bitcoin_wallet: "Bitcoin Address",
     error_charge: "We are sorry, but we can't charge you due to an error on our behalf. We will repair this error as soon as possible.",
     submit: "Submit",
 

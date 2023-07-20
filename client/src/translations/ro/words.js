@@ -139,6 +139,7 @@ var word_bank = {
     month: "Luna",
     year: "An",
     cvv: "cvv",
+    bitcoin_wallet: "Adresa Bitcoin",
     error_charge: "Ne pare rau, dar nu putem onora comanda din motive tehnice. Vom repara eroarea cat de curand posibil.",
     submit: "Finalizeaza comanda",
 

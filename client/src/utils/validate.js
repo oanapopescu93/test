@@ -13,6 +13,15 @@ export const validateInput = function(input="", type){
 				// At least one special character, (?=.*?[#?!@$%^&*-])
 				// Minimum eight in length .{8,}
 				break
+      case "bitcoin_address":
+        regex = '^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$'
+        // an identifier of 26-35 alphanumeric characters
+        // beginning with the number 1 or 3
+        // random digits
+        // uppercase
+        // lowercase letters
+        // with the exception that the uppercase letter O, uppercase letter I, lowercase letter l, and the number 0 are never used to prevent visual ambiguity.
+        break
       default:
         regex = ''
         break
@@ -75,4 +84,14 @@ var acceptedCreditCards = {
     discover: /^65[4-9][0-9]{13}|64[4-9][0-9]{13}|6011[0-9]{12}|(622(?:12[6-9]|1[3-9][0-9]|[2-8][0-9][0-9]|9[01][0-9]|92[0-5])[0-9]{10})$/,
     diners_club: /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/,
     jcb: /^(?:2131|1800|35[0-9]{3})[0-9]{11}$/,
+}
+
+export const validateCardMonthYear = function(exYear, exMonth) {
+  let today = new Date()
+  let someday = new Date()
+  someday.setFullYear(exYear, exMonth, 1)
+  if(someday.getTime() < today.getTime()){
+    return false
+  }
+  return true
 }

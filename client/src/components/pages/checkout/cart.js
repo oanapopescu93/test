@@ -39,9 +39,9 @@ function Cart(props){
     }
 
     return <div className="cart_list">
-        <div className="cart_list_items">
+        <div className="cart_list_items 2">
             {list.map(function(item, i){
-                let cart_item_total_price = item.qty * item.price
+                let cart_item_total_price = (item.qty * item.price).toFixed(2)
                 return <div key={i} className='cart_item'>
                     <Row>
                         <Col xs={6} sm={4} className="cart_image">
