@@ -142,6 +142,10 @@ var word_bank = {
     bitcoin_wallet: "Indirizzo Bitcoin",
     error_charge: "Ci scusiamo, ma non possiamo addebitarti a causa di un errore da parte nostra. Ripareremo questo errore il prima possibile.",
     submit: "Invia",
+    min_amount: "Importo minimo",
+    and: "e",
+    or: "o",
+    fiat_equivalent: "Equivalente in valuta fiduciaria",
 
     // order
     order: "Ordine",

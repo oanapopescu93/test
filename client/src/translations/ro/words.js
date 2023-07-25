@@ -142,6 +142,10 @@ var word_bank = {
     bitcoin_wallet: "Adresa Bitcoin",
     error_charge: "Ne pare rau, dar nu putem onora comanda din motive tehnice. Vom repara eroarea cat de curand posibil.",
     submit: "Finalizeaza comanda",
+    min_amount: "Suma minima",
+    and: "si",
+    or: "sau",
+    fiat_equivalent: "Echivalent in valuta",
 
     // order
     order: "Comanda",

@@ -4,7 +4,7 @@ import { Col, Row, Dropdown, DropdownButton } from 'react-bootstrap'
 import { checkoutData } from '../../../utils/utils';
 
 function PaymentForm(props){
-    const {lang, nameError, emailError, cardNumberError, cvvError, monthError, yearError, bitcoinWalletError} = props 
+    const {lang, nameError, emailError, cardNumberError, cvvError, monthError, yearError, cryptoData} = props 
     
     const [month, setMonth] = useState(-1)    
     const [year, setYear] = useState("")
@@ -15,7 +15,7 @@ function PaymentForm(props){
     
     const monthOptions = checkoutData().monthOptions
     const yearOptions = checkoutData().yearOptions
-    const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]    
     
     function changeMonth(x){
         setMonth(x)
@@ -159,20 +159,23 @@ function PaymentForm(props){
                             </div> : null}
                         </Col>
                     </Row>
-                </> : null} 
+                </> : null}    
                 {radioThree ? <>
                     <Row>
                         <Col sm={12}>
-                            <label htmlFor="bitcoin_wallet">{translate({lang: props.lang, info: "bitcoin_wallet"})}</label>
-                            <input className="input_light shadow_concav" type="text" placeholder={translate({lang: props.lang, info: "bitcoin_wallet"})} id="bitcoin_wallet" name="bitcoin_wallet"/>
-                            {bitcoinWalletError ? <div className="alert alert-danger">
-                                <p className="text_red">
-                                    {translate({lang: props.lang, info: "fill_field"})}
-                                </p>                            
-                            </div> : null}
+                            {(() => {
+                                if(cryptoData){
+                                    return <>
+                                        <p><span>{translate({lang: props.lang, info: "min_amount"})}</span>: <span>{cryptoData.min_amount} {cryptoData.currency_from}</span></p>
+                                        <p><span>{translate({lang: props.lang, info: "or"})} {translate({lang: props.lang, info: "fiat_equivalent"})}</span>: <span>${cryptoData.fiat_equivalent}</span></p>
+                                    </>
+                                } else {
+                                    return null
+                                }
+                            })()}
                         </Col>
                     </Row>
-                </> : null}                           
+                </> : null}                       
             </Col>
         </Row>                              
     </form>

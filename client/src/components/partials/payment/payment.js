@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { translate } from '../../../translations/translate'
 import PaymentForm from './paymentForm'
 import { Col, Row, Button } from 'react-bootstrap'
@@ -7,13 +7,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { changePage, changeGame, changeGamePage } from '../../../reducers/page'
 import $ from "jquery"
 import { decryptData } from '../../../utils/crypto'
-import { isEmpty, postData } from '../../../utils/utils'
+import { getData, isEmpty, postData } from '../../../utils/utils'
 import { validateCVV, validateCard, validateCardMonthYear, validateInput } from '../../../utils/validate'
 import { changePopup } from '../../../reducers/popup'
 import PaymentCart from './paymentCart'
 
 function Payment(props){
-    const {lang, user, template} = props
+    const {lang, user, template, home} = props
     let dispatch = useDispatch()
     let max_bet = decryptData(user.money)
     let price_per_carrot = 1
@@ -27,8 +27,35 @@ function Payment(props){
     const [cvvError, setCvvError] = useState(false)
     const [monthError, setMonthError] = useState(false)   
     const [yearError, setYearError] = useState(false)
-    const [bitcoinWalletError, setBitcoinWalletError] = useState(false)
     const [gateway, setGateway] = useState("stripe")
+    const [cryptoData, setCryptoData] = useState(null)
+
+    let market = home.market ? home.market : []
+    let cart = useSelector(state => state.cart.cart) 
+    let promo = useSelector(state => state.cart.promo) 
+    let total = totalPriceSum()
+    let total_promo = total
+    if(promo && Object.keys(promo).length>0){
+        total_promo = (total_promo - (total_promo * promo.discount)/100).toFixed(2)
+    }    
+    function totalPriceSum(){
+        let total = 0
+        for(let i in cart){
+            let product = market.filter(a => a.id === cart[i].id)
+            total = total + product[0].price * cart[i].qty
+        }
+        return total.toFixed(2)
+    }
+
+    useEffect(() => {
+        let url = "/api/crypto_min"
+        let payload = {
+            amount: total_promo
+        }        
+        postData(url, payload).then((res) => {
+            setCryptoData(res.payload)
+        })
+    }, [])
 
     function getChanges(data){
         let type = data.type
@@ -89,11 +116,10 @@ function Payment(props){
         setCvvError(false)
         setMonthError(false)
         setYearError(false)
-        setBitcoinWalletError(false)
 
         let pay_card = $("input[name='radio1']:checked").val()
-        let pay_paypal = $("input[name='radio2']:checked").val()
-        let pay_crypto = $("input[name='radio3']:checked").val()        
+        // let pay_paypal = $("input[name='radio2']:checked").val()
+        // let pay_crypto = $("input[name='radio3']:checked").val()        
         
         if(isEmpty(data.name)){
             setNameError(true)
@@ -128,21 +154,20 @@ function Payment(props){
                 problem = true
             }
         }
-
-        if(pay_crypto){
-            if(isEmpty(data.bitcoin_address) || !validateInput(data.bitcoin_address, "bitcoin_address")){
-                setBitcoinWalletError(true)
-                problem = true
-            } 
-        }
         
         if(!problem){
             sendPayload(data)
         }
     }
 
+    function crypto_status(payment_id){
+        postData("/api/crypto_get_payment", {payment_id}).then((data) => {
+            console.log('sendPayload5--> ', data, data.payment_status)
+        })
+    }
+
     function sendPayload(payload){
-        if(amount > 0){ // something is wrong and we can't charge client (ex: somehow the cart is empty, so, the total amount is 0)
+        if(typeof total_promo !== "undefined" && total_promo !== "" && total_promo !== "null" && total_promo !== null && amount > 0){ // something is wrong and we can't charge client (ex: somehow the cart is empty, so, the total amount is 0)
             let url = ""
             switch(gateway){
                 case "stripe":
@@ -156,13 +181,45 @@ function Payment(props){
                     break
                 default:                    
             }
-            payload.amount = amount
-            console.log('aaa', gateway, payload, amount, url)   
+            payload.amount = total_promo
+            //console.log('sendPayload1--> ', gateway, payload, url)   
             if(!isEmpty(url)){
                 postData(url, payload).then((data) => {
-                    console.log(data)
+                    //console.log('sendPayload2--> ', data)
                     if(data && data.result && data.result === "success"){
-                        window.open(data.payload.receipt_url,'_blank')
+                        switch(gateway){
+                            case "stripe":
+                            case "paypal":
+                                if(data.payload.receipt_url){
+                                    window.open(data.payload.receipt_url,'_blank')
+                                }
+                                break
+                            case "crypto": 
+                                let iid = data.iid
+                                if(data.payload.invoice_url){
+                                    window.open(data.payload.invoice_url,'_blank')
+                                }
+                                //console.log('sendPayload3--> ', data, iid)
+                                if(typeof iid !== "undefined" && iid !== "null" && iid !== null && iid !== ""  && iid > 0){
+                                    postData('/api/crypto_pay', {iid}).then((data) => {
+                                        let payment_id = data.payload.payment_id
+                                        //console.log('sendPayload4--> ', data, payment_id)
+                                        crypto_status(payment_id)
+                                        let tt=setInterval(function(){startTime()},60000) // check each minute
+                                        let counter = 0
+                                        function startTime(){
+                                            if(counter == 10) {
+                                                clearInterval(tt) // stop checking after 10 minutes
+                                            } else {
+                                                counter++
+                                                crypto_status(payment_id)
+                                            }
+                                        }                                        
+                                    })                                
+                                }
+                                break 
+                            default:
+                        }
                     } else {
                         let payload = {
                             open: true,
@@ -204,7 +261,7 @@ function Payment(props){
                 cvvError={cvvError} 
                 monthError={monthError}  
                 yearError={yearError}
-                bitcoinWalletError={bitcoinWalletError}
+                cryptoData={cryptoData}
             ></PaymentForm> 
         </Col>
         <Col sm={4}>

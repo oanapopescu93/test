@@ -142,6 +142,10 @@ var word_bank = {
     bitcoin_wallet: "Dirección de Bitcoin",
     error_charge: "Lo sentimos, pero no podemos cobrarte debido a un error por nuestra parte. Repararemos este error lo antes posible.",
     submit: "Enviar",
+    min_amount: "Monto mínimo",
+    and: "y",
+    or: "o",
+    fiat_equivalent: "Equivalente en moneda fiduciaria",
 
     // order
     order: "Pedido",

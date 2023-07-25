@@ -2,84 +2,167 @@ var express = require("express")
 var bodyParser = require('body-parser')
 var cryptoPayment = express.Router()
 var jsonParser = bodyParser.json()
-const bitcore = require("bitcore-lib")
-var explorers = require('./bitcore-explorers/index');
+const axios = require('axios')
 
-var toAddress = "n23KAepvmpffvm9LhWNXn2TTrJYwariG9n"
+const apiKey = "Z1KG9J0-GNHMNQE-PT6HD64-ET6GTWK"
+const apiUrl = 'https://api.nowpayments.io/v1'
 
-const sendBitcoin = async (recieverAddress, amountToSend) => {
+function createCryptoInvoice(amount, currency = 'USD') {
     return new Promise(function(resolve, reject){
-        let privateKeyWIF = bitcore.PrivateKey('testnet').toWIF()
-        let privateKey = bitcore.PrivateKey.fromWIF(privateKeyWIF)
-        let address = privateKey.toAddress()
-
-        // what I've tried to put in new explorers.Insight
-        // "https://bitpay.com/insight/"
-        // "https://explorer.btc.zelcore.io"
-        // "testnet"
-        // nothing
-        var insight = new explorers.Insight()
-
-        const unit = bitcore.Unit
-        const minerFee = unit.fromMilis(0.128).toSatoshis(); //cost of transaction in satoshis (minerfee)
-        const transactionAmount = unit.fromMilis(amountToSend).toSatoshis(); //convert mBTC to Satoshis using bitcore unit
-
-        console.log(privateKeyWIF, privateKey.toString(), address.toString(), unit.fromSatoshis(0).toSatoshis())
-    
-        insight.getUtxos(address.toString(), function(err, utxos) {
-            // 'bc1q250h9jjr7wj9302z0vpzath3c560k3krkg0fxk'
-            // 'n23KAepvmpffvm9LhWNXn2TTrJYwariG9n'
-            // '16o6XNUB25yRyaF6KeumVW4qTQTHK6g5aC'
-            if (err) {
-                resolve({payload: err, result: "error"})
-            } else {
-                console.log('utxos--> ', utxos)
-                if (utxos.length == 0) {
-                    //if no transactions have happened, there is no balance on the address.
-                    resolve({payload: "You don't have enough Satoshis to cover the miner fee.", result: "error"})                    
-                } 
-                let balance = unit.fromSatoshis(0).toSatoshis()
-                for (var i = 0; i < utxos.length; i++) {
-                    balance += unit.fromSatoshis(parseInt(utxos[i]['satoshis'])).toSatoshis();
+        try {
+            const payload = {
+                price_amount: amount,
+                price_currency: currency,
+                pay_currency: 'BTC',
+                order_description: "BunnyBet",
+                ipn_callback_url: 'https://your-server-url.com/ipn'
+            }        
+            const headers = {
+                'x-api-key': apiKey,
+                'Content-Type': 'application/json',
+            }        
+            axios.post(`${apiUrl}/invoice`, payload, { headers }).then(function(response){
+                let iid = response.data.id
+                if(typeof iid != "undefined" && iid != "null" && iid != null && iid != ""  && iid > 0){
+                    resolve({iid: iid, payload: response.data, result: "success", url: "invoice"})
                 }
-                if (balance - transactionAmount - minerFee > 0) {
-                    try{
-                        let bitcore_transaction = new bitcore.Transaction()
-                        .from(utxos)
-                        .to(toAddress, transactionAmount)
-                        .fee(minerFee)
-                        .change('n23KAepvmpffvm9LhWNXn2TTrJYwariG9n')
-                        .sign(privateKey.toString())
-                        .serialize()
-                        
-                        // broadcast the transaction to the blockchain
-                        insight.broadcast(bitcore_transaction, function(error, txid) {
-                            if (error) {
-                                resolve({payload: error, result: "error"})
-                            } else {
-                                resolve({payload: txid, result: "success"}) 
-                            }
-                        });
-                    }
-                    catch (error) {
-                        resolve({payload: error.message, result: "error"}) 
-                    }              
-                } else {
-                    resolve({payload: "You don't have enough Satoshis to cover the miner fee.", result: "error"}) 
-                }
-            }
-        })
+            }).catch(function(err){
+                resolve({payload: err, result: "error"}) 
+            })
+        } catch (err) {
+            resolve({payload: err, result: "error"})  
+        }
     })
 }
 
+function createCryptoPayment(iid) {
+    return new Promise(function(resolve, reject){
+        try {
+            const payload = {
+                iid: iid,
+                pay_currency: 'BTC',
+                order_description: "BunnyBet",
+            }        
+            const headers = {
+                'x-api-key': apiKey,
+                'Content-Type': 'application/json',
+            }        
+            axios.post(`${apiUrl}/invoice-payment`, payload, { headers }).then(function(response){
+                resolve({payload: response.data, result: "success", url: "invoice-payment"})
+            }).catch(function(err){
+                resolve({payload: err, result: "error"})
+            })
+        } catch (err) {
+            resolve({payload: err, result: "error"})
+        }
+    })
+}
+
+function checkPaymentStatus(paymentId) {
+    return new Promise(function(resolve, reject){
+        try {
+            const headers = {
+                'x-api-key': apiKey,
+            }        
+            axios.get(`${apiUrl}/payment/${paymentId}`, { headers }).then(function(response){
+                resolve({payload: response, result: "success"})
+            }).catch(function(err){
+                resolve({payload: err, result: "error"})
+            })
+        } catch (err) {
+            resolve({payload: err, result: "error"})
+        }
+    }) 
+}
+
+function checkMinPayment(amount){
+    return new Promise(function(resolve, reject){
+        try {
+            const headers = {
+                'x-api-key': apiKey,
+            } 
+            axios.get(`${apiUrl}/min-amount?currency_from=btc&fiat_equivalent=usd`, { headers }).then(function(response){
+                resolve({payload: response.data, result: "crypto_min"})
+            }).catch(function(err){
+                resolve({payload: err, result: "error"})
+            })
+        } catch (err) {
+            resolve({payload: err, result: "error"})
+        }
+    }) 
+}
+
+cryptoPayment.post("/api/crypto_pay", jsonParser, (req, res, next) => {
+    let iid = req.body.iid
+    if(typeof iid != "undefined" && iid != "null" && iid != null && iid != ""  && iid > 0){
+        createCryptoPayment(iid).then(function(data) {
+            res.json(data)
+        })  
+    } else {
+        res.json({payload: 'no iid', result: "error"}) 
+    }    
+})
+
 cryptoPayment.post("/api/crypto", jsonParser, (req, res, next) => {
     let amount = req.body.amount
-    let bitcoin_address = req.body.bitcoin_address
-    if(bitcoin_address && amount && amount>0){
-        sendBitcoin(bitcoin_address, amount).then(function(data) {
+    if(typeof amount != "undefined" && amount != "null" && amount != null && amount != ""  && amount > 0){
+        createCryptoInvoice(amount).then(function(data) {
             res.json(data)
-        })        
-    }
+        })  
+    } else {
+        res.json({payload: 'no amount', result: "error"}) 
+    }    
+})
+
+function getCryptoPaymentByID(payment_id){
+    return new Promise(function(resolve, reject){
+        try {
+            const headers = {
+                'x-api-key': apiKey,
+            } 
+            axios.get(`${apiUrl}/payment/${payment_id}`, { headers }).then(function(response){
+                resolve({payload: response.data, result: "crypto_payment"})
+            }).catch(function(err){
+                resolve({payload: err, result: "error"})
+            })
+        } catch (err) {
+            resolve({payload: err, result: "error"})
+        }
+    })
+}
+
+cryptoPayment.post("/api/crypto_get_payment", jsonParser, (req, res, next) => {
+    let payment_id = req.body.payment_id
+    console.log('crypto_get_payment ', payment_id)
+    if(typeof payment_id != "undefined" && payment_id != "null" && payment_id != null && payment_id != ""  && payment_id > 0){
+        getCryptoPaymentByID(payment_id).then(function(data) {
+            res.json(data)
+        })  
+    } else {
+        res.json({payload: 'no amount', result: "error"}) 
+    } 
+})
+
+cryptoPayment.post("/api/crypto_min", jsonParser, (req, res, next) => {
+    let amount = req.body.amount
+    if(typeof amount != "undefined" && amount != "null" && amount != null && amount != ""  && amount > 0){
+        checkMinPayment(amount).then(function(data) {
+            res.json(data)
+        })  
+    } else {
+        res.json({payload: err, result: "error"})
+    }    
+})
+
+cryptoPayment.post("/api/crypto_status", jsonParser, (req, res, next) => {
+    let paymentId = req.body.paymentId
+    if(typeof paymentId != "undefined" && paymentId != "null" && paymentId != null && paymentId != ""  && paymentId > 0){
+        checkPaymentStatus(paymentId).then(function(data) {
+            res.json(data)
+        })  
+    } else {
+        res.json({payload: err, result: "error"})
+    } 
 })
 
 module.exports = cryptoPayment

@@ -133,6 +133,21 @@ export const postData = async function (url = "", data = {}) {
   return response.json()
 }
 
+export const getData = async function (url = "") {
+  const response = await fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+  })
+  return response.json()
+}
+
 export const checkoutData = function(){	
   const monthOptions = [
     {ENG: "January" , RO: "Ianuarie"},

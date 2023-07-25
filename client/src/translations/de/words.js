@@ -142,6 +142,10 @@ var word_bank = {
     bitcoin_wallet: "Bitcoin-Adresse",
     error_charge: "Es tut uns leid, aber wir können dich aufgrund eines Fehlers deinerseits nicht belasten. Wir werden diesen Fehler so schnell wie möglich beheben.",
     submit: "Absenden",
+    min_amount: "Mindestbetrag",
+    and: "und",
+    or: "oder",
+    fiat_equivalent: "Gegenwert in Fiatwährung",
 
     // order
     order: "Bestellung",
